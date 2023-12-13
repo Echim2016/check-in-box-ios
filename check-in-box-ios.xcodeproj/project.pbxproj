@@ -11,7 +11,7 @@
 		9C873D082B299552008D8277 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C873D072B299552008D8277 /* ContentView.swift */; };
 		9C873D0A2B299553008D8277 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C873D092B299553008D8277 /* Assets.xcassets */; };
 		9C873D0D2B299553008D8277 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C873D0C2B299553008D8277 /* Preview Assets.xcassets */; };
-		9C873D172B299553008D8277 /* check_in_box_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C873D162B299553008D8277 /* check_in_box_iosTests.swift */; };
+		9C873D172B299553008D8277 /* CheckInBoxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C873D162B299553008D8277 /* CheckInBoxTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,7 +31,7 @@
 		9C873D092B299553008D8277 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9C873D0C2B299553008D8277 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9C873D122B299553008D8277 /* check-in-box-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "check-in-box-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		9C873D162B299553008D8277 /* check_in_box_iosTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = check_in_box_iosTests.swift; sourceTree = "<group>"; };
+		9C873D162B299553008D8277 /* CheckInBoxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInBoxTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,7 +92,7 @@
 		9C873D152B299553008D8277 /* check-in-box-iosTests */ = {
 			isa = PBXGroup;
 			children = (
-				9C873D162B299553008D8277 /* check_in_box_iosTests.swift */,
+				9C873D162B299553008D8277 /* CheckInBoxTests.swift */,
 			);
 			path = "check-in-box-iosTests";
 			sourceTree = "<group>";
@@ -206,7 +206,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9C873D172B299553008D8277 /* check_in_box_iosTests.swift in Sources */,
+				9C873D172B299553008D8277 /* CheckInBoxTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
