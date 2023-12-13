@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9C873D062B299552008D8277 /* check_in_box_iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C873D052B299552008D8277 /* check_in_box_iosApp.swift */; };
+		9C873D062B299552008D8277 /* CheckInBoxApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C873D052B299552008D8277 /* CheckInBoxApp.swift */; };
 		9C873D082B299552008D8277 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C873D072B299552008D8277 /* ContentView.swift */; };
 		9C873D0A2B299553008D8277 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C873D092B299553008D8277 /* Assets.xcassets */; };
 		9C873D0D2B299553008D8277 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C873D0C2B299553008D8277 /* Preview Assets.xcassets */; };
@@ -35,7 +35,7 @@
 
 /* Begin PBXFileReference section */
 		9C873D022B299551008D8277 /* check-in-box-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "check-in-box-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		9C873D052B299552008D8277 /* check_in_box_iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = check_in_box_iosApp.swift; sourceTree = "<group>"; };
+		9C873D052B299552008D8277 /* CheckInBoxApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInBoxApp.swift; sourceTree = "<group>"; };
 		9C873D072B299552008D8277 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9C873D092B299553008D8277 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9C873D0C2B299553008D8277 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -94,7 +94,7 @@
 		9C873D042B299551008D8277 /* check-in-box-ios */ = {
 			isa = PBXGroup;
 			children = (
-				9C873D052B299552008D8277 /* check_in_box_iosApp.swift */,
+				9C873D052B299552008D8277 /* CheckInBoxApp.swift */,
 				9C873D072B299552008D8277 /* ContentView.swift */,
 				9C873D092B299553008D8277 /* Assets.xcassets */,
 				9C873D0B2B299553008D8277 /* Preview Content */,
@@ -258,7 +258,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9C873D082B299552008D8277 /* ContentView.swift in Sources */,
-				9C873D062B299552008D8277 /* check_in_box_iosApp.swift in Sources */,
+				9C873D062B299552008D8277 /* CheckInBoxApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
