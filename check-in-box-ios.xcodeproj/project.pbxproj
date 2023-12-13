@@ -32,6 +32,7 @@
 		9C873D0C2B299553008D8277 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9C873D122B299553008D8277 /* check-in-box-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "check-in-box-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C873D162B299553008D8277 /* CheckInBoxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInBoxTests.swift; sourceTree = "<group>"; };
+		9C873D312B299DC7008D8277 /* Features */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Features; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +56,7 @@
 		9C873CF92B299551008D8277 = {
 			isa = PBXGroup;
 			children = (
+				9C873D312B299DC7008D8277 /* Features */,
 				9C873D042B299551008D8277 /* check-in-box-ios */,
 				9C873D152B299553008D8277 /* check-in-box-iosTests */,
 				9C873D032B299551008D8277 /* Products */,
