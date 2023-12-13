@@ -12,6 +12,7 @@
 		9C873D0D2B299553008D8277 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C873D0C2B299553008D8277 /* Preview Assets.xcassets */; };
 		9C873D172B299553008D8277 /* CheckInBoxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C873D162B299553008D8277 /* CheckInBoxTests.swift */; };
 		9C873D332B29A2D1008D8277 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C873D322B29A2D1008D8277 /* RootView.swift */; };
+		9C873D362B29BEDD008D8277 /* Features in Frameworks */ = {isa = PBXBuildFile; productRef = 9C873D352B29BEDD008D8277 /* Features */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C873D362B29BEDD008D8277 /* Features in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -60,6 +62,7 @@
 				9C873D042B299551008D8277 /* check-in-box-ios */,
 				9C873D152B299553008D8277 /* check-in-box-iosTests */,
 				9C873D032B299551008D8277 /* Products */,
+				9C873D342B29BEDD008D8277 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -99,6 +102,13 @@
 			path = "check-in-box-iosTests";
 			sourceTree = "<group>";
 		};
+		9C873D342B29BEDD008D8277 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -115,6 +125,9 @@
 			dependencies = (
 			);
 			name = "check-in-box-ios";
+			packageProductDependencies = (
+				9C873D352B29BEDD008D8277 /* Features */,
+			);
 			productName = "check-in-box-ios";
 			productReference = 9C873D022B299551008D8277 /* check-in-box-ios.app */;
 			productType = "com.apple.product-type.application";
@@ -349,7 +362,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"check-in-box-ios/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "check-in-box-ios/Preview\\ Content";
 				DEVELOPMENT_TEAM = VCPLDP9723;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -378,7 +391,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"check-in-box-ios/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "check-in-box-ios/Preview\\ Content";
 				DEVELOPMENT_TEAM = VCPLDP9723;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -471,6 +484,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9C873D352B29BEDD008D8277 /* Features */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Features;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9C873CFA2B299551008D8277 /* Project object */;
 }

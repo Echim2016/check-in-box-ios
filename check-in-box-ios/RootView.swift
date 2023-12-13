@@ -6,13 +6,23 @@
 //
 
 import SwiftUI
+import Features
 
 struct RootView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack {
+            ScrollView {
+                Spacer()
+                FeatureCardView(title: "經典隨機", subtitle: "Check-in Box")
+                    .cornerRadius(16)
+            }
+            .padding(.horizontal)
+            .navigationTitle("Check it out.")
+        }
     }
 }
 
 #Preview {
     RootView()
+        .preferredColorScheme(.dark)
 }
