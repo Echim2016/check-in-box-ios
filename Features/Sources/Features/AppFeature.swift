@@ -8,34 +8,44 @@
 import ComposableArchitecture
 import SwiftUI
 
-struct AppFeature: Reducer {
-  struct State: Equatable {
+public struct AppFeature: Reducer {
+  public struct State: Equatable {
     var path = StackState<Path.State>()
     var modeList = ModeListFeature.State()
+
+    public init(
+      path: StackState<Path.State> = StackState<Path.State>(),
+      modeList: ModeListFeature.State = ModeListFeature.State()
+    ) {
+      self.path = path
+      self.modeList = modeList
+    }
   }
 
-  enum Action: Equatable {
+  public enum Action: Equatable {
     case path(StackAction<Path.State, Path.Action>)
     case modeList(ModeListFeature.Action)
   }
 
-  struct Path: Reducer {
-    enum State: Equatable {
+  public struct Path: Reducer {
+    public enum State: Equatable {
       case classic(ClassicCheckInFeature.State)
     }
 
-    enum Action: Equatable {
+    public enum Action: Equatable {
       case classic(ClassicCheckInFeature.Action)
     }
 
-    var body: some ReducerOf<Self> {
+    public var body: some ReducerOf<Self> {
       Scope(state: /State.classic, action: /Action.classic) {
         ClassicCheckInFeature()
       }
     }
   }
 
-  var body: some ReducerOf<Self> {
+  public init() {}
+
+  public var body: some ReducerOf<Self> {
     Scope(state: \.modeList, action: /Action.modeList) {
       ModeListFeature()
     }
@@ -54,10 +64,14 @@ struct AppFeature: Reducer {
   }
 }
 
-struct AppView: View {
+public struct AppView: View {
   let store: StoreOf<AppFeature>
 
-  var body: some View {
+  public init(store: StoreOf<AppFeature>) {
+    self.store = store
+  }
+
+  public var body: some View {
     NavigationStackStore(
       self.store.scope(state: \.path, action: { .path($0) })
     ) {
@@ -67,6 +81,7 @@ struct AppView: View {
           action: { .modeList($0) }
         )
       )
+      .preferredColorScheme(.dark)
     } destination: { state in
       switch state {
       case .classic:
@@ -95,5 +110,4 @@ struct AppView: View {
         ._printChanges()
     }
   )
-  .preferredColorScheme(.dark)
 }

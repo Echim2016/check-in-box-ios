@@ -8,14 +8,14 @@
 import ComposableArchitecture
 import SwiftUI
 
-struct ClassicCheckInFeature: Reducer {
-  struct State: Equatable {}
+public struct ClassicCheckInFeature: Reducer {
+  public struct State: Equatable {}
 
-  enum Action: Equatable {
+  public enum Action: Equatable {
     case tap
   }
 
-  var body: some ReducerOf<Self> {
+  public var body: some ReducerOf<Self> {
     Reduce { _, action in
       switch action {
       case .tap:

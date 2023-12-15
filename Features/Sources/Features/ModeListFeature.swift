@@ -8,16 +8,20 @@
 import ComposableArchitecture
 import SwiftUI
 
-struct ModeListFeature: Reducer {
-  struct State: Equatable {
+public struct ModeListFeature: Reducer {
+  public struct State: Equatable {
     var featureCards: IdentifiedArrayOf<FeatureCard> = []
+    
+    public init(featureCards: IdentifiedArrayOf<FeatureCard> = []) {
+      self.featureCards = featureCards
+    }
   }
 
-  enum Action: Equatable {
+  public enum Action: Equatable {
     case settingButtonTapped
   }
 
-  var body: some ReducerOf<Self> {
+  public var body: some ReducerOf<Self> {
     Reduce { _, _ in
       .none
     }
@@ -47,10 +51,10 @@ struct ModeListView: View {
   }
 }
 
-struct FeatureCard: Equatable, Identifiable {
-  let id: UUID
-  let title: String
-  let subtitle: String
+public struct FeatureCard: Equatable, Identifiable {
+  public let id: UUID
+  public let title: String
+  public let subtitle: String
 }
 
 #Preview {
