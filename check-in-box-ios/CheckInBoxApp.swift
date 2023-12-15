@@ -9,10 +9,10 @@ import SwiftUI
 
 @main
 struct CheckInBoxApp: App {
-    var body: some Scene {
-        WindowGroup {
-            RootView()
-                .preferredColorScheme(.dark)
-        }
+  var body: some Scene {
+    WindowGroup {
+      RootView()
+        .preferredColorScheme(.dark)
     }
+  }
 }

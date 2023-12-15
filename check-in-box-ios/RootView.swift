@@ -5,18 +5,16 @@
 //  Created by Yi-Chin Hsu on 2023/12/13.
 //
 
-import SwiftUI
 import Features
+import SwiftUI
 
 struct RootView: View {
-    var body: some View {
-        NavigationStack {
-            
-        }
-    }
+  var body: some View {
+    NavigationStack {}
+  }
 }
 
 #Preview {
-    RootView()
-        .preferredColorScheme(.dark)
+  RootView()
+    .preferredColorScheme(.dark)
 }

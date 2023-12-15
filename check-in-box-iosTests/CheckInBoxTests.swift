@@ -5,12 +5,9 @@
 //  Created by Yi-Chin Hsu on 2023/12/13.
 //
 
-import XCTest
 @testable import check_in_box_ios
+import XCTest
 
 final class CheckInBoxTests: XCTestCase {
-
-    func testExample() throws {
-        
-    }
+  func testExample() throws {}
 }
