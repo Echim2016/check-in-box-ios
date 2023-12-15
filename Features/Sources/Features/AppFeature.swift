@@ -61,7 +61,9 @@ public struct AppFeature: Reducer {
         return .run { send in
           await send(
             .receivedQuestions(
-              Result.success(["今年最期待的事情"])
+              Result {
+                try await RemoteCheckInLoader().load()
+              }
             )
           )
         }
