@@ -50,7 +50,7 @@ struct ModeListView: View {
         }
         .padding(.horizontal)
       }
-      .navigationTitle("Check it out.")
+      .navigationTitle("Let's check! 🔮")
     }
   }
 }
