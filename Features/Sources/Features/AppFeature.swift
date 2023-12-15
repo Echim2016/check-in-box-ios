@@ -92,6 +92,7 @@ public struct AppView: View {
         )
       }
     }
+    .tint(.white)
   }
 }
 
