@@ -1,12 +1,18 @@
-import XCTest
+import ComposableArchitecture
 @testable import Features
+import XCTest
 
-final class FeaturesTests: XCTestCase {
-    func testExample() throws {
-        // XCTest Documentation
-        // https://developer.apple.com/documentation/xctest
-
-        // Defining Test Cases and Test Methods
-        // https://developer.apple.com/documentation/xctest/defining_test_cases_and_test_methods
+@MainActor
+final class AppFeaturesTests: XCTestCase {
+  func test_path_navigateToClassicPage() async {
+    let store = TestStore(
+      initialState: AppFeature.State(modeList: ModeListFeature.State(featureCards: FeatureCard.default))
+    ) {
+      AppFeature()
     }
+
+    await store.send(.path(.push(id: 0, state: .classic(ClassicCheckInFeature.State())))) {
+      $0.path[id: 0] = .classic(ClassicCheckInFeature.State())
+    }
+  }
 }
