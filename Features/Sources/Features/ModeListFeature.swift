@@ -11,7 +11,7 @@ import SwiftUI
 public struct ModeListFeature: Reducer {
   public struct State: Equatable {
     var featureCards: IdentifiedArrayOf<FeatureCard> = []
-    
+
     public init(featureCards: IdentifiedArrayOf<FeatureCard> = []) {
       self.featureCards = featureCards
     }
@@ -55,6 +55,10 @@ public struct FeatureCard: Equatable, Identifiable {
   public let id: UUID
   public let title: String
   public let subtitle: String
+
+  static let `default`: IdentifiedArrayOf<FeatureCard> = [
+    FeatureCard(id: UUID(), title: "經典模式", subtitle: "Check-in Box"),
+  ]
 }
 
 #Preview {
@@ -62,9 +66,7 @@ public struct FeatureCard: Equatable, Identifiable {
     ModeListView(
       store: Store(
         initialState: ModeListFeature.State(
-          featureCards: [
-            FeatureCard(id: UUID(), title: "經典模式", subtitle: "Check-in Box"),
-          ]
+          featureCards: FeatureCard.default
         )
       ) {
         ModeListFeature()

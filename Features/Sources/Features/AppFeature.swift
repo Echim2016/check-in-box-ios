@@ -100,9 +100,7 @@ public struct AppView: View {
     store: Store(
       initialState: AppFeature.State(
         modeList: ModeListFeature.State(
-          featureCards: [
-            FeatureCard(id: UUID(), title: "經典模式", subtitle: "Check-in Box"),
-          ]
+          featureCards: FeatureCard.default
         )
       )
     ) {
