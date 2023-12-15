@@ -29,17 +29,20 @@ struct ModeListView: View {
 
   var body: some View {
     WithViewStore(self.store, observe: { $0.featureCards }) { store in
-      NavigationStack {
-        ScrollView {
-          Spacer()
-          ForEach(store.state) { card in
+      ScrollView {
+        Spacer()
+        ForEach(store.state) { card in
+          NavigationLink(
+            state: AppFeature.Path.State.classic(ClassicCheckInFeature.State())
+          ) {
             FeatureCardView(title: card.title, subtitle: card.subtitle)
               .cornerRadius(16)
           }
+          .buttonStyle(PlainButtonStyle())
         }
         .padding(.horizontal)
-        .navigationTitle("Check it out.")
       }
+      .navigationTitle("Check it out.")
     }
   }
 }
@@ -51,16 +54,18 @@ struct FeatureCard: Equatable, Identifiable {
 }
 
 #Preview {
-  ModeListView(
-    store: Store(
-      initialState: ModeListFeature.State(
-        featureCards: [
-          FeatureCard(id: UUID(), title: "經典模式", subtitle: "Check-in Box"),
-        ]
-      )
-    ) {
-      ModeListFeature()
-    }
-  )
+  NavigationStack {
+    ModeListView(
+      store: Store(
+        initialState: ModeListFeature.State(
+          featureCards: [
+            FeatureCard(id: UUID(), title: "經典模式", subtitle: "Check-in Box"),
+          ]
+        )
+      ) {
+        ModeListFeature()
+      }
+    )
+  }
   .preferredColorScheme(.dark)
 }
