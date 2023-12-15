@@ -22,9 +22,11 @@ public struct AppFeature: Reducer {
     }
   }
 
-  public enum Action: Equatable {
+  public enum Action: Sendable {
     case path(StackAction<Path.State, Path.Action>)
     case modeList(ModeListFeature.Action)
+    case loadFromRemote
+    case receivedQuestions(Result<[String], Error>)
   }
 
   public struct Path: Reducer {
@@ -50,10 +52,27 @@ public struct AppFeature: Reducer {
       ModeListFeature()
     }
 
-    Reduce { _, action in
+    Reduce { state, action in
       switch action {
       case .modeList:
         return .none
+
+      case .loadFromRemote:
+        return .run { send in
+          await send(
+            .receivedQuestions(
+              Result.success(["今年最期待的事情"])
+            )
+          )
+        }
+
+      case let .receivedQuestions(.success(questions)):
+        state.modeList.questions = questions
+        return .none
+
+      case .receivedQuestions(.failure):
+        return .none
+
       case .path:
         return .none
       }
@@ -91,6 +110,9 @@ public struct AppView: View {
           then: ClassicCheckInView.init(store:)
         )
       }
+    }
+    .task {
+      store.send(.loadFromRemote)
     }
     .tint(.white)
   }

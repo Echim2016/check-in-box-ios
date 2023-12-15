@@ -11,9 +11,11 @@ import SwiftUI
 public struct ModeListFeature: Reducer {
   public struct State: Equatable {
     var featureCards: IdentifiedArrayOf<FeatureCard> = []
+    var questions: [String]
 
-    public init(featureCards: IdentifiedArrayOf<FeatureCard> = []) {
+    public init(featureCards: IdentifiedArrayOf<FeatureCard> = [], questions: [String] = []) {
       self.featureCards = featureCards
+      self.questions = questions
     }
   }
 
@@ -32,12 +34,14 @@ struct ModeListView: View {
   let store: StoreOf<ModeListFeature>
 
   var body: some View {
-    WithViewStore(self.store, observe: { $0.featureCards }) { store in
+    WithViewStore(self.store, observe: { $0 }) { store in
       ScrollView {
         Spacer()
-        ForEach(store.state) { card in
+        ForEach(store.state.featureCards) { card in
           NavigationLink(
-            state: AppFeature.Path.State.classic(ClassicCheckInFeature.State())
+            state: AppFeature.Path.State.classic(
+              ClassicCheckInFeature.State(questions: store.state.questions)
+            )
           ) {
             FeatureCardView(title: card.title, subtitle: card.subtitle)
               .cornerRadius(16)
