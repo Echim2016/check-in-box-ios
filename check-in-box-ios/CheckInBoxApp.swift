@@ -15,7 +15,7 @@ struct CheckInBoxApp: App {
     WindowGroup {
       AppView(
         store: Store(
-          initialState: AppFeature.State()
+          initialState: AppFeature.State(modeList: ModeListFeature.State(featureCards: FeatureCard.default))
         ) {
           AppFeature()
         }

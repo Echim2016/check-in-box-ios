@@ -60,7 +60,7 @@ public struct FeatureCard: Equatable, Identifiable {
   public let title: String
   public let subtitle: String
 
-  static let `default`: IdentifiedArrayOf<FeatureCard> = [
+  public static let `default`: IdentifiedArrayOf<FeatureCard> = [
     FeatureCard(id: UUID(), title: "經典模式", subtitle: "Check-in Box"),
   ]
 }
