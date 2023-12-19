@@ -27,6 +27,15 @@ final class ClassicFeatureTests: XCTestCase {
       $0.displayQuestion = questions[1]
     }
   }
+  
+  func test_classicCheckIn_pickedQuestionFromLastIndex() async {
+    let questions = getMockMultipleQuestions()
+    let store = makeSUT(base: questions, index: questions.count - 1)
+
+    await store.send(.pickButtonTapped) {
+      $0.displayQuestion = questions.first
+    }
+  }
 
   func test_classicCheckIn_pickedPreviousQuestionFromDefaultState() async {
     let questions = getMockMultipleQuestions()
