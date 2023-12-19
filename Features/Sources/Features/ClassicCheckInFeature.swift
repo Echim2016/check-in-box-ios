@@ -15,7 +15,7 @@ public struct ClassicCheckInFeature: Reducer {
     
     init(questions: CycleIterator<String> = CycleIterator(base: [])) {
       self.questions = questions
-      displayQuestion = questions.base.first
+      displayQuestion = questions.current()
     }
   }
 

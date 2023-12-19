@@ -14,6 +14,14 @@ class CycleIterator<T: Equatable>: Equatable {
     self.index = index
   }
 
+  func current() -> T? {
+    if base.isEmpty {
+      return nil
+    } else {
+      return base[index]
+    }
+  }
+
   @discardableResult
   func next() -> T? {
     guard !base.isEmpty else {
@@ -26,7 +34,7 @@ class CycleIterator<T: Equatable>: Equatable {
     }
     return base[index]
   }
-  
+
   @discardableResult
   func back() -> T? {
     guard !base.isEmpty else {
