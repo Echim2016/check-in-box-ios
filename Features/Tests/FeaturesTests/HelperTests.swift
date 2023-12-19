@@ -34,7 +34,7 @@ final class CycleIteratorTests: XCTestCase {
     XCTAssertGreaterThanOrEqual(sut.base.count - 1, sut.index)
   }
   
-  func test_cycleIterator_nextIndexIncreaseedByOneWhenBaseContainsMultipleItems() {
+  func test_cycleIterator_nextIndexIncreasedByOneWhenBaseContainsMultipleItems() {
     let sut = CycleIterator(base: ["item1", "item2"], index: 0)
     sut.next()
     
