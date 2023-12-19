@@ -16,3 +16,38 @@ final class AppFeaturesTests: XCTestCase {
     }
   }
 }
+
+@MainActor
+final class ClassicFeatureTests: XCTestCase {
+  func test_classicCheckIn_pickedQuestionFromDefaultState() async {
+    let questions = getMockMultipleQuestions()
+    let store = makeSUT(base: questions)
+
+    await store.send(.pickButtonTapped) {
+      $0.displayQuestion = questions[1]
+    }
+  }
+
+  func makeSUT(base: [String], index: Int = 0) -> TestStore<ClassicCheckInFeature.State, ClassicCheckInFeature.Action> {
+    let store = TestStore(
+      initialState: ClassicCheckInFeature.State(questions: CycleIterator(base: base, index: index))
+    ) {
+      ClassicCheckInFeature()
+    }
+    return store
+  }
+}
+
+extension ClassicFeatureTests {
+  func getMockMultipleQuestions() -> [String] {
+    [
+      "身上使用最久的東西是什麼？",
+      "最喜歡的一部電影？",
+      "今年最期待的一件事情？",
+      "我不為人知的一個奇怪技能",
+      "做過最像大人的事情",
+      "今年最快樂的回憶",
+      "最想再去一次的國家/城市",
+    ]
+  }
+}
