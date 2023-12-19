@@ -37,10 +37,13 @@ struct ModeListView: View {
     WithViewStore(self.store, observe: { $0 }) { store in
       ScrollView {
         Spacer()
+        Spacer()
         ForEach(store.state.featureCards) { card in
           NavigationLink(
             state: AppFeature.Path.State.classic(
-              ClassicCheckInFeature.State(questions: store.state.questions)
+              ClassicCheckInFeature.State(
+                questions: CycleIterator(base: store.state.questions.shuffled())
+              )
             )
           ) {
             FeatureCardView(title: card.title, subtitle: card.subtitle)
