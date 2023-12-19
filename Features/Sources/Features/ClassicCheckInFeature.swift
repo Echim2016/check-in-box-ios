@@ -21,6 +21,7 @@ public struct ClassicCheckInFeature: Reducer {
 
   public enum Action: Equatable {
     case pickButtonTapped
+    case previousButtonTapped
   }
 
   public var body: some ReducerOf<Self> {
@@ -28,6 +29,9 @@ public struct ClassicCheckInFeature: Reducer {
       switch action {
       case .pickButtonTapped:
         state.displayQuestion = state.questions.next()
+        return .none
+      case .previousButtonTapped:
+        state.displayQuestion = state.questions.back()
         return .none
       }
     }
@@ -50,17 +54,29 @@ struct ClassicCheckInView: View {
         Spacer()
         Spacer()
 
-        VStack {
+        HStack {
           Button {
-            store.send(.pickButtonTapped)
+            store.send(.previousButtonTapped)
           } label: {
-            Label("換一題", systemImage: "arrow.counterclockwise")
+            Text("👋 上一題")
               .font(.headline)
               .foregroundColor(.black)
               .frame(maxWidth: .infinity)
               .padding(.vertical, 16)
               .background(.white)
-              .clipShape(Capsule())
+              .clipShape(RoundedRectangle(cornerRadius: 12.0))
+          }
+          
+          Button {
+            store.send(.pickButtonTapped)
+          } label: {
+            Text("🔮 下一題")
+              .font(.headline)
+              .foregroundColor(.black)
+              .frame(maxWidth: .infinity)
+              .padding(.vertical, 16)
+              .background(.white)
+              .clipShape(RoundedRectangle(cornerRadius: 12.0))
           }
         }
       }
