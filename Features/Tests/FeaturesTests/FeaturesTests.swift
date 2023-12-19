@@ -31,11 +31,27 @@ final class AppFeaturesTests: XCTestCase {
     XCTAssertLessThanOrEqual(sut.base.count - 1, sut.index)
   }
   
+  func test_cycleIterator_backIndexEqualToZeroWhenBaseContainsOneItem() {
+    let sut = CycleIterator(base: ["item1"], index: 0)
+    sut.back()
+    
+    XCTAssertEqual(sut.index, 0)
+    XCTAssertLessThanOrEqual(sut.base.count - 1, sut.index)
+  }
+  
   func test_cycleIterator_nextIndexAddedWhenBaseContainsMultipleItems() {
     let sut = CycleIterator(base: ["item1", "item2"], index: 0)
     sut.next()
     
     XCTAssertEqual(sut.index, 1)
     XCTAssertLessThanOrEqual(sut.base.count - 1, sut.index)
+  }
+  
+  func test_cycleIterator_backIndexAddedWhenBaseContainsMultipleItems() {
+    let sut = CycleIterator(base: ["item1", "item2"], index: 1)
+    sut.back()
+    
+    XCTAssertEqual(sut.index, 0)
+    XCTAssertGreaterThanOrEqual(sut.base.count - 1, sut.index)
   }
 }

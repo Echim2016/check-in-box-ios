@@ -27,6 +27,7 @@ class CycleIterator<T: Equatable>: Equatable {
     return base[index]
   }
   
+  @discardableResult
   func back() -> T? {
     guard !base.isEmpty else {
       return nil
