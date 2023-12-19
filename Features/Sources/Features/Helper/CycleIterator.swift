@@ -9,8 +9,9 @@ class CycleIterator<T: Equatable>: Equatable {
   var base: [T] = []
   var index: Int = 0
 
-  init(base: [T]) {
+  init(base: [T], index: Int = 0) {
     self.base = base
+    self.index = index
   }
 
   func next() -> T? {
@@ -34,6 +35,6 @@ class CycleIterator<T: Equatable>: Equatable {
   }
 
   static func == (lhs: CycleIterator<T>, rhs: CycleIterator<T>) -> Bool {
-    lhs.base == rhs.base
+    lhs.base == rhs.base && lhs.index == rhs.index
   }
 }

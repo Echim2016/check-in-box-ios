@@ -15,4 +15,11 @@ final class AppFeaturesTests: XCTestCase {
       $0.path[id: 0] = .classic(ClassicCheckInFeature.State())
     }
   }
+  
+  func test_cycleIterator_equatable() {
+    let sut1 = CycleIterator(base: ["sut"], index: 0)
+    let sut2 = CycleIterator(base: ["sut"], index: 1)
+    
+    XCTAssertNotEqual(sut1, sut2)
+  }
 }
