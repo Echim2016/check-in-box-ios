@@ -30,4 +30,12 @@ final class AppFeaturesTests: XCTestCase {
     XCTAssertEqual(sut.index, 0)
     XCTAssertLessThanOrEqual(sut.base.count - 1, sut.index)
   }
+  
+  func test_cycleIterator_nextIndexAddedWhenBaseContainsMultipleItems() {
+    let sut = CycleIterator(base: ["item1", "item2"], index: 0)
+    sut.next()
+    
+    XCTAssertEqual(sut.index, 1)
+    XCTAssertLessThanOrEqual(sut.base.count - 1, sut.index)
+  }
 }
