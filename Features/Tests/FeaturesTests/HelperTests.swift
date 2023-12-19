@@ -33,7 +33,6 @@ final class CycleIteratorTests: XCTestCase {
     XCTAssertNil(sut.current())
   }
   
-  
   func test_cycleIterator_nextIndexEqualToZeroWhenBaseContainsOneItem() {
     let sut = CycleIterator(base: ["item1"], index: 0)
     sut.next()
