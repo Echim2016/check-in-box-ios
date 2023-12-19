@@ -54,4 +54,20 @@ final class AppFeaturesTests: XCTestCase {
     XCTAssertEqual(sut.index, 0)
     XCTAssertGreaterThanOrEqual(sut.base.count - 1, sut.index)
   }
+  
+  func test_cycleIterator_nextIndexWhenIndexOutOfRange() {
+    let sut = CycleIterator(base: ["item1", "item2"], index: 1)
+    sut.next()
+    
+    XCTAssertEqual(sut.index, 0)
+    XCTAssertGreaterThanOrEqual(sut.base.count - 1, sut.index)
+  }
+  
+  func test_cycleIterator_backIndexWhenIndexOutOfRange() {
+    let sut = CycleIterator(base: ["item1", "item2"], index: 0)
+    sut.back()
+    
+    XCTAssertEqual(sut.index, 1)
+    XCTAssertGreaterThanOrEqual(sut.base.count - 1, sut.index)
+  }
 }
