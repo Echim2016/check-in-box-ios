@@ -7,13 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9C873D062B299552008D8277 /* check_in_box_iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C873D052B299552008D8277 /* check_in_box_iosApp.swift */; };
-		9C873D082B299552008D8277 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C873D072B299552008D8277 /* ContentView.swift */; };
+		9C873D062B299552008D8277 /* CheckInBoxApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C873D052B299552008D8277 /* CheckInBoxApp.swift */; };
 		9C873D0A2B299553008D8277 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C873D092B299553008D8277 /* Assets.xcassets */; };
 		9C873D0D2B299553008D8277 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C873D0C2B299553008D8277 /* Preview Assets.xcassets */; };
-		9C873D172B299553008D8277 /* check_in_box_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C873D162B299553008D8277 /* check_in_box_iosTests.swift */; };
-		9C873D212B299553008D8277 /* check_in_box_iosUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C873D202B299553008D8277 /* check_in_box_iosUITests.swift */; };
-		9C873D232B299553008D8277 /* check_in_box_iosUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C873D222B299553008D8277 /* check_in_box_iosUITestsLaunchTests.swift */; };
+		9C873D172B299553008D8277 /* CheckInBoxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C873D162B299553008D8277 /* CheckInBoxTests.swift */; };
+		9C873D362B29BEDD008D8277 /* Features in Frameworks */ = {isa = PBXBuildFile; productRef = 9C873D352B29BEDD008D8277 /* Features */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -24,26 +22,16 @@
 			remoteGlobalIDString = 9C873D012B299551008D8277;
 			remoteInfo = "check-in-box-ios";
 		};
-		9C873D1D2B299553008D8277 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 9C873CFA2B299551008D8277 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 9C873D012B299551008D8277;
-			remoteInfo = "check-in-box-ios";
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		9C873D022B299551008D8277 /* check-in-box-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "check-in-box-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		9C873D052B299552008D8277 /* check_in_box_iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = check_in_box_iosApp.swift; sourceTree = "<group>"; };
-		9C873D072B299552008D8277 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		9C873D052B299552008D8277 /* CheckInBoxApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInBoxApp.swift; sourceTree = "<group>"; };
 		9C873D092B299553008D8277 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9C873D0C2B299553008D8277 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9C873D122B299553008D8277 /* check-in-box-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "check-in-box-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		9C873D162B299553008D8277 /* check_in_box_iosTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = check_in_box_iosTests.swift; sourceTree = "<group>"; };
-		9C873D1C2B299553008D8277 /* check-in-box-iosUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "check-in-box-iosUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		9C873D202B299553008D8277 /* check_in_box_iosUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = check_in_box_iosUITests.swift; sourceTree = "<group>"; };
-		9C873D222B299553008D8277 /* check_in_box_iosUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = check_in_box_iosUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		9C873D162B299553008D8277 /* CheckInBoxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInBoxTests.swift; sourceTree = "<group>"; };
+		9C873D312B299DC7008D8277 /* Features */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Features; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,17 +39,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C873D362B29BEDD008D8277 /* Features in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		9C873D0F2B299553008D8277 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9C873D192B299553008D8277 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -74,10 +56,11 @@
 		9C873CF92B299551008D8277 = {
 			isa = PBXGroup;
 			children = (
+				9C873D312B299DC7008D8277 /* Features */,
 				9C873D042B299551008D8277 /* check-in-box-ios */,
 				9C873D152B299553008D8277 /* check-in-box-iosTests */,
-				9C873D1F2B299553008D8277 /* check-in-box-iosUITests */,
 				9C873D032B299551008D8277 /* Products */,
+				9C873D342B29BEDD008D8277 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -86,7 +69,6 @@
 			children = (
 				9C873D022B299551008D8277 /* check-in-box-ios.app */,
 				9C873D122B299553008D8277 /* check-in-box-iosTests.xctest */,
-				9C873D1C2B299553008D8277 /* check-in-box-iosUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -94,8 +76,7 @@
 		9C873D042B299551008D8277 /* check-in-box-ios */ = {
 			isa = PBXGroup;
 			children = (
-				9C873D052B299552008D8277 /* check_in_box_iosApp.swift */,
-				9C873D072B299552008D8277 /* ContentView.swift */,
+				9C873D052B299552008D8277 /* CheckInBoxApp.swift */,
 				9C873D092B299553008D8277 /* Assets.xcassets */,
 				9C873D0B2B299553008D8277 /* Preview Content */,
 			);
@@ -113,18 +94,16 @@
 		9C873D152B299553008D8277 /* check-in-box-iosTests */ = {
 			isa = PBXGroup;
 			children = (
-				9C873D162B299553008D8277 /* check_in_box_iosTests.swift */,
+				9C873D162B299553008D8277 /* CheckInBoxTests.swift */,
 			);
 			path = "check-in-box-iosTests";
 			sourceTree = "<group>";
 		};
-		9C873D1F2B299553008D8277 /* check-in-box-iosUITests */ = {
+		9C873D342B29BEDD008D8277 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				9C873D202B299553008D8277 /* check_in_box_iosUITests.swift */,
-				9C873D222B299553008D8277 /* check_in_box_iosUITestsLaunchTests.swift */,
 			);
-			path = "check-in-box-iosUITests";
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -143,6 +122,9 @@
 			dependencies = (
 			);
 			name = "check-in-box-ios";
+			packageProductDependencies = (
+				9C873D352B29BEDD008D8277 /* Features */,
+			);
 			productName = "check-in-box-ios";
 			productReference = 9C873D022B299551008D8277 /* check-in-box-ios.app */;
 			productType = "com.apple.product-type.application";
@@ -165,24 +147,6 @@
 			productReference = 9C873D122B299553008D8277 /* check-in-box-iosTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		9C873D1B2B299553008D8277 /* check-in-box-iosUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 9C873D2C2B299553008D8277 /* Build configuration list for PBXNativeTarget "check-in-box-iosUITests" */;
-			buildPhases = (
-				9C873D182B299553008D8277 /* Sources */,
-				9C873D192B299553008D8277 /* Frameworks */,
-				9C873D1A2B299553008D8277 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				9C873D1E2B299553008D8277 /* PBXTargetDependency */,
-			);
-			name = "check-in-box-iosUITests";
-			productName = "check-in-box-iosUITests";
-			productReference = 9C873D1C2B299553008D8277 /* check-in-box-iosUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -197,10 +161,6 @@
 						CreatedOnToolsVersion = 15.0.1;
 					};
 					9C873D112B299553008D8277 = {
-						CreatedOnToolsVersion = 15.0.1;
-						TestTargetID = 9C873D012B299551008D8277;
-					};
-					9C873D1B2B299553008D8277 = {
 						CreatedOnToolsVersion = 15.0.1;
 						TestTargetID = 9C873D012B299551008D8277;
 					};
@@ -221,7 +181,6 @@
 			targets = (
 				9C873D012B299551008D8277 /* check-in-box-ios */,
 				9C873D112B299553008D8277 /* check-in-box-iosTests */,
-				9C873D1B2B299553008D8277 /* check-in-box-iosUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -243,13 +202,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9C873D1A2B299553008D8277 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -257,8 +209,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9C873D082B299552008D8277 /* ContentView.swift in Sources */,
-				9C873D062B299552008D8277 /* check_in_box_iosApp.swift in Sources */,
+				9C873D062B299552008D8277 /* CheckInBoxApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,16 +217,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9C873D172B299553008D8277 /* check_in_box_iosTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9C873D182B299553008D8277 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9C873D232B299553008D8277 /* check_in_box_iosUITestsLaunchTests.swift in Sources */,
-				9C873D212B299553008D8277 /* check_in_box_iosUITests.swift in Sources */,
+				9C873D172B299553008D8277 /* CheckInBoxTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,11 +228,6 @@
 			isa = PBXTargetDependency;
 			target = 9C873D012B299551008D8277 /* check-in-box-ios */;
 			targetProxy = 9C873D132B299553008D8277 /* PBXContainerItemProxy */;
-		};
-		9C873D1E2B299553008D8277 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 9C873D012B299551008D8277 /* check-in-box-ios */;
-			targetProxy = 9C873D1D2B299553008D8277 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -421,15 +358,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"check-in-box-ios/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "check-in-box-ios/Preview\\ Content";
 				DEVELOPMENT_TEAM = VCPLDP9723;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -450,15 +387,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"check-in-box-ios/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "check-in-box-ios/Preview\\ Content";
 				DEVELOPMENT_TEAM = VCPLDP9723;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -512,42 +449,6 @@
 			};
 			name = Release;
 		};
-		9C873D2D2B299553008D8277 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = VCPLDP9723;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.echim.check-in-box-iosUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "check-in-box-ios";
-			};
-			name = Debug;
-		};
-		9C873D2E2B299553008D8277 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = VCPLDP9723;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.echim.check-in-box-iosUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "check-in-box-ios";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -578,16 +479,14 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9C873D2C2B299553008D8277 /* Build configuration list for PBXNativeTarget "check-in-box-iosUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				9C873D2D2B299553008D8277 /* Debug */,
-				9C873D2E2B299553008D8277 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9C873D352B29BEDD008D8277 /* Features */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Features;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9C873CFA2B299551008D8277 /* Project object */;
 }
