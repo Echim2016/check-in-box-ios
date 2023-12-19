@@ -13,7 +13,7 @@ public struct ClassicCheckInFeature: Reducer {
     var questions: CycleIterator<String> = CycleIterator(base: [])
     var displayQuestion: String? = nil
     
-    init(questions: CycleIterator<String>) {
+    init(questions: CycleIterator<String> = CycleIterator(base: [])) {
       self.questions = questions
       displayQuestion = questions.base.first
     }
