@@ -14,11 +14,16 @@ class CycleIterator<T: Equatable>: Equatable {
     self.index = index
   }
 
+  @discardableResult
   func next() -> T? {
     guard !base.isEmpty else {
       return nil
     }
-    index = (index + 1) % base.count
+    if base.count > 1 {
+      index = (index + 1) % base.count
+    } else {
+      index = 0
+    }
     return base[index]
   }
   

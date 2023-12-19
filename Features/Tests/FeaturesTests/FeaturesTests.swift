@@ -22,4 +22,12 @@ final class AppFeaturesTests: XCTestCase {
     
     XCTAssertNotEqual(sut1, sut2)
   }
+  
+  func test_cycleIterator_nextIndexEqualToZeroWhenBaseContainsOneItem() {
+    let sut = CycleIterator(base: ["item1"], index: 0)
+    sut.next()
+    
+    XCTAssertEqual(sut.index, 0)
+    XCTAssertLessThanOrEqual(sut.base.count - 1, sut.index)
+  }
 }
