@@ -18,6 +18,22 @@ final class CycleIteratorTests: XCTestCase {
     XCTAssertNotEqual(sut1, sut2)
   }
   
+  func test_cycleIterator_currentItem() {
+    let item1 = "item1"
+    let item2 = "item2"
+    let sut = CycleIterator(base: [item1, item2], index: 1)
+    
+    XCTAssertEqual(sut.current(), item2)
+  }
+  
+  func test_cycleIterator_currentItemIsNilWhenBaseIsEmpty() {
+    let base: [String] = []
+    let sut = CycleIterator(base: base)
+    
+    XCTAssertNil(sut.current())
+  }
+  
+  
   func test_cycleIterator_nextIndexEqualToZeroWhenBaseContainsOneItem() {
     let sut = CycleIterator(base: ["item1"], index: 0)
     sut.next()
