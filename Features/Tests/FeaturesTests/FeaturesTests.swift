@@ -39,7 +39,7 @@ final class AppFeaturesTests: XCTestCase {
     XCTAssertGreaterThanOrEqual(sut.base.count - 1, sut.index)
   }
   
-  func test_cycleIterator_nextIndexAddedWhenBaseContainsMultipleItems() {
+  func test_cycleIterator_nextIndexIncreaseedByOneWhenBaseContainsMultipleItems() {
     let sut = CycleIterator(base: ["item1", "item2"], index: 0)
     sut.next()
     
@@ -47,7 +47,7 @@ final class AppFeaturesTests: XCTestCase {
     XCTAssertGreaterThanOrEqual(sut.base.count - 1, sut.index)
   }
   
-  func test_cycleIterator_backIndexAddedWhenBaseContainsMultipleItems() {
+  func test_cycleIterator_backIndexDecreasedByOneWhenBaseContainsMultipleItems() {
     let sut = CycleIterator(base: ["item1", "item2"], index: 1)
     sut.back()
     
