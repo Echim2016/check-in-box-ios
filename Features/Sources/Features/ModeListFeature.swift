@@ -14,7 +14,12 @@ public struct ModeListFeature: Reducer {
     var featureCards: IdentifiedArrayOf<FeatureCard> = []
     var questions: [String]
 
-    public init(featureCards: IdentifiedArrayOf<FeatureCard> = [], questions: [String] = []) {
+    public init(
+      presentSettingsPage: SettingsFeature.State? = nil,
+      featureCards: IdentifiedArrayOf<FeatureCard> = [],
+      questions: [String] = []
+    ) {
+      self.presentSettingsPage = presentSettingsPage
       self.featureCards = featureCards
       self.questions = questions
     }
