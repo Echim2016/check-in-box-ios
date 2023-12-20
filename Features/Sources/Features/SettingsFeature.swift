@@ -36,6 +36,14 @@ struct SettingsView: View {
             .foregroundStyle(.white)
         }
         
+        // TODO: redeem view
+        Button {
+          
+        } label: {
+          Label("兌換禮物卡", systemImage: "giftcard")
+            .foregroundStyle(.white)
+        }
+        
         // TODO: feedback form
         Button {
           
