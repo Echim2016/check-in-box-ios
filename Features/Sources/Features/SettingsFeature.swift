@@ -25,9 +25,19 @@ struct SettingsView: View {
     List {
       Section {
         // TODO: app store url & app icon image
-        ShareLink(item: "分享一個酷 app 給你！") {
-          Label("分享給朋友", systemImage: "square.and.arrow.up")
-            .foregroundStyle(.white)
+        Button {
+          
+        } label: {
+          ShareLink(item: "分享一個酷 app 給你！") {
+            /// Problem: Slow loading issue after tapping the share link without any UI indication
+            /// Solution: Implement wide label for better pressed state indication
+            HStack {
+              Label("分享給朋友", systemImage: "square.and.arrow.up")
+                .foregroundStyle(.white)
+              Spacer()
+                .frame(minWidth: .leastNonzeroMagnitude)
+            }
+          }
         }
         
         // TODO: redeem view
