@@ -35,6 +35,14 @@ struct SettingsView: View {
           Label("分享給朋友", systemImage: "square.and.arrow.up")
             .foregroundStyle(.white)
         }
+        
+        // TODO: feedback form
+        Button {
+          
+        } label: {
+          Label("回饋真心話", systemImage: "paperplane")
+            .foregroundStyle(.white)
+        }
       } header: {
         Text("服務")
       }
