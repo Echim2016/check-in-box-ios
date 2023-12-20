@@ -28,6 +28,16 @@ struct SettingsView: View {
       } header: {
         Text("作者")
       }
+
+      Section {
+        // TODO: app store url & app icon image
+        ShareLink(item: "分享一個酷 app 給你！") {
+          Label("分享給朋友", systemImage: "square.and.arrow.up")
+            .foregroundStyle(.white)
+        }
+      } header: {
+        Text("服務")
+      }
     }
   }
 }
