@@ -26,7 +26,7 @@ public struct ModeListFeature: Reducer {
   }
 
   public enum Action: Equatable {
-    case settingButtonTapped
+    case settingsButtonTapped
     case settingsSheetDoneButtonTapped
     case presentSettingsPage(PresentationAction<SettingsFeature.Action>)
   }
@@ -34,7 +34,7 @@ public struct ModeListFeature: Reducer {
   public var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
-      case .settingButtonTapped:
+      case .settingsButtonTapped:
         state.presentSettingsPage = SettingsFeature.State()
         return .none
       case .settingsSheetDoneButtonTapped:
@@ -77,7 +77,7 @@ struct ModeListView: View {
       .toolbar {
         ToolbarItem {
           Button {
-            store.send(.settingButtonTapped)
+            store.send(.settingsButtonTapped)
           } label: {
             Image(systemName: "gearshape")
               .foregroundStyle(.white)

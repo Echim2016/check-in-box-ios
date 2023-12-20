@@ -79,7 +79,7 @@ final class ModelListFeatureTests: XCTestCase {
       ModeListFeature()
     }
 
-    await store.send(.settingButtonTapped) {
+    await store.send(.settingsButtonTapped) {
       $0.presentSettingsPage = SettingsFeature.State()
     }
   }
