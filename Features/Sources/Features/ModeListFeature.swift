@@ -8,8 +8,33 @@
 import ComposableArchitecture
 import SwiftUI
 
+public struct SettingsFeature: Reducer {
+  public struct State: Equatable {}
+  public enum Action: Equatable {}
+
+  public var body: some ReducerOf<Self> {
+    Reduce { _, _ in
+      .none
+    }
+  }
+}
+
+struct SettingsView: View {
+  let store: StoreOf<SettingsFeature>
+  var body: some View {
+    List {
+      Section {
+        Text("echim.hsu")
+      } header: {
+        Text("作者")
+      }
+    }
+  }
+}
+
 public struct ModeListFeature: Reducer {
   public struct State: Equatable {
+    @PresentationState var presentSettingsPage: SettingsFeature.State?
     var featureCards: IdentifiedArrayOf<FeatureCard> = []
     var questions: [String]
 
@@ -21,11 +46,21 @@ public struct ModeListFeature: Reducer {
 
   public enum Action: Equatable {
     case settingButtonTapped
+    case presentSettingsPage(PresentationAction<SettingsFeature.Action>)
   }
 
   public var body: some ReducerOf<Self> {
-    Reduce { _, _ in
-      .none
+    Reduce { state, action in
+      switch action {
+      case .settingButtonTapped:
+        state.presentSettingsPage = SettingsFeature.State()
+        return .none
+      case .presentSettingsPage:
+        return .none
+      }
+    }
+    .ifLet(\.$presentSettingsPage, action: /Action.presentSettingsPage) {
+      SettingsFeature()
     }
   }
 }
@@ -54,6 +89,27 @@ struct ModeListView: View {
         .padding(.horizontal)
       }
       .navigationTitle("Let's check! 🔮")
+      .toolbar {
+        ToolbarItem {
+          Button {
+            store.send(.settingButtonTapped)
+          } label: {
+            Image(systemName: "gearshape")
+              .foregroundStyle(.white)
+          }
+        }
+      }
+      .sheet(
+        store: self.store.scope(
+          state: \.$presentSettingsPage,
+          action: { .presentSettingsPage($0) }
+        )
+      ) { store in
+        NavigationStack {
+          SettingsView(store: store)
+            .navigationTitle("設定")
+        }
+      }
     }
   }
 }
