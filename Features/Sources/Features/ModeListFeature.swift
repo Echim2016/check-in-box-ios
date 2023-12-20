@@ -8,30 +8,6 @@
 import ComposableArchitecture
 import SwiftUI
 
-public struct SettingsFeature: Reducer {
-  public struct State: Equatable {}
-  public enum Action: Equatable {}
-
-  public var body: some ReducerOf<Self> {
-    Reduce { _, _ in
-      .none
-    }
-  }
-}
-
-struct SettingsView: View {
-  let store: StoreOf<SettingsFeature>
-  var body: some View {
-    List {
-      Section {
-        Text("echim.hsu")
-      } header: {
-        Text("作者")
-      }
-    }
-  }
-}
-
 public struct ModeListFeature: Reducer {
   public struct State: Equatable {
     @PresentationState var presentSettingsPage: SettingsFeature.State?
