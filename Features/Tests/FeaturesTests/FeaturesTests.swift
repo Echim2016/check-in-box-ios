@@ -27,7 +27,7 @@ final class ClassicFeatureTests: XCTestCase {
       $0.displayQuestion = questions[1]
     }
   }
-  
+
   func test_classicCheckIn_pickedQuestionFromLastIndex() async {
     let questions = getMockMultipleQuestions()
     let store = makeSUT(base: questions, index: questions.count - 1)
@@ -67,5 +67,20 @@ extension ClassicFeatureTests {
       "今年最快樂的回憶",
       "最想再去一次的國家/城市",
     ]
+  }
+}
+
+@MainActor
+final class ModelListFeatureTests: XCTestCase {
+  func test_settingsSheet_presentedWhenSettingButtonTapped() async {
+    let store = TestStore(
+      initialState: ModeListFeature.State(featureCards: FeatureCard.default)
+    ) {
+      ModeListFeature()
+    }
+
+    await store.send(.settingButtonTapped) {
+      $0.presentSettingsPage = SettingsFeature.State()
+    }
   }
 }
