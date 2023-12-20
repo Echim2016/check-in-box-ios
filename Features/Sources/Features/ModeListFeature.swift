@@ -22,6 +22,7 @@ public struct ModeListFeature: Reducer {
 
   public enum Action: Equatable {
     case settingButtonTapped
+    case settingsSheetDoneButtonTapped
     case presentSettingsPage(PresentationAction<SettingsFeature.Action>)
   }
 
@@ -30,6 +31,9 @@ public struct ModeListFeature: Reducer {
       switch action {
       case .settingButtonTapped:
         state.presentSettingsPage = SettingsFeature.State()
+        return .none
+      case .settingsSheetDoneButtonTapped:
+        state.presentSettingsPage = nil
         return .none
       case .presentSettingsPage:
         return .none
@@ -80,10 +84,18 @@ struct ModeListView: View {
           state: \.$presentSettingsPage,
           action: { .presentSettingsPage($0) }
         )
-      ) { store in
+      ) { settingsViewStore in
         NavigationStack {
-          SettingsView(store: store)
+          SettingsView(store: settingsViewStore)
             .navigationTitle("設定")
+            .toolbar {
+              ToolbarItem {
+                Button("完成") {
+                  store.send(.settingsSheetDoneButtonTapped)
+                }
+                .foregroundStyle(.white)
+              }
+            }
         }
       }
     }
