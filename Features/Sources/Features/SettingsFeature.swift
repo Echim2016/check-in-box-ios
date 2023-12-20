@@ -31,3 +31,15 @@ struct SettingsView: View {
     }
   }
 }
+
+#Preview {
+  NavigationStack {
+    SettingsView(
+      store: Store(initialState: SettingsFeature.State()
+      ) {
+        SettingsFeature()
+      }
+    )
+  }
+  .preferredColorScheme(.dark)
+}
