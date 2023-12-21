@@ -93,6 +93,7 @@ struct ModeListView: View {
         NavigationStack {
           SettingsView(store: settingsViewStore)
             .navigationTitle("設定")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
               ToolbarItem {
                 Button("完成") {
