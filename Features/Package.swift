@@ -22,7 +22,7 @@ let package = Package(
     // Targets can depend on other targets in this package and products from dependencies.
     .target(
       name: "Features",
-      dependencies: [.tca, .firebaseFirestore]
+      dependencies: [.tca, .firebaseFirestore, .firebaseFirestoreSwift]
     ),
     .testTarget(
       name: "FeaturesTests",
@@ -34,4 +34,6 @@ let package = Package(
 extension Target.Dependency {
   static let tca = Self.product(name: "ComposableArchitecture", package: "swift-composable-architecture")
   static let firebaseFirestore = Self.product(name: "FirebaseFirestore", package: "firebase-ios-sdk")
+  static let firebaseFirestoreSwift = Self.product(name: "FirebaseFirestoreSwift", package: "firebase-ios-sdk")
+
 }
