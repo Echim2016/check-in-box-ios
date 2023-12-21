@@ -5,23 +5,22 @@
 //  Created by Yi-Chin Hsu on 2023/12/15.
 //
 
+import Dependencies
 import FirebaseFirestore
 
 protocol CheckInLoader {
-  func load() async throws -> [String]
+  var load: (String) async -> [String] { get set }
 }
 
-class RemoteCheckInLoader: CheckInLoader {
-  private let database = Firestore.firestore()
-  let collectionPath: String
+struct FirebaseCheckInLoader: CheckInLoader {
+  var load: (String) async -> [String]
+}
 
-  init(collectionPath: String) {
-    self.collectionPath = collectionPath
-  }
-
-  func load() async throws -> [String] {
+extension FirebaseCheckInLoader: DependencyKey {
+  static var liveValue = FirebaseCheckInLoader { collectionPath in
     do {
-      let result = try await database
+      let result = try await Firestore
+        .firestore()
         .collection(collectionPath)
         .getDocuments()
         .documents
@@ -31,7 +30,18 @@ class RemoteCheckInLoader: CheckInLoader {
       return result
 
     } catch {
-      throw error
+      return []
     }
+  }
+}
+
+extension FirebaseCheckInLoader: TestDependencyKey {
+  static var testValue = FirebaseCheckInLoader(load: unimplemented("FirebaseCheckInLoader"))
+}
+
+extension DependencyValues {
+  var firebaseCheckInLoader: FirebaseCheckInLoader {
+    get { self[FirebaseCheckInLoader.self] }
+    set { self[FirebaseCheckInLoader.self] = newValue }
   }
 }
