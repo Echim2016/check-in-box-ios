@@ -80,5 +80,19 @@ final class CycleIteratorTests: XCTestCase {
     XCTAssertEqual(sut.index, 1)
     XCTAssertGreaterThanOrEqual(sut.base.count - 1, sut.index)
   }
-}
 
+  func test_raceCondition_performNextFromMultipleThreadsConcurrently() {
+    let mockItems = ["item1", "item2", "item3", "item4", "item5", "item6", "item7", "item8", "item9", "item10"]
+    let sut = CycleIterator(base: mockItems, index: 0)
+
+    DispatchQueue.concurrentPerform(iterations: mockItems.count - 1) { _ in
+      sut.next()
+    }
+
+    let exp = expectation(description: "Test after concurrent performing done")
+    let result = XCTWaiter.wait(for: [exp], timeout: 0.05)
+    if result == XCTWaiter.Result.timedOut {
+      XCTAssertEqual(sut.index, mockItems.count - 1)
+    }
+  }
+}
