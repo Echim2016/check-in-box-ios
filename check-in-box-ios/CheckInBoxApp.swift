@@ -7,10 +7,13 @@
 
 import ComposableArchitecture
 import Features
+import FirebaseCore
 import SwiftUI
 
 @main
 struct CheckInBoxApp: App {
+  @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+
   var body: some Scene {
     WindowGroup {
       AppView(
@@ -21,5 +24,15 @@ struct CheckInBoxApp: App {
         }
       )
     }
+  }
+}
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+  func application(
+    _: UIApplication,
+    didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil
+  ) -> Bool {
+    FirebaseApp.configure()
+    return true
   }
 }
