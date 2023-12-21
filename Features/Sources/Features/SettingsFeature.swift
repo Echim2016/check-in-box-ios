@@ -10,11 +10,21 @@ import SwiftUI
 
 public struct SettingsFeature: Reducer {
   public struct State: Equatable {}
-  public enum Action: Equatable {}
+  public enum Action: Equatable {
+    case sendFeedbackButtonTapped
+  }
+
+  @Dependency(\.openURL) var openURL
 
   public var body: some ReducerOf<Self> {
-    Reduce { _, _ in
-      .none
+    Reduce { _, action in
+      switch action {
+      case .sendFeedbackButtonTapped:
+        return .run { send in
+          let url = URL(string: "https://forms.gle/Vr4MjtowWPxBxr5r9")!
+          await openURL(url)
+        }
+      }
     }
   }
 }
@@ -50,7 +60,7 @@ struct SettingsView: View {
         
         // TODO: feedback form
         Button {
-          
+          store.send(.sendFeedbackButtonTapped)
         } label: {
           Label("回饋真心話", systemImage: "paperplane")
             .foregroundStyle(.white)
