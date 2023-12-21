@@ -62,7 +62,7 @@ public struct AppFeature: Reducer {
           await send(
             .receivedQuestions(
               Result {
-                try await RemoteCheckInLoader().load()
+                try await RemoteCheckInLoader(collectionPath: "Questions").load()
               }
             )
           )
