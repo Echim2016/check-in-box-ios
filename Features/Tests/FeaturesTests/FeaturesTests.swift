@@ -15,6 +15,26 @@ final class AppFeaturesTests: XCTestCase {
       $0.path[id: 0] = .classic(ClassicCheckInFeature.State())
     }
   }
+
+  func test_loadQuestions_fromRemoteLoader() async {
+    let mockQuestions = getMockMultipleQuestions()
+    let store = TestStore(
+      initialState: AppFeature.State(modeList: ModeListFeature.State(featureCards: FeatureCard.default)),
+      reducer: { AppFeature() }
+    ) {
+      $0.firebaseCheckInLoader = FirebaseCheckInLoader(
+        load: { collectionPath in
+          XCTAssertEqual(collectionPath, "Questions")
+          return mockQuestions
+        }
+      )
+    }
+
+    await store.send(.loadFromRemote)
+    await store.receive(.receivedQuestions(mockQuestions)) {
+      $0.modeList.questions = mockQuestions
+    }
+  }
 }
 
 @MainActor
@@ -56,7 +76,7 @@ final class ClassicFeatureTests: XCTestCase {
   }
 }
 
-extension ClassicFeatureTests {
+extension XCTestCase {
   func getMockMultipleQuestions() -> [String] {
     [
       "身上使用最久的東西是什麼？",
@@ -114,7 +134,7 @@ final class UserSettingsFeatureTests: XCTestCase {
         }
       )
     }
-    
+
     await store.send(.sendFeedbackButtonTapped)
   }
 }
