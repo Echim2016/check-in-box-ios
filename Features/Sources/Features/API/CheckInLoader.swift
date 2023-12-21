@@ -25,6 +25,7 @@ extension FirebaseCheckInLoader: DependencyKey {
         .getDocuments()
         .documents
         .compactMap { try $0.data(as: Question.self) }
+        .filter { $0.isHidden == false }
         .map { $0.question }
 
       return result
