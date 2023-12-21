@@ -108,16 +108,6 @@ struct ModeListView: View {
   }
 }
 
-public struct FeatureCard: Equatable, Identifiable {
-  public let id: UUID
-  public let title: String
-  public let subtitle: String
-
-  public static let `default`: IdentifiedArrayOf<FeatureCard> = [
-    FeatureCard(id: UUID(), title: "經典模式", subtitle: "Check-in Box"),
-  ]
-}
-
 #Preview {
   NavigationStack {
     ModeListView(
