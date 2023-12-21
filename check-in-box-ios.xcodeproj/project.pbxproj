@@ -12,6 +12,7 @@
 		9C873D0D2B299553008D8277 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C873D0C2B299553008D8277 /* Preview Assets.xcassets */; };
 		9C873D172B299553008D8277 /* CheckInBoxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C873D162B299553008D8277 /* CheckInBoxTests.swift */; };
 		9C873D362B29BEDD008D8277 /* Features in Frameworks */ = {isa = PBXBuildFile; productRef = 9C873D352B29BEDD008D8277 /* Features */; };
+		9C902E032B340D6700EA5B9F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9C902E022B340D6700EA5B9F /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +33,7 @@
 		9C873D122B299553008D8277 /* check-in-box-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "check-in-box-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C873D162B299553008D8277 /* CheckInBoxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInBoxTests.swift; sourceTree = "<group>"; };
 		9C873D312B299DC7008D8277 /* Features */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Features; sourceTree = "<group>"; };
+		9C902E022B340D6700EA5B9F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +80,7 @@
 			children = (
 				9C873D052B299552008D8277 /* CheckInBoxApp.swift */,
 				9C873D092B299553008D8277 /* Assets.xcassets */,
+				9C902E022B340D6700EA5B9F /* GoogleService-Info.plist */,
 				9C873D0B2B299553008D8277 /* Preview Content */,
 			);
 			path = "check-in-box-ios";
@@ -192,6 +195,7 @@
 			files = (
 				9C873D0D2B299553008D8277 /* Preview Assets.xcassets in Resources */,
 				9C873D0A2B299553008D8277 /* Assets.xcassets in Resources */,
+				9C902E032B340D6700EA5B9F /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
