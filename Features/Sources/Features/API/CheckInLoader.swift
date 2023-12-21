@@ -9,19 +9,19 @@ import Dependencies
 import FirebaseFirestore
 
 protocol CheckInLoader {
-  var load: (String) async -> [String] { get set }
+  var load: (_ path: String) async -> [String] { get set }
 }
 
 struct FirebaseCheckInLoader: CheckInLoader {
-  var load: (String) async -> [String]
+  var load: (_ path: String) async -> [String]
 }
 
 extension FirebaseCheckInLoader: DependencyKey {
-  static var liveValue = FirebaseCheckInLoader { collectionPath in
+  static var liveValue = FirebaseCheckInLoader { path in
     do {
       let result = try await Firestore
         .firestore()
-        .collection(collectionPath)
+        .collection(path)
         .getDocuments()
         .documents
         .compactMap { try $0.data(as: Question.self) }
