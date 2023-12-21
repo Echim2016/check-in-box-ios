@@ -15,13 +15,14 @@ let package = Package(
   ],
   dependencies: [
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "1.5.5"),
+    .package(url: "https://github.com/firebase/firebase-ios-sdk", exact: "10.18.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
     // Targets can depend on other targets in this package and products from dependencies.
     .target(
       name: "Features",
-      dependencies: [.tca]
+      dependencies: [.tca, .firebaseFirestore]
     ),
     .testTarget(
       name: "FeaturesTests",
@@ -32,4 +33,5 @@ let package = Package(
 
 extension Target.Dependency {
   static let tca = Self.product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+  static let firebaseFirestore = Self.product(name: "FirebaseFirestore", package: "firebase-ios-sdk")
 }
