@@ -37,4 +37,36 @@ final class ModelListFeatureTests: XCTestCase {
       $0.presentSettingsPage = nil
     }
   }
+
+  func test_questions_reloadWhenPullToRefresh() async {
+    let questions = getMockMultipleQuestions()
+    let store = TestStore(
+      initialState: AppFeature.State(modeList: ModeListFeature.State(featureCards: FeatureCard.default)),
+      reducer: { AppFeature() }
+    ) {
+      $0.firebaseCheckInLoader = FirebaseCheckInLoader(
+        load: { _ in
+          questions
+        }
+      )
+    }
+
+    await store.send(.loadFromRemote)
+    await store.receive(.receivedQuestions(questions)) {
+      $0.modeList.questions = questions
+    }
+
+    let updatedQuestions = ["Updated question1", "Updated question2"]
+    store.dependencies.firebaseCheckInLoader = FirebaseCheckInLoader(
+      load: { _ in
+        updatedQuestions
+      }
+    )
+
+    await store.send(.modeList(.pullToRefreshTriggered))
+    await store.receive(.loadFromRemote)
+    await store.receive(.receivedQuestions(updatedQuestions)) {
+      $0.modeList.questions = updatedQuestions
+    }
+  }
 }
