@@ -22,11 +22,11 @@ public struct AppFeature: Reducer {
     }
   }
 
-  public enum Action: Sendable {
+  public enum Action: Sendable, Equatable {
     case path(StackAction<Path.State, Path.Action>)
     case modeList(ModeListFeature.Action)
     case loadFromRemote
-    case receivedQuestions(Result<[String], Error>)
+    case receivedQuestions([String])
   }
 
   public struct Path: Reducer {
@@ -47,6 +47,8 @@ public struct AppFeature: Reducer {
 
   public init() {}
 
+  @Dependency(\.firebaseCheckInLoader) var firebaseCheckInLoader
+
   public var body: some ReducerOf<Self> {
     Scope(state: \.modeList, action: /Action.modeList) {
       ModeListFeature()
@@ -54,6 +56,9 @@ public struct AppFeature: Reducer {
 
     Reduce { state, action in
       switch action {
+      case .modeList(.pullToRefreshTriggered):
+      return .send(.loadFromRemote)
+        
       case .modeList:
         return .none
 
@@ -61,18 +66,13 @@ public struct AppFeature: Reducer {
         return .run { send in
           await send(
             .receivedQuestions(
-              Result {
-                try await RemoteCheckInLoader().load()
-              }
+              await firebaseCheckInLoader.load("Questions")
             )
           )
         }
 
-      case let .receivedQuestions(.success(questions)):
+      case let .receivedQuestions(questions):
         state.modeList.questions = questions
-        return .none
-
-      case .receivedQuestions(.failure):
         return .none
 
       case .path:
