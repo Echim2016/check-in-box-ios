@@ -29,6 +29,7 @@ public struct ModeListFeature: Reducer {
     case settingsButtonTapped
     case settingsSheetDoneButtonTapped
     case presentSettingsPage(PresentationAction<SettingsFeature.Action>)
+    case pullToRefreshTriggered
   }
 
   public var body: some ReducerOf<Self> {
@@ -41,6 +42,8 @@ public struct ModeListFeature: Reducer {
         state.presentSettingsPage = nil
         return .none
       case .presentSettingsPage:
+        return .none
+      case .pullToRefreshTriggered:
         return .none
       }
     }
@@ -74,6 +77,10 @@ struct ModeListView: View {
         .padding(.horizontal)
       }
       .navigationTitle("Let's check! 🔮")
+      .refreshable {
+        // TODO: async refreshable
+        store.send(.pullToRefreshTriggered)
+      }
       .toolbar {
         ToolbarItem {
           Button {

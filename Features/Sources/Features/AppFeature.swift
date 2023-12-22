@@ -56,6 +56,9 @@ public struct AppFeature: Reducer {
 
     Reduce { state, action in
       switch action {
+      case .modeList(.pullToRefreshTriggered):
+      return .send(.loadFromRemote)
+        
       case .modeList:
         return .none
 
