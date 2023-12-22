@@ -12,12 +12,12 @@ public struct ModeListFeature: Reducer {
   public struct State: Equatable {
     @PresentationState var presentSettingsPage: SettingsFeature.State?
     var featureCards: IdentifiedArrayOf<FeatureCard> = []
-    var questions: [String]
+    var questions: IdentifiedArrayOf<Question>
 
     public init(
       presentSettingsPage: SettingsFeature.State? = nil,
       featureCards: IdentifiedArrayOf<FeatureCard> = [],
-      questions: [String] = []
+      questions: IdentifiedArrayOf<Question> = []
     ) {
       self.presentSettingsPage = presentSettingsPage
       self.featureCards = featureCards

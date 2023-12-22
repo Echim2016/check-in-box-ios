@@ -26,7 +26,7 @@ public struct AppFeature: Reducer {
     case path(StackAction<Path.State, Path.Action>)
     case modeList(ModeListFeature.Action)
     case loadFromRemote
-    case receivedQuestions([String])
+    case receivedQuestions(IdentifiedArrayOf<Question>)
   }
 
   public struct Path: Reducer {

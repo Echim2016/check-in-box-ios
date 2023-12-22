@@ -7,13 +7,14 @@
 
 import Dependencies
 import FirebaseFirestore
+import IdentifiedCollections
 
 protocol CheckInLoader {
-  var load: (_ path: String) async -> [String] { get set }
+  var load: (_ path: String) async -> IdentifiedArrayOf<Question> { get set }
 }
 
 struct FirebaseCheckInLoader: CheckInLoader {
-  var load: (_ path: String) async -> [String]
+  var load: (_ path: String) async -> IdentifiedArrayOf<Question>
 }
 
 extension FirebaseCheckInLoader: DependencyKey {
@@ -26,9 +27,8 @@ extension FirebaseCheckInLoader: DependencyKey {
         .documents
         .compactMap { try $0.data(as: Question.self) }
         .filter { $0.isHidden == false }
-        .map { $0.question }
 
-      return result
+      return IdentifiedArray(uniqueElements: result)
 
     } catch {
       return []

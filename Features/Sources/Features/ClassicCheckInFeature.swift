@@ -10,12 +10,12 @@ import SwiftUI
 
 public struct ClassicCheckInFeature: Reducer {
   public struct State: Equatable {
-    var questions: CycleIterator<String> = CycleIterator(base: [])
+    var questions: CycleIterator<Question> = CycleIterator(base: [])
     var displayQuestion: String? = nil
     
-    init(questions: CycleIterator<String> = CycleIterator(base: [])) {
+    init(questions: CycleIterator<Question> = CycleIterator(base: [])) {
       self.questions = questions
-      displayQuestion = questions.current()
+      self.displayQuestion = questions.current()?.question
     }
   }
 
@@ -28,10 +28,10 @@ public struct ClassicCheckInFeature: Reducer {
     Reduce { state, action in
       switch action {
       case .pickButtonTapped:
-        state.displayQuestion = state.questions.next()
+        state.displayQuestion = state.questions.next()?.question
         return .none
       case .previousButtonTapped:
-        state.displayQuestion = state.questions.back()
+        state.displayQuestion = state.questions.back()?.question
         return .none
       }
     }
@@ -92,13 +92,13 @@ struct ClassicCheckInView: View {
         initialState: ClassicCheckInFeature.State(
           questions: CycleIterator(
             base: [
-              "身上使用最久的東西是什麼？",
-              "最喜歡的一部電影？",
-              "今年最期待的一件事情？",
-              "我不為人知的一個奇怪技能",
-              "做過最像大人的事情",
-              "今年最快樂的回憶",
-              "最想再去一次的國家/城市",
+              Question(question: "身上使用最久的東西是什麼？"),
+              Question(question: "最喜歡的一部電影？"),
+              Question(question: "今年最期待的一件事情？"),
+              Question(question: "我不為人知的一個奇怪技"),
+              Question(question: "做過最像大人的事情"),
+              Question(question: "今年最快樂的回憶"),
+              Question(question: "最想再去一次的國家/城市")
             ]
           )
         )
