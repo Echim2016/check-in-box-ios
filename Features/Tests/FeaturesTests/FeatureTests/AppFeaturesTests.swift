@@ -24,21 +24,28 @@ final class AppFeaturesTests: XCTestCase {
   }
 
   func test_loadQuestions_fromRemoteLoader() async {
-    let mockQuestions = getMockMultipleQuestions()
+    let mockQuestions = IdentifiedArray(uniqueElements: getMockMultipleQuestions())
+    let mockTags = IdentifiedArray(uniqueElements: getMockTags())
+
     let store = TestStore(
       initialState: AppFeature.State(modeList: ModeListFeature.State(featureCards: FeatureCard.default)),
       reducer: { AppFeature() }
     ) {
       $0.firebaseCheckInLoader = FirebaseCheckInLoader(
-        load: { collectionPath in
+        loadQuestions: { collectionPath in
           XCTAssertEqual(collectionPath, "Questions")
-          return mockQuestions
+          return IdentifiedArray(uniqueElements: mockQuestions)
+        },
+        loadTags: { collectionPath in
+          XCTAssertEqual(collectionPath, "Question_Tags")
+          return IdentifiedArray(uniqueElements: mockTags)
         }
       )
     }
 
     await store.send(.loadFromRemote)
-    await store.receive(.receivedQuestions(mockQuestions)) {
+    await store.receive(.receivedQuestions(mockTags, mockQuestions)) {
+      $0.modeList.tags = mockTags
       $0.modeList.questions = mockQuestions
     }
   }
