@@ -26,7 +26,7 @@ public struct AppFeature: Reducer {
     case path(StackAction<Path.State, Path.Action>)
     case modeList(ModeListFeature.Action)
     case loadFromRemote
-    case receivedQuestions(IdentifiedArrayOf<Question>)
+    case receivedQuestions(IdentifiedArrayOf<Tag>, IdentifiedArrayOf<Question>)
   }
 
   public struct Path: Reducer {
@@ -66,12 +66,15 @@ public struct AppFeature: Reducer {
         return .run { send in
           await send(
             .receivedQuestions(
+              // TODO: replace with firebase loader
+              [Tag(id: "1", title: "深度", subtitle: "", code: "deep")],
               await firebaseCheckInLoader.load("Questions")
             )
           )
         }
 
-      case let .receivedQuestions(questions):
+      case let .receivedQuestions(tags, questions):
+        state.modeList.tags = tags
         state.modeList.questions = questions
         return .none
 
