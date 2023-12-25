@@ -66,9 +66,8 @@ public struct AppFeature: Reducer {
         return .run { send in
           await send(
             .receivedQuestions(
-              // TODO: replace with firebase loader
-              [Tag(id: "1", title: "深度", subtitle: "", code: "deep")],
-              await firebaseCheckInLoader.load("Questions")
+              try await firebaseCheckInLoader.loadTags("Question_Tags"),
+              try await firebaseCheckInLoader.loadQuestions("Questions")
             )
           )
         }
