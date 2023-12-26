@@ -89,7 +89,7 @@ struct ModeListView: View {
         }
         .padding(.top, 20)
         .padding(.horizontal)
-        
+
         if store.state.tags.isEmpty {
           ProgressView()
             .padding(.top, 120)
@@ -157,7 +157,7 @@ struct ModeListView: View {
 
 private extension IdentifiedArray where Element == Question {
   func filter(by tag: String) -> [Element] {
-    guard !tag.isEmpty else { return self.elements }
+    guard !tag.isEmpty else { return elements }
     return compactMap {
       $0.tags.contains(tag) ? $0 : nil
     }

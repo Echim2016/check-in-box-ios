@@ -57,17 +57,17 @@ public struct AppFeature: Reducer {
     Reduce { state, action in
       switch action {
       case .modeList(.pullToRefreshTriggered):
-      return .send(.loadFromRemote)
-        
+        return .send(.loadFromRemote)
+
       case .modeList:
         return .none
 
       case .loadFromRemote:
         return .run { send in
-          await send(
+          try await send(
             .receivedQuestions(
-              try await firebaseCheckInLoader.loadTags("Question_Tags"),
-              try await firebaseCheckInLoader.loadQuestions("Questions")
+              await firebaseCheckInLoader.loadTags("Question_Tags"),
+              await firebaseCheckInLoader.loadQuestions("Questions")
             )
           )
         }

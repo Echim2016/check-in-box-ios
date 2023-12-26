@@ -12,7 +12,7 @@ public struct Question: Identifiable, Codable {
   public let isHidden: Bool
   public let question: String
   public let tags: [String]
-  
+
   init(
     id: String = UUID().uuidString,
     isHidden: Bool = false,
