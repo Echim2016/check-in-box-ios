@@ -11,18 +11,18 @@ import SwiftUI
 public struct ModeListFeature: Reducer {
   public struct State: Equatable {
     @PresentationState var presentSettingsPage: SettingsFeature.State?
-    var featureCards: IdentifiedArrayOf<FeatureCard> = []
+    var themeBoxes: IdentifiedArrayOf<ThemeBox> = []
     var questions: IdentifiedArrayOf<Question>
     var tags: IdentifiedArrayOf<Tag>
 
     public init(
       presentSettingsPage: SettingsFeature.State? = nil,
-      featureCards: IdentifiedArrayOf<FeatureCard> = [],
+      themeBoxes: IdentifiedArrayOf<ThemeBox> = [],
       questions: IdentifiedArrayOf<Question> = [],
       tags: IdentifiedArrayOf<Tag> = []
     ) {
       self.presentSettingsPage = presentSettingsPage
-      self.featureCards = featureCards
+      self.themeBoxes = themeBoxes
       self.questions = questions
       self.tags = tags
     }
@@ -65,56 +65,69 @@ struct ModeListView: View {
       ScrollView {
         Spacer()
         Spacer()
-        ForEach(store.state.featureCards) { card in
-          NavigationLink(
-            state: AppFeature.Path.State.classic(
-              ClassicCheckInFeature.State(
-                questions: CycleIterator(base: store.state.questions.shuffled())
-              )
-            )
-          ) {
-            FeatureCardView(title: card.title, subtitle: card.subtitle)
-              .cornerRadius(16)
-          }
-          .buttonStyle(PlainButtonStyle())
-        }
-        .padding(.horizontal)
-
-        Spacer()
-        HStack {
-          Text("精選類別")
-            .font(.title3)
-            .fontWeight(.heavy)
-          Spacer()
-        }
-        .padding(.top, 20)
-        .padding(.horizontal)
-
-        if store.state.tags.isEmpty {
-          ProgressView()
-            .padding(.top, 120)
-        }
-
-        LazyVGrid(columns: gridItemLayout, spacing: 12) {
-          ForEach(store.state.tags) { tag in
-            NavigationLink(
-              state: AppFeature.Path.State.classic(
-                ClassicCheckInFeature.State(
-                  questions: CycleIterator(
-                    base: store.state.questions
-                      .filter(by: tag.code)
-                      .shuffled()
+        
+        ScrollView(.horizontal) {
+          HStack {
+            ForEach(store.state.themeBoxes) { box in
+              NavigationLink(
+                state: AppFeature.Path.State.classic(
+                  ClassicCheckInFeature.State(
+                    questions: CycleIterator(
+                      base:
+                        box.questions
+                        .map { Question(question: $0) }
+                        .shuffled()
+                    )
                   )
                 )
-              )
-            ) {
-              FeatureCardView(title: tag.title.capitalized, subtitle: "")
-                .cornerRadius(16)
+              ) {
+                FeatureCardView(title: box.title, subtitle: box.subtitle)
+                  .frame(minWidth: 340)
+                  .cornerRadius(16)
+              }
+              .buttonStyle(PlainButtonStyle())
             }
-            .buttonStyle(PlainButtonStyle())
           }
+          .padding(.horizontal)
         }
-        .padding(.horizontal)
+        .scrollIndicators(.hidden)
+
+        if store.state.tags.isEmpty {
+            ProgressView()
+            .padding(.top, 100)
+          
+        } else {
+          Spacer()
+          HStack {
+            Text("精選類別")
+              .font(.title3)
+              .fontWeight(.heavy)
+            Spacer()
+          }
+          .padding(.top, 20)
+          .padding(.horizontal)
+          
+          LazyVGrid(columns: gridItemLayout, spacing: 12) {
+            ForEach(store.state.tags) { tag in
+              NavigationLink(
+                state: AppFeature.Path.State.classic(
+                  ClassicCheckInFeature.State(
+                    questions: CycleIterator(
+                      base: store.state.questions
+                        .filter(by: tag.code)
+                        .shuffled()
+                    )
+                  )
+                )
+              ) {
+                FeatureCardView(title: tag.title.capitalized, subtitle: "")
+                  .cornerRadius(16)
+              }
+              .buttonStyle(PlainButtonStyle())
+            }
+          }
+          .padding(.horizontal)
+        }
       }
       .navigationTitle("Let's check! 🔮")
       .refreshable {
@@ -168,9 +181,7 @@ private extension IdentifiedArray where Element == Question {
   NavigationStack {
     ModeListView(
       store: Store(
-        initialState: ModeListFeature.State(
-          featureCards: FeatureCard.default
-        )
+        initialState: ModeListFeature.State()
       ) {
         ModeListFeature()
       }

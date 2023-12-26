@@ -13,7 +13,7 @@ import XCTest
 final class ModelListFeatureTests: XCTestCase {
   func test_settingsSheet_presentedWhenSettingButtonTapped() async {
     let store = TestStore(
-      initialState: ModeListFeature.State(featureCards: FeatureCard.default)
+      initialState: ModeListFeature.State()
     ) {
       ModeListFeature()
     }
@@ -26,8 +26,7 @@ final class ModelListFeatureTests: XCTestCase {
   func test_settingsSheet_dismissedWhenDoneButtonTapped() async {
     let store = TestStore(
       initialState: ModeListFeature.State(
-        presentSettingsPage: SettingsFeature.State(),
-        featureCards: FeatureCard.default
+        presentSettingsPage: SettingsFeature.State()
       )
     ) {
       ModeListFeature()
@@ -42,7 +41,7 @@ final class ModelListFeatureTests: XCTestCase {
     let questions = IdentifiedArray(uniqueElements: getMockMultipleQuestions())
     let tags = IdentifiedArray(uniqueElements: getMockTags())
     let store = TestStore(
-      initialState: AppFeature.State(modeList: ModeListFeature.State(featureCards: FeatureCard.default)),
+      initialState: AppFeature.State(modeList: ModeListFeature.State()),
       reducer: { AppFeature() }
     ) {
       $0.firebaseCheckInLoader = FirebaseCheckInLoader(

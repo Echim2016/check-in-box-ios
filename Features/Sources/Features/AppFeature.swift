@@ -58,10 +58,10 @@ public struct AppFeature: Reducer {
       switch action {
       case .modeList(.pullToRefreshTriggered):
         return .send(.loadFromRemote)
-
+        
       case .modeList:
         return .none
-
+        
       case .loadFromRemote:
         return .run { send in
           try await send(
@@ -71,10 +71,46 @@ public struct AppFeature: Reducer {
             )
           )
         }
-
+        
       case let .receivedQuestions(tags, questions):
         state.modeList.tags = tags
         state.modeList.questions = questions
+        state.modeList.themeBoxes = [
+          ThemeBox(
+            id: UUID(),
+            title: "年末反思",
+            subtitle: "2023 大回顧",
+            questions: [
+              "今年最滿足的一件事",
+              "今年最後悔的一件事",
+              "今年對自己感到驕傲的一個時刻",
+              "今年最慶幸有做的一件事",
+              "今年一個明確的成長",
+              "今年一個沒有做到的事情",
+              "今年獲得的一個珍貴的建議"
+            ],
+            authorName: "echim",
+            url: "",
+            imageUrl: ""
+          ),
+          ThemeBox(
+            id: UUID(),
+            title: "年末反思2",
+            subtitle: "2023 大回顧",
+            questions: [
+              "今年最滿足的一件事",
+              "今年最後悔的一件事",
+              "今年對自己感到驕傲的一個時刻",
+              "今年最慶幸有做的一件事",
+              "今年一個明確的成長",
+              "今年一個沒有做到的事情",
+              "今年獲得的一個珍貴的建議"
+            ],
+            authorName: "echim",
+            url: "",
+            imageUrl: ""
+          )
+        ]
         return .none
 
       case .path:
@@ -126,9 +162,7 @@ public struct AppView: View {
   AppView(
     store: Store(
       initialState: AppFeature.State(
-        modeList: ModeListFeature.State(
-          featureCards: FeatureCard.default
-        )
+        modeList: ModeListFeature.State()
       )
     ) {
       AppFeature()

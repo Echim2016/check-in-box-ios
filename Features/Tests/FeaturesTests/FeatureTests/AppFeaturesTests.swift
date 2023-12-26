@@ -13,7 +13,7 @@ import XCTest
 final class AppFeaturesTests: XCTestCase {
   func test_path_navigateToClassicPage() async {
     let store = TestStore(
-      initialState: AppFeature.State(modeList: ModeListFeature.State(featureCards: FeatureCard.default))
+      initialState: AppFeature.State(modeList: ModeListFeature.State())
     ) {
       AppFeature()
     }
@@ -28,7 +28,7 @@ final class AppFeaturesTests: XCTestCase {
     let mockTags = IdentifiedArray(uniqueElements: getMockTags())
 
     let store = TestStore(
-      initialState: AppFeature.State(modeList: ModeListFeature.State(featureCards: FeatureCard.default)),
+      initialState: AppFeature.State(modeList: ModeListFeature.State()),
       reducer: { AppFeature() }
     ) {
       $0.firebaseCheckInLoader = FirebaseCheckInLoader(
