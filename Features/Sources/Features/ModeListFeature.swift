@@ -89,6 +89,11 @@ struct ModeListView: View {
         }
         .padding(.top, 20)
         .padding(.horizontal)
+        
+        if store.state.tags.isEmpty {
+          ProgressView()
+            .padding(.top, 120)
+        }
 
         LazyVGrid(columns: gridItemLayout, spacing: 12) {
           ForEach(store.state.tags) { tag in
