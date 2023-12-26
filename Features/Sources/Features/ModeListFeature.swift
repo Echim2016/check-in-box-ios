@@ -133,7 +133,7 @@ struct ModeListView: View {
           .padding(.horizontal)
         }
       }
-      .navigationTitle("Let's check! 🔮")
+      .navigationTitle("Check! 🥂")
       .refreshable {
         // TODO: async refreshable
         store.send(.pullToRefreshTriggered)
