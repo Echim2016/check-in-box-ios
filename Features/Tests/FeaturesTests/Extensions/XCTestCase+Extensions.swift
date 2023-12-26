@@ -23,7 +23,7 @@ extension XCTestCase {
   
   func getMockTags() -> [Tag] {
     [
-      Tag(id: "1", title: "Deep", subtitle: "", code: "deep"),
+      Tag(id: "1", title: "Deep", subtitle: "", order: 1, code: "deep", isHidden: false),
     ]
   }
 }
