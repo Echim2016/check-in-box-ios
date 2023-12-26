@@ -102,7 +102,7 @@ struct ModeListView: View {
                 ClassicCheckInFeature.State(
                   questions: CycleIterator(
                     base: store.state.questions
-                      .compactMap { $0.tags.contains(tag.code) ? $0 : nil }
+                      .filter(by: tag.code)
                       .shuffled()
                   )
                 )
@@ -151,6 +151,15 @@ struct ModeListView: View {
             }
         }
       }
+    }
+  }
+}
+
+private extension IdentifiedArray where Element == Question {
+  func filter(by tag: String) -> [Element] {
+    guard !tag.isEmpty else { return self.elements }
+    return compactMap {
+      $0.tags.contains(tag) ? $0 : nil
     }
   }
 }
