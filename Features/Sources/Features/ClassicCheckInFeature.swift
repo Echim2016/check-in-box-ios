@@ -11,10 +11,12 @@ import SwiftUI
 public struct ClassicCheckInFeature: Reducer {
   public struct State: Equatable {
     var questions: CycleIterator<Question> = CycleIterator(base: [])
+    var imageUrl: URL? = nil
     var displayQuestion: String? = nil
     
-    init(questions: CycleIterator<Question> = CycleIterator(base: [])) {
+    public init(questions: CycleIterator<Question> = CycleIterator(base: []), imageUrl: URL? = nil) {
       self.questions = questions
+      self.imageUrl = imageUrl
       self.displayQuestion = questions.current()?.question
     }
   }
@@ -81,6 +83,14 @@ struct ClassicCheckInView: View {
         }
       }
       .padding()
+      .background {
+        NetworkImage(url: store.state.imageUrl)
+          .blur(radius: 1)
+          .overlay {
+            Color.black.opacity(0.6)
+          }
+          .ignoresSafeArea()
+      }
     }
   }
 }

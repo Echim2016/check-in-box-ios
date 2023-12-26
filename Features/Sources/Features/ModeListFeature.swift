@@ -65,7 +65,7 @@ struct ModeListView: View {
       ScrollView {
         Spacer()
         Spacer()
-        
+
         ScrollView(.horizontal) {
           HStack {
             ForEach(store.state.themeBoxes) { box in
@@ -73,11 +73,11 @@ struct ModeListView: View {
                 state: AppFeature.Path.State.classic(
                   ClassicCheckInFeature.State(
                     questions: CycleIterator(
-                      base:
-                        box.questions
+                      base: box.questions
                         .map { Question(question: $0) }
                         .shuffled()
-                    )
+                    ),
+                    imageUrl: URL(string: box.imageUrl)
                   )
                 )
               ) {
@@ -86,8 +86,8 @@ struct ModeListView: View {
                   subtitle: box.subtitle,
                   url: URL(string: box.imageUrl)
                 )
-                  .frame(width: 340, height: 200)
-                  .cornerRadius(16)
+                .frame(width: 340, height: 200)
+                .cornerRadius(16)
               }
               .buttonStyle(PlainButtonStyle())
             }
@@ -97,9 +97,9 @@ struct ModeListView: View {
         .scrollIndicators(.hidden)
 
         if store.state.tags.isEmpty {
-            ProgressView()
+          ProgressView()
             .padding(.top, 100)
-          
+
         } else {
           Spacer()
           HStack {
@@ -110,7 +110,7 @@ struct ModeListView: View {
           }
           .padding(.top, 20)
           .padding(.horizontal)
-          
+
           LazyVGrid(columns: gridItemLayout, spacing: 12) {
             ForEach(store.state.tags) { tag in
               NavigationLink(
