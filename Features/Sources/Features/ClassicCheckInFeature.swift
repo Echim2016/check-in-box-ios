@@ -85,7 +85,7 @@ struct ClassicCheckInView: View {
       .padding()
       .background {
         NetworkImage(url: store.state.imageUrl)
-          .blur(radius: 1)
+          .blur(radius: 2)
           .overlay {
             Color.black.opacity(0.6)
           }
