@@ -11,5 +11,6 @@ public struct Tag: Codable, Equatable, Identifiable, Sendable {
   public let id: String
   public let title: String
   public let subtitle: String
+  public let order: Int
   public let code: String
 }

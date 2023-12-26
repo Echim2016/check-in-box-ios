@@ -41,6 +41,7 @@ extension FirebaseCheckInLoader: DependencyKey {
     loadTags: { path in
       let result = try await loadFromRemote(path: path)
         .compactMap { try $0.data(as: Tag.self) }
+        .sorted { $0.order < $1.order }
 
       return IdentifiedArray(uniqueElements: result)
     }
