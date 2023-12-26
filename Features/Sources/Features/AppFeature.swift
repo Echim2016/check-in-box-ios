@@ -26,7 +26,7 @@ public struct AppFeature: Reducer {
     case path(StackAction<Path.State, Path.Action>)
     case modeList(ModeListFeature.Action)
     case loadFromRemote
-    case receivedQuestions(IdentifiedArrayOf<Tag>, IdentifiedArrayOf<Question>)
+    case receivedQuestions(IdentifiedArrayOf<ThemeBox>, IdentifiedArrayOf<Tag>, IdentifiedArrayOf<Question>)
   }
 
   public struct Path: Reducer {
@@ -66,51 +66,17 @@ public struct AppFeature: Reducer {
         return .run { send in
           try await send(
             .receivedQuestions(
+              await firebaseCheckInLoader.loadThemeBoxes("Theme_Boxes"),
               await firebaseCheckInLoader.loadTags("Question_Tags"),
               await firebaseCheckInLoader.loadQuestions("Questions")
             )
           )
         }
         
-      case let .receivedQuestions(tags, questions):
+      case let .receivedQuestions(themeBoxes, tags, questions):
+        state.modeList.themeBoxes = themeBoxes
         state.modeList.tags = tags
         state.modeList.questions = questions
-        state.modeList.themeBoxes = [
-          ThemeBox(
-            id: UUID(),
-            title: "年末反思",
-            subtitle: "2023 大回顧",
-            questions: [
-              "今年最滿足的一件事",
-              "今年最後悔的一件事",
-              "今年對自己感到驕傲的一個時刻",
-              "今年最慶幸有做的一件事",
-              "今年一個明確的成長",
-              "今年一個沒有做到的事情",
-              "今年獲得的一個珍貴的建議"
-            ],
-            authorName: "echim",
-            url: "",
-            imageUrl: ""
-          ),
-          ThemeBox(
-            id: UUID(),
-            title: "年末反思2",
-            subtitle: "2023 大回顧",
-            questions: [
-              "今年最滿足的一件事",
-              "今年最後悔的一件事",
-              "今年對自己感到驕傲的一個時刻",
-              "今年最慶幸有做的一件事",
-              "今年一個明確的成長",
-              "今年一個沒有做到的事情",
-              "今年獲得的一個珍貴的建議"
-            ],
-            authorName: "echim",
-            url: "",
-            imageUrl: ""
-          )
-        ]
         return .none
 
       case .path:

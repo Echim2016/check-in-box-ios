@@ -12,11 +12,13 @@ import IdentifiedCollections
 protocol CheckInLoader {
   var loadQuestions: (_ path: String) async throws -> IdentifiedArrayOf<Question> { get set }
   var loadTags: (_ path: String) async throws -> IdentifiedArrayOf<Tag> { get set }
+  var loadThemeBoxes: (_ path: String) async throws -> IdentifiedArrayOf<ThemeBox> { get set }
 }
 
 struct FirebaseCheckInLoader: CheckInLoader {
   var loadQuestions: (_ path: String) async throws -> IdentifiedArrayOf<Question>
   var loadTags: (_ path: String) async throws -> IdentifiedArrayOf<Tag>
+  var loadThemeBoxes: (_ path: String) async throws -> IdentifiedArrayOf<ThemeBox>
 
   static func loadFromRemote(path: String) async throws -> [QueryDocumentSnapshot] {
     let result = try await Firestore
@@ -45,6 +47,14 @@ extension FirebaseCheckInLoader: DependencyKey {
         .sorted { $0.order < $1.order }
 
       return IdentifiedArray(uniqueElements: result)
+    },
+    loadThemeBoxes: { path in
+      let result = try await loadFromRemote(path: path)
+        .compactMap { try $0.data(as: ThemeBox.self) }
+        .filter { $0.isHidden == false }
+        .sorted { $0.order < $1.order }
+      
+      return IdentifiedArray(uniqueElements: result)
     }
   )
 }
@@ -56,6 +66,9 @@ extension FirebaseCheckInLoader: TestDependencyKey {
     },
     loadTags: { _ in
       unimplemented("FirebaseCheckInLoader_loadTags")
+    },
+    loadThemeBoxes: { _ in
+      unimplemented("FirebaseCheckInLoader_loadThemeBoxes")
     }
   )
 }

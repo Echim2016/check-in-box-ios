@@ -81,8 +81,12 @@ struct ModeListView: View {
                   )
                 )
               ) {
-                FeatureCardView(title: box.title, subtitle: box.subtitle)
-                  .frame(minWidth: 340)
+                ThemeBoxCardView(
+                  title: box.title,
+                  subtitle: box.subtitle,
+                  url: URL(string: box.imageUrl)
+                )
+                  .frame(width: 340, height: 200)
                   .cornerRadius(16)
               }
               .buttonStyle(PlainButtonStyle())
