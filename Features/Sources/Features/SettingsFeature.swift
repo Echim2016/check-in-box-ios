@@ -9,27 +9,43 @@ import ComposableArchitecture
 import SwiftUI
 
 public struct SettingsFeature: Reducer {
-  public struct State: Equatable {}
+  public struct State: Equatable {
+    @PresentationState var presentGiftCardInputBoxPage: InputBoxFeature.State?
+  }
+
   public enum Action: Equatable {
     case sendFeedbackButtonTapped
-    case giftCardKeySubmitted(String)
+    case redeemGiftCardButtonTapped
+    case presentGiftCardInputBoxPage(PresentationAction<InputBoxFeature.Action>)
   }
 
   @Dependency(\.openURL) var openURL
   @Dependency(\.giftCardAccessManager) var giftCardAccessManager
 
   public var body: some ReducerOf<Self> {
-    Reduce { _, action in
+    Reduce { state, action in
       switch action {
       case .sendFeedbackButtonTapped:
         return .run { _ in
           let url = URL(string: "https://forms.gle/Vr4MjtowWPxBxr5r9")!
           await openURL(url)
         }
-      case let .giftCardKeySubmitted(activationKey):
-        giftCardAccessManager.setAccess(activationKey)
+
+      case .redeemGiftCardButtonTapped:
+        state.presentGiftCardInputBoxPage = InputBoxFeature.State()
+        return .none
+
+      case let .presentGiftCardInputBoxPage(.presented(.activationKeySubmitted(key))):
+        state.presentGiftCardInputBoxPage = nil
+        giftCardAccessManager.setAccess(key)
+        return .none
+        
+      case .presentGiftCardInputBoxPage:
         return .none
       }
+    }
+    .ifLet(\.$presentGiftCardInputBoxPage, action: /Action.presentGiftCardInputBoxPage) {
+      InputBoxFeature()
     }
   }
 }
@@ -37,47 +53,57 @@ public struct SettingsFeature: Reducer {
 struct SettingsView: View {
   let store: StoreOf<SettingsFeature>
   var body: some View {
-    List {
-      Section {
-        // TODO: app store url & app icon image
-        Button {} label: {
-          ShareLink(item: "分享一個酷 app 給你！") {
-            /// Problem: Slow loading issue after tapping the share link without any UI indication
-            /// Solution: Implement wide label for better pressed state indication
-            HStack {
-              Label("分享給朋友", systemImage: "square.and.arrow.up")
-                .foregroundStyle(.white)
-              Spacer()
-                .frame(minWidth: .leastNonzeroMagnitude)
+    WithViewStore(self.store, observe: { $0 }) { store in
+      List {
+        Section {
+          // TODO: app store url & app icon image
+          Button {} label: {
+            ShareLink(item: "分享一個酷 app 給你！") {
+              /// Problem: Slow loading issue after tapping the share link without any UI indication
+              /// Solution: Implement wide label for better pressed state indication
+              HStack {
+                Label("分享給朋友", systemImage: "square.and.arrow.up")
+                  .foregroundStyle(.white)
+                Spacer()
+                  .frame(minWidth: .leastNonzeroMagnitude)
+              }
             }
           }
+
+          // TODO: redeem view
+          Button {
+            store.send(.redeemGiftCardButtonTapped)
+          } label: {
+            Label("兌換禮物卡", systemImage: "giftcard")
+              .foregroundStyle(.white)
+          }
+
+          // TODO: feedback form
+          Button {
+            store.send(.sendFeedbackButtonTapped)
+          } label: {
+            Label("回饋真心話", systemImage: "paperplane")
+              .foregroundStyle(.white)
+          }
+        } header: {
+          Text("服務")
         }
 
-        // TODO: redeem view
-        Button {
-          // TODO: enter key from user
-          store.send(.giftCardKeySubmitted("activation_key"))
-        } label: {
-          Label("兌換禮物卡", systemImage: "giftcard")
-            .foregroundStyle(.white)
+        Section {
+          Text("echim.hsu")
+        } header: {
+          Text("作者")
         }
-
-        // TODO: feedback form
-        Button {
-          store.send(.sendFeedbackButtonTapped)
-        } label: {
-          Label("回饋真心話", systemImage: "paperplane")
-            .foregroundStyle(.white)
-        }
-      } header: {
-        Text("服務")
       }
-
-      Section {
-        Text("echim.hsu")
-      } header: {
-        Text("作者")
-      }
+    }
+    .sheet(
+      store: self.store.scope(
+        state: \.$presentGiftCardInputBoxPage,
+        action: { .presentGiftCardInputBoxPage($0) }
+      )
+    ) { inputBoxViewStore in
+      InputBoxView(store: inputBoxViewStore)
+        .presentationDetents([.height(180)])
     }
   }
 }
