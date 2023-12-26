@@ -12,9 +12,11 @@ public struct SettingsFeature: Reducer {
   public struct State: Equatable {}
   public enum Action: Equatable {
     case sendFeedbackButtonTapped
+    case giftCardKeySubmitted(String)
   }
 
   @Dependency(\.openURL) var openURL
+  @Dependency(\.giftCardAccessManager) var giftCardAccessManager
 
   public var body: some ReducerOf<Self> {
     Reduce { _, action in
@@ -24,6 +26,9 @@ public struct SettingsFeature: Reducer {
           let url = URL(string: "https://forms.gle/Vr4MjtowWPxBxr5r9")!
           await openURL(url)
         }
+      case let .giftCardKeySubmitted(activationKey):
+        giftCardAccessManager.setAccess(activationKey)
+        return .none
       }
     }
   }
@@ -49,7 +54,10 @@ struct SettingsView: View {
         }
 
         // TODO: redeem view
-        Button {} label: {
+        Button {
+          // TODO: enter key from user
+          store.send(.giftCardKeySubmitted("activation_key"))
+        } label: {
           Label("兌換禮物卡", systemImage: "giftcard")
             .foregroundStyle(.white)
         }

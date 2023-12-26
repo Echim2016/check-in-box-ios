@@ -48,7 +48,8 @@ public struct AppFeature: Reducer {
   public init() {}
 
   @Dependency(\.firebaseCheckInLoader) var firebaseCheckInLoader
-
+  @Dependency(\.giftCardAccessManager) var giftCardAccessManager
+  
   public var body: some ReducerOf<Self> {
     Scope(state: \.modeList, action: /Action.modeList) {
       ModeListFeature()
@@ -66,7 +67,7 @@ public struct AppFeature: Reducer {
         return .run { send in
           try await send(
             .receivedQuestions(
-              await firebaseCheckInLoader.loadThemeBoxes("Theme_Boxes"),
+              await firebaseCheckInLoader.loadThemeBoxes("Theme_Boxes", giftCardAccessManager.isFullAccess("theme_box_full_access")),
               await firebaseCheckInLoader.loadTags("Question_Tags"),
               await firebaseCheckInLoader.loadQuestions("Questions")
             )
