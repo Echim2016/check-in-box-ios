@@ -5,32 +5,64 @@
 //  Created by Yi-Chin Hsu on 2023/12/15.
 //
 
-import Foundation
+import Dependencies
+import FirebaseFirestore
+import IdentifiedCollections
 
 protocol CheckInLoader {
-  func load() async throws -> [String]
+  var loadQuestions: (_ path: String) async throws -> IdentifiedArrayOf<Question> { get set }
+  var loadTags: (_ path: String) async throws -> IdentifiedArrayOf<Tag> { get set }
 }
 
-class RemoteCheckInLoader: CheckInLoader {
-  func load() async throws -> [String] {
-    // TODO: Replace with firebase response
-    await withCheckedContinuation { continuation in
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-        continuation.resume(
-          with:
-          .success(
-            [
-              "身上使用最久的東西是什麼？",
-              "最喜歡的一部電影？",
-              "今年最期待的一件事情？",
-              "我不為人知的一個奇怪技能",
-              "做過最像大人的事情",
-              "今年最快樂的回憶",
-              "最想再去一次的國家/城市",
-            ]
-          )
-        )
-      }
+struct FirebaseCheckInLoader: CheckInLoader {
+  var loadQuestions: (_ path: String) async throws -> IdentifiedArrayOf<Question>
+  var loadTags: (_ path: String) async throws -> IdentifiedArrayOf<Tag>
+
+  static func loadFromRemote(path: String) async throws -> [QueryDocumentSnapshot] {
+    let result = try await Firestore
+      .firestore()
+      .collection(path)
+      .getDocuments()
+      .documents
+
+    return result
+  }
+}
+
+extension FirebaseCheckInLoader: DependencyKey {
+  static var liveValue = FirebaseCheckInLoader(
+    loadQuestions: { path in
+      let result = try await loadFromRemote(path: path)
+        .compactMap { try $0.data(as: Question.self) }
+        .filter { $0.isHidden == false }
+
+      return IdentifiedArray(uniqueElements: result)
+    },
+    loadTags: { path in
+      let result = try await loadFromRemote(path: path)
+        .compactMap { try $0.data(as: Tag.self) }
+        .filter { $0.isHidden == false }
+        .sorted { $0.order < $1.order }
+
+      return IdentifiedArray(uniqueElements: result)
     }
+  )
+}
+
+extension FirebaseCheckInLoader: TestDependencyKey {
+  static var testValue = FirebaseCheckInLoader(
+    loadQuestions: { _ in
+      unimplemented("FirebaseCheckInLoader_loadQuestions")
+    },
+    loadTags: { _ in
+      unimplemented("FirebaseCheckInLoader_loadTags")
+    }
+  )
+}
+
+extension DependencyValues {
+  var firebaseCheckInLoader: FirebaseCheckInLoader {
+    get { self[FirebaseCheckInLoader.self] }
+    set { self[FirebaseCheckInLoader.self] = newValue }
   }
 }

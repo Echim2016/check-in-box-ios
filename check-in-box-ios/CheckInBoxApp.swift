@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import Features
+import FirebaseCore
 import SwiftUI
 
 @main
@@ -21,5 +22,9 @@ struct CheckInBoxApp: App {
         }
       )
     }
+  }
+
+  init() {
+    FirebaseApp.configure()
   }
 }

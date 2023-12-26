@@ -114,4 +114,9 @@ xcuserdata
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 
+
+### Google API plist file ###
+**/GoogleService-Info.plist
+# **/*.entitlements
+
 # End of https://www.toptal.com/developers/gitignore/api/swiftpackagemanager,swift,xcode,macos
