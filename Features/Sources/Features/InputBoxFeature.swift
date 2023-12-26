@@ -43,7 +43,7 @@ struct InputBoxView: View {
 
   var body: some View {
     WithViewStore(self.store, observe: { $0 }) { store in
-      VStack {
+      VStack(spacing: 12) {
         TextField(
           "請輸入禮物卡序號",
           text: store.binding(
@@ -67,10 +67,10 @@ struct InputBoxView: View {
             .padding(.vertical, 16)
             .background(.white)
             .clipShape(RoundedRectangle(cornerRadius: 12))
-            .padding()
         }
       }
-      .padding(.top, 44)
+      .padding(.horizontal)
+      .padding(.top)
     }
   }
 }
@@ -86,6 +86,5 @@ struct CBTextFieldStyle: TextFieldStyle {
         )
         .fill(.white.opacity(0.15))
       )
-      .padding()
   }
 }
