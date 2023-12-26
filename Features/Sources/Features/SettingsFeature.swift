@@ -20,7 +20,7 @@ public struct SettingsFeature: Reducer {
     Reduce { _, action in
       switch action {
       case .sendFeedbackButtonTapped:
-        return .run { send in
+        return .run { _ in
           let url = URL(string: "https://forms.gle/Vr4MjtowWPxBxr5r9")!
           await openURL(url)
         }
@@ -35,9 +35,7 @@ struct SettingsView: View {
     List {
       Section {
         // TODO: app store url & app icon image
-        Button {
-          
-        } label: {
+        Button {} label: {
           ShareLink(item: "分享一個酷 app 給你！") {
             /// Problem: Slow loading issue after tapping the share link without any UI indication
             /// Solution: Implement wide label for better pressed state indication
@@ -49,15 +47,13 @@ struct SettingsView: View {
             }
           }
         }
-        
+
         // TODO: redeem view
-        Button {
-          
-        } label: {
+        Button {} label: {
           Label("兌換禮物卡", systemImage: "giftcard")
             .foregroundStyle(.white)
         }
-        
+
         // TODO: feedback form
         Button {
           store.send(.sendFeedbackButtonTapped)
@@ -68,7 +64,7 @@ struct SettingsView: View {
       } header: {
         Text("服務")
       }
-      
+
       Section {
         Text("echim.hsu")
       } header: {

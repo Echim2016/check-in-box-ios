@@ -23,7 +23,7 @@ struct CheckInBoxApp: App {
       )
     }
   }
-  
+
   init() {
     FirebaseApp.configure()
   }

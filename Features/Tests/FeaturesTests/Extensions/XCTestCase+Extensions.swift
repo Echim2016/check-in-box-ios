@@ -5,18 +5,25 @@
 //  Created by Yi-Chin Hsu on 2023/12/21.
 //
 
+@testable import Features
 import XCTest
 
 extension XCTestCase {
-  func getMockMultipleQuestions() -> [String] {
+  func getMockMultipleQuestions() -> [Question] {
     [
-      "身上使用最久的東西是什麼？",
-      "最喜歡的一部電影？",
-      "今年最期待的一件事情？",
-      "我不為人知的一個奇怪技能",
-      "做過最像大人的事情",
-      "今年最快樂的回憶",
-      "最想再去一次的國家/城市",
+      Question(question: "身上使用最久的東西是什麼？"),
+      Question(question: "最喜歡的一部電影？"),
+      Question(question: "今年最期待的一件事情？"),
+      Question(question: "我不為人知的一個奇怪技"),
+      Question(question: "做過最像大人的事情"),
+      Question(question: "今年最快樂的回憶"),
+      Question(question: "最想再去一次的國家/城市"),
+    ]
+  }
+
+  func getMockTags() -> [Tag] {
+    [
+      Tag(id: "1", title: "Deep", subtitle: "", order: 1, code: "deep", isHidden: false),
     ]
   }
 }

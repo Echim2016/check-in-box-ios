@@ -16,7 +16,7 @@ final class ClassicFeatureTests: XCTestCase {
     let store = makeSUT(base: questions)
 
     await store.send(.pickButtonTapped) {
-      $0.displayQuestion = questions[1]
+      $0.displayQuestion = questions[1].question
     }
   }
 
@@ -25,7 +25,7 @@ final class ClassicFeatureTests: XCTestCase {
     let store = makeSUT(base: questions, index: questions.count - 1)
 
     await store.send(.pickButtonTapped) {
-      $0.displayQuestion = questions.first
+      $0.displayQuestion = questions.first?.question
     }
   }
 
@@ -34,11 +34,11 @@ final class ClassicFeatureTests: XCTestCase {
     let store = makeSUT(base: questions)
 
     await store.send(.previousButtonTapped) {
-      $0.displayQuestion = questions.last
+      $0.displayQuestion = questions.last?.question
     }
   }
 
-  func makeSUT(base: [String], index: Int = 0) -> TestStore<ClassicCheckInFeature.State, ClassicCheckInFeature.Action> {
+  func makeSUT(base: [Question], index: Int = 0) -> TestStore<ClassicCheckInFeature.State, ClassicCheckInFeature.Action> {
     let store = TestStore(
       initialState: ClassicCheckInFeature.State(questions: CycleIterator(base: base, index: index))
     ) {
