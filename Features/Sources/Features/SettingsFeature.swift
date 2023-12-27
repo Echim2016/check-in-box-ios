@@ -13,6 +13,7 @@ public struct SettingsFeature: Reducer {
     @PresentationState var presentGiftCardInputBoxPage: InputBoxFeature.State?
     var authorProfileUrl: URL? = URL(string: "https://pbs.twimg.com/profile_images/1473910380540088321/Cw9ziBcy_400x400.jpg")
     var shareLinkContent: String = "https://portaly.cc/check-in-box"
+    var hapticFeedbackTrigger: Bool = false
   }
 
   public enum Action: Equatable {
@@ -46,6 +47,7 @@ public struct SettingsFeature: Reducer {
 
       case let .presentGiftCardInputBoxPage(.presented(.activationKeySubmitted(key))):
         state.presentGiftCardInputBoxPage = nil
+        state.hapticFeedbackTrigger.toggle()
         giftCardAccessManager.setAccess(key)
         return .none
         
@@ -110,6 +112,7 @@ struct SettingsView: View {
           Text("作者")
         }
       }
+      .sensoryFeedback(.success, trigger: store.state.hapticFeedbackTrigger)
     }
     .sheet(
       store: self.store.scope(
