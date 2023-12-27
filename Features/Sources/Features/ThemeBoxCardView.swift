@@ -5,6 +5,7 @@
 //  Created by Yi-Chin Hsu on 2023/12/26.
 //
 
+import Kingfisher
 import SwiftUI
 
 public struct ThemeBoxCardView: View {
@@ -44,11 +45,9 @@ public struct ThemeBoxCardView: View {
 struct NetworkImage: View {
   let url: URL?
   var body: some View {
-    AsyncImage(url: url) { image in
-      image
-        .resizable()
-        .aspectRatio(contentMode: .fill)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    } placeholder: {}
+    KFImage(url)
+      .resizable()
+      .aspectRatio(contentMode: .fill)
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
   }
 }
