@@ -12,6 +12,7 @@ public struct SettingsFeature: Reducer {
   public struct State: Equatable {
     @PresentationState var presentGiftCardInputBoxPage: InputBoxFeature.State?
     var authorProfileUrl: URL? = URL(string: "https://pbs.twimg.com/profile_images/1473910380540088321/Cw9ziBcy_400x400.jpg")
+    var shareLinkContent: String = "https://www.threads.net/@checkinbox.app"
   }
 
   public enum Action: Equatable {
@@ -66,7 +67,7 @@ struct SettingsView: View {
         Section {
           // TODO: app store url & app icon image
           Button {} label: {
-            ShareLink(item: "分享一個酷 app 給你！") {
+            ShareLink(item: store.state.shareLinkContent) {
               /// Problem: Slow loading issue after tapping the share link without any UI indication
               /// Solution: Implement wide label for better pressed state indication
               HStack {
