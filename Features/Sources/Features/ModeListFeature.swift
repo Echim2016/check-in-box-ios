@@ -168,7 +168,7 @@ struct ModeListView: View {
               }
             }
         }
-        .presentationDetents([.medium, .large])
+        .presentationDetents([.height(480), .large])
       }
     }
   }

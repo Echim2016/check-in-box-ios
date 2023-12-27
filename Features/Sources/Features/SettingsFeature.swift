@@ -111,6 +111,15 @@ struct SettingsView: View {
         } header: {
           Text("作者")
         }
+        
+        if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
+          Section {
+            Text("v\(version)")
+              .foregroundStyle(.secondary)
+          } header: {
+            Text("版本")
+          }
+        }
       }
       .sensoryFeedback(.success, trigger: store.state.hapticFeedbackTrigger)
     }
