@@ -62,12 +62,13 @@ struct InputBoxView: View {
         } label: {
           Text("兌換")
             .font(.headline)
-            .foregroundColor(.black)
+            .foregroundColor(store.state.activationKey.isEmpty ? .secondary : .black)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
-            .background(.white)
+            .background(store.state.activationKey.isEmpty ? .white.opacity(0.15) : .white)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
+        .disabled(store.state.activationKey.isEmpty)
       }
       .padding(.horizontal)
       .padding(.top)
