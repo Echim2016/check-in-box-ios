@@ -22,16 +22,32 @@ public struct ClassicCheckInFeature: Reducer {
   }
 
   public enum Action: Equatable {
+    case urlButtonTapped
     case pickButtonTapped
     case previousButtonTapped
   }
 
+  @Dependency(\.openURL) var openURL
+
   public var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
+      case .urlButtonTapped:
+        guard
+          let urlString = state.questions.current()?.url,
+          let url = URL(string: urlString)
+        else {
+          return .none
+        }
+
+        return .run { _ in
+          await openURL(url)
+        }
+        
       case .pickButtonTapped:
         state.displayQuestion = state.questions.next()?.content
         return .none
+        
       case .previousButtonTapped:
         state.displayQuestion = state.questions.back()?.content
         return .none
@@ -68,7 +84,7 @@ struct ClassicCheckInView: View {
               .background(.white)
               .clipShape(RoundedRectangle(cornerRadius: 12.0))
           }
-          
+
           Button {
             store.send(.pickButtonTapped)
           } label: {
@@ -83,6 +99,19 @@ struct ClassicCheckInView: View {
         }
       }
       .padding()
+      .toolbar {
+        ToolbarItem {
+          Button {
+            store.send(.urlButtonTapped)
+          } label: {
+            if let item = store.state.questions.current(),
+               let iconName = item.urlIconName {
+              Image(iconName)
+                .foregroundStyle(.white)
+            }
+          }
+        }
+      }
       .background {
         NetworkImage(url: store.state.imageUrl)
           .blur(radius: 2)
@@ -108,7 +137,7 @@ struct ClassicCheckInView: View {
               .from(Question(question: "我不為人知的一個奇怪技")),
               .from(Question(question: "做過最像大人的事情")),
               .from(Question(question: "今年最快樂的回憶")),
-              .from(Question(question: "最想再去一次的國家/城市"))
+              .from(Question(question: "最想再去一次的國家/城市")),
             ]
           )
         )
