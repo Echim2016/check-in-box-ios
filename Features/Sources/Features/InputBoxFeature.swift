@@ -47,8 +47,8 @@ struct InputBoxView: View {
         TextField(
           "請輸入禮物卡序號",
           text: store.binding(
-            get: { $0.activationKey },
-            send: { .keyChanged($0) }
+            get: \.activationKey,
+            send: InputBoxFeature.Action.keyChanged
           )
         )
         .textInputAutocapitalization(.never)
