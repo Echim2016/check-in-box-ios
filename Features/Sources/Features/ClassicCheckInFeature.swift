@@ -10,14 +10,14 @@ import SwiftUI
 
 public struct ClassicCheckInFeature: Reducer {
   public struct State: Equatable {
-    var questions: CycleIterator<Question> = CycleIterator(base: [])
+    var questions: CycleIterator<CheckInItem> = CycleIterator(base: [])
     var imageUrl: URL? = nil
     var displayQuestion: String? = nil
     
-    public init(questions: CycleIterator<Question> = CycleIterator(base: []), imageUrl: URL? = nil) {
+    public init(questions: CycleIterator<CheckInItem> = CycleIterator(base: []), imageUrl: URL? = nil) {
       self.questions = questions
       self.imageUrl = imageUrl
-      self.displayQuestion = questions.current()?.question
+      self.displayQuestion = questions.current()?.content
     }
   }
 
@@ -30,10 +30,10 @@ public struct ClassicCheckInFeature: Reducer {
     Reduce { state, action in
       switch action {
       case .pickButtonTapped:
-        state.displayQuestion = state.questions.next()?.question
+        state.displayQuestion = state.questions.next()?.content
         return .none
       case .previousButtonTapped:
-        state.displayQuestion = state.questions.back()?.question
+        state.displayQuestion = state.questions.back()?.content
         return .none
       }
     }
@@ -102,13 +102,13 @@ struct ClassicCheckInView: View {
         initialState: ClassicCheckInFeature.State(
           questions: CycleIterator(
             base: [
-              Question(question: "身上使用最久的東西是什麼？"),
-              Question(question: "最喜歡的一部電影？"),
-              Question(question: "今年最期待的一件事情？"),
-              Question(question: "我不為人知的一個奇怪技"),
-              Question(question: "做過最像大人的事情"),
-              Question(question: "今年最快樂的回憶"),
-              Question(question: "最想再去一次的國家/城市")
+              .from(Question(question: "身上使用最久的東西是什麼？")),
+              .from(Question(question: "最喜歡的一部電影？")),
+              .from(Question(question: "今年最期待的一件事情？")),
+              .from(Question(question: "我不為人知的一個奇怪技")),
+              .from(Question(question: "做過最像大人的事情")),
+              .from(Question(question: "今年最快樂的回憶")),
+              .from(Question(question: "最想再去一次的國家/城市"))
             ]
           )
         )

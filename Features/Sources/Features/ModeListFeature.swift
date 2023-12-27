@@ -74,7 +74,7 @@ struct ModeListView: View {
                   ClassicCheckInFeature.State(
                     questions: CycleIterator(
                       base: box.questions
-                        .map { Question(question: $0) }
+                        .map { CheckInItem(content: $0) }
                         .shuffled()
                     ),
                     imageUrl: URL(string: box.imageUrl)
@@ -119,6 +119,7 @@ struct ModeListView: View {
                     questions: CycleIterator(
                       base: store.state.questions
                         .filter(by: tag.code)
+                        .map { CheckInItem.from($0) }
                         .shuffled()
                     )
                   )
