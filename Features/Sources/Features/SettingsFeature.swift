@@ -11,9 +11,11 @@ import SwiftUI
 public struct SettingsFeature: Reducer {
   public struct State: Equatable {
     @PresentationState var presentGiftCardInputBoxPage: InputBoxFeature.State?
+    var authorProfileUrl: URL? = URL(string: "https://pbs.twimg.com/profile_images/1473910380540088321/Cw9ziBcy_400x400.jpg")
   }
 
   public enum Action: Equatable {
+    case authorProfileButtonTapped
     case sendFeedbackButtonTapped
     case redeemGiftCardButtonTapped
     case presentGiftCardInputBoxPage(PresentationAction<InputBoxFeature.Action>)
@@ -25,6 +27,12 @@ public struct SettingsFeature: Reducer {
   public var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
+      case .authorProfileButtonTapped:
+        return .run { _ in
+          let url = URL(string: "https://twitter.com/echim2021")!
+          await openURL(url)
+        }
+        
       case .sendFeedbackButtonTapped:
         return .run { _ in
           let url = URL(string: "https://forms.gle/Vr4MjtowWPxBxr5r9")!
@@ -90,7 +98,13 @@ struct SettingsView: View {
         }
 
         Section {
-          Text("echim.hsu")
+          Button {
+            store.send(.authorProfileButtonTapped)
+          } label: {
+            ProfileCellView(url: store.state.authorProfileUrl)
+          }
+          .padding(.vertical, 2)
+          
         } header: {
           Text("作者")
         }
