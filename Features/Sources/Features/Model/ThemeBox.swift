@@ -24,9 +24,9 @@ public struct ThemeBoxContentItems: Equatable, Decodable {
   
   public struct ThemeBoxContentItem: Equatable, Decodable {
     public let content: String
-    public let url: String
+    public let url: String?
     public let order: Int
-    public let iconName: String
+    public let iconName: String?
     
     enum CodingKeys: String, CodingKey {
       case content
