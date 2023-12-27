@@ -73,8 +73,8 @@ struct ModeListView: View {
                 state: AppFeature.Path.State.classic(
                   ClassicCheckInFeature.State(
                     questions: CycleIterator(
-                      base: box.questions
-                        .map { CheckInItem(content: $0) }
+                      base: box.items.items
+                        .map { CheckInItem.from($0) }
                         .shuffled()
                     ),
                     imageUrl: URL(string: box.imageUrl)
