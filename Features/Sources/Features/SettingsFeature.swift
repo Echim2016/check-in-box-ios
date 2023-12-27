@@ -12,7 +12,7 @@ public struct SettingsFeature: Reducer {
   public struct State: Equatable {
     @PresentationState var presentGiftCardInputBoxPage: InputBoxFeature.State?
     var authorProfileUrl: URL? = URL(string: "https://pbs.twimg.com/profile_images/1473910380540088321/Cw9ziBcy_400x400.jpg")
-    var shareLinkContent: String = "https://www.threads.net/@checkinbox.app"
+    var shareLinkContent: String = "https://portaly.cc/check-in-box"
   }
 
   public enum Action: Equatable {
