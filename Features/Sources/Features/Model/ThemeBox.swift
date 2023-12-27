@@ -17,4 +17,15 @@ public struct ThemeBox: Equatable, Identifiable, Decodable {
   public let imageUrl: String
   public let order: Int
   public let isHidden: Bool
+  public let items: ThemeBoxContentItems
+}
+
+public struct ThemeBoxContentItems: Equatable, Decodable {
+  public let items: [ThemeBoxContentItem]
+  
+  public struct ThemeBoxContentItem: Equatable, Decodable {
+    public let content: String
+    public let url: String
+    public let order: Int
+  }
 }
