@@ -11,15 +11,18 @@ public struct CheckInItem: Identifiable, Codable {
   public let id: String
   public let content: String
   public let url: String?
+  public let urlIconName: String?
 
   public init(
     id: String = UUID().uuidString,
     content: String,
-    url: String? = nil
+    url: String? = nil,
+    urlIconName: String? = nil
   ) {
     self.id = id
     self.content = content
     self.url = url
+    self.urlIconName = urlIconName
   }
 }
 
@@ -33,6 +36,6 @@ extension CheckInItem {
 
 extension CheckInItem {
   static func from(_ item: ThemeBoxContentItems.ThemeBoxContentItem) -> Self {
-    CheckInItem(content: item.content, url: item.url)
+    CheckInItem(content: item.content, url: item.url, urlIconName: item.iconName)
   }
 }

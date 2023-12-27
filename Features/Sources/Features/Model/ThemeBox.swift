@@ -27,5 +27,13 @@ public struct ThemeBoxContentItems: Equatable, Decodable {
     public let content: String
     public let url: String
     public let order: Int
+    public let iconName: String
+    
+    enum CodingKeys: String, CodingKey {
+      case content
+      case url
+      case order
+      case iconName = "icon_name"
+    }
   }
 }
