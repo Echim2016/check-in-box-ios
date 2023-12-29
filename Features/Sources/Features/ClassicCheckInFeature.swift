@@ -87,7 +87,13 @@ public struct ClassicCheckInFeature: Reducer {
         return .none
         
       case .trackViewClassicCheckInPageEvent:
-        firebaseTracker.logEvent(.viewClassicCheckInPg(parameters: [:]))
+        firebaseTracker.logEvent(
+          .viewClassicCheckInPg(
+            parameters: [
+              "theme": state.theme
+            ]
+          )
+        )
         return .none
       }
     }
