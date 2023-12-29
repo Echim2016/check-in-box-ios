@@ -10,11 +10,13 @@ import SwiftUI
 
 public struct ClassicCheckInFeature: Reducer {
   public struct State: Equatable {
+    var theme: String = ""
     var questions: CycleIterator<CheckInItem> = CycleIterator(base: [])
     var imageUrl: URL? = nil
     var displayQuestion: String? = nil
     
-    public init(questions: CycleIterator<CheckInItem> = CycleIterator(base: []), imageUrl: URL? = nil) {
+    public init(theme: String, questions: CycleIterator<CheckInItem> = CycleIterator(base: []), imageUrl: URL? = nil) {
+      self.theme = theme
       self.questions = questions
       self.imageUrl = imageUrl
       self.displayQuestion = questions.current()?.content
@@ -42,15 +44,45 @@ public struct ClassicCheckInFeature: Reducer {
           return .none
         }
 
+        firebaseTracker.logEvent(
+          .clickClassicCheckInPgUrlBtn(
+            parameters: [
+              "theme": state.theme,
+              "current_content": state.displayQuestion ?? "",
+              "url": url.absoluteString
+            ]
+          )
+        )
+
         return .run { _ in
           await openURL(url)
         }
         
       case .pickButtonTapped:
+        firebaseTracker.logEvent(
+          .clickClassicCheckInPgPickBtn(
+            parameters: [
+              "theme": state.theme,
+              "current_content": state.displayQuestion ?? "",
+              "current_index": state.questions.index,
+              "items_total_count": state.questions.base.count
+            ]
+          )
+        )
         state.displayQuestion = state.questions.next()?.content
         return .none
         
       case .previousButtonTapped:
+        firebaseTracker.logEvent(
+          .clickClassicCheckInPgPreviousBtn(
+            parameters: [
+              "theme": state.theme,
+              "current_content": state.displayQuestion ?? "",
+              "current_index": state.questions.index,
+              "items_total_count": state.questions.base.count
+            ]
+          )
+        )
         state.displayQuestion = state.questions.back()?.content
         return .none
         
@@ -138,6 +170,7 @@ struct ClassicCheckInView: View {
     ClassicCheckInView(
       store: Store(
         initialState: ClassicCheckInFeature.State(
+          theme: "生活", 
           questions: CycleIterator(
             base: [
               .from(Question(question: "身上使用最久的東西是什麼？")),
