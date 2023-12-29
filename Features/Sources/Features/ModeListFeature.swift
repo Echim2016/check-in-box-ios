@@ -123,7 +123,7 @@ struct ModeListView: View {
           .padding(.top, 20)
           .padding(.horizontal)
 
-          LazyVGrid(columns: gridItemLayout, spacing: 12) {
+          LazyVGrid(columns: gridItemLayout, spacing: 8) {
             ForEach(store.state.tags) { tag in
               NavigationLink(
                 state: AppFeature.Path.State.classic(
@@ -138,7 +138,7 @@ struct ModeListView: View {
                   )
                 )
               ) {
-                FeatureCardView(title: tag.title.capitalized, subtitle: "")
+                FeatureCardView(title: tag.title.capitalized, subtitle: tag.subtitle)
                   .cornerRadius(16)
               }
               .buttonStyle(PlainButtonStyle())
