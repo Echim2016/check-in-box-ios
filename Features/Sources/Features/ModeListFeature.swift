@@ -162,7 +162,10 @@ struct ModeListView: View {
       .navigationTitle("Check! 🥂")
       .refreshable {
         // TODO: async refreshable
-        store.send(.pullToRefreshTriggered)
+        do {
+          try await Task.sleep(until: .now + .seconds(0.6), clock: .continuous)
+          store.send(.pullToRefreshTriggered)
+        } catch {}
       }
       .onAppear {
         store.send(.trackViewModeListEvent)
