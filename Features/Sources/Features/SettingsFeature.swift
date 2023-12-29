@@ -21,10 +21,12 @@ public struct SettingsFeature: Reducer {
     case sendFeedbackButtonTapped
     case redeemGiftCardButtonTapped
     case presentGiftCardInputBoxPage(PresentationAction<InputBoxFeature.Action>)
+    case trackViewSettingsPageEvent
   }
 
   @Dependency(\.openURL) var openURL
   @Dependency(\.giftCardAccessManager) var giftCardAccessManager
+  @Dependency(\.firebaseTracker) var firebaseTracker
 
   public var body: some ReducerOf<Self> {
     Reduce { state, action in
@@ -52,6 +54,10 @@ public struct SettingsFeature: Reducer {
         return .none
         
       case .presentGiftCardInputBoxPage:
+        return .none
+        
+      case .trackViewSettingsPageEvent:
+        firebaseTracker.logEvent(.viewSettingsPg(parameters: [:]))
         return .none
       }
     }
@@ -120,6 +126,9 @@ struct SettingsView: View {
             Text("版本")
           }
         }
+      }
+      .onAppear {
+        store.send(.trackViewSettingsPageEvent)
       }
       .sensoryFeedback(.success, trigger: store.state.hapticFeedbackTrigger)
     }

@@ -33,7 +33,10 @@ public struct ModeListFeature: Reducer {
     case settingsSheetDoneButtonTapped
     case presentSettingsPage(PresentationAction<SettingsFeature.Action>)
     case pullToRefreshTriggered
+    case trackViewModeListEvent
   }
+  
+  @Dependency(\.firebaseTracker) var firebaseTracker
 
   public var body: some ReducerOf<Self> {
     Reduce { state, action in
@@ -44,9 +47,17 @@ public struct ModeListFeature: Reducer {
       case .settingsSheetDoneButtonTapped:
         state.presentSettingsPage = nil
         return .none
+        
+      case .presentSettingsPage(.dismiss):
+        firebaseTracker.logEvent(.viewModeListPg(parameters: [:]))
+        return .none
+        
       case .presentSettingsPage:
         return .none
       case .pullToRefreshTriggered:
+        return .none
+      case .trackViewModeListEvent:
+        firebaseTracker.logEvent(.viewModeListPg(parameters: [:]))
         return .none
       }
     }
@@ -138,6 +149,9 @@ struct ModeListView: View {
       .refreshable {
         // TODO: async refreshable
         store.send(.pullToRefreshTriggered)
+      }
+      .onAppear {
+        store.send(.trackViewModeListEvent)
       }
       .toolbar {
         ToolbarItem {

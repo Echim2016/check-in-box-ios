@@ -25,9 +25,11 @@ public struct ClassicCheckInFeature: Reducer {
     case urlButtonTapped
     case pickButtonTapped
     case previousButtonTapped
+    case trackViewClassicCheckInPageEvent
   }
 
   @Dependency(\.openURL) var openURL
+  @Dependency(\.firebaseTracker) var firebaseTracker
 
   public var body: some ReducerOf<Self> {
     Reduce { state, action in
@@ -50,6 +52,10 @@ public struct ClassicCheckInFeature: Reducer {
         
       case .previousButtonTapped:
         state.displayQuestion = state.questions.back()?.content
+        return .none
+        
+      case .trackViewClassicCheckInPageEvent:
+        firebaseTracker.logEvent(.viewClassicCheckInPg(parameters: [:]))
         return .none
       }
     }
@@ -97,6 +103,9 @@ struct ClassicCheckInView: View {
               .clipShape(RoundedRectangle(cornerRadius: 12.0))
           }
         }
+      }
+      .onAppear {
+        store.send(.trackViewClassicCheckInPageEvent)
       }
       .padding()
       .toolbar {
