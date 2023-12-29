@@ -19,6 +19,7 @@ public struct SettingsFeature: Reducer {
   public enum Action: Equatable {
     case authorProfileButtonTapped
     case sendFeedbackButtonTapped
+    case shareButtonTapped
     case redeemGiftCardButtonTapped
     case presentGiftCardInputBoxPage(PresentationAction<InputBoxFeature.Action>)
     case trackViewSettingsPageEvent
@@ -32,12 +33,18 @@ public struct SettingsFeature: Reducer {
     Reduce { state, action in
       switch action {
       case .authorProfileButtonTapped:
+        firebaseTracker.logEvent(.clickSettingsPgAuthorProfileBtn(parameters: [:]))
         return .run { _ in
           let url = URL(string: "https://twitter.com/echim2021")!
           await openURL(url)
         }
-        
+
+      case .shareButtonTapped:
+        firebaseTracker.logEvent(.clickSettingsPgShareBtn(parameters: [:]))
+        return .none
+
       case .sendFeedbackButtonTapped:
+        firebaseTracker.logEvent(.clickSettingsPgFeedbackFormBtn(parameters: [:]))
         return .run { _ in
           let url = URL(string: "https://forms.gle/Vr4MjtowWPxBxr5r9")!
           await openURL(url)
@@ -52,10 +59,11 @@ public struct SettingsFeature: Reducer {
         state.hapticFeedbackTrigger.toggle()
         giftCardAccessManager.setAccess(key)
         return .none
-        
+
       case .presentGiftCardInputBoxPage:
+        firebaseTracker.logEvent(.clickSettingsPgGiftCardBtn(parameters: [:]))
         return .none
-        
+
       case .trackViewSettingsPageEvent:
         firebaseTracker.logEvent(.viewSettingsPg(parameters: [:]))
         return .none
@@ -85,6 +93,11 @@ struct SettingsView: View {
                   .frame(minWidth: .leastNonzeroMagnitude)
               }
             }
+            .simultaneousGesture(
+              TapGesture().onEnded {
+                store.send(.shareButtonTapped)
+              }
+            )
           }
 
           // TODO: redeem view
@@ -113,11 +126,11 @@ struct SettingsView: View {
             ProfileCellView(url: store.state.authorProfileUrl)
           }
           .padding(.vertical, 2)
-          
+
         } header: {
           Text("作者")
         }
-        
+
         if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
           Section {
             Text("v\(version)")
