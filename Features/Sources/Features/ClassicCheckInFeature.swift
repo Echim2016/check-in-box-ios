@@ -38,7 +38,7 @@ public struct ClassicCheckInFeature: Reducer {
     case trackViewClassicCheckInPageEvent
 
     public enum Alert {
-      case welcomeMessageViewed
+      case welcomeMessageDoneButtonTapped
     }
   }
 
@@ -48,6 +48,17 @@ public struct ClassicCheckInFeature: Reducer {
   public var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
+        
+      case .alert(.presented(.welcomeMessageDoneButtonTapped)):
+        firebaseTracker.logEvent(
+          .clickClassicCheckInPgWelcomeMessageDoneBtn(
+            parameters: [
+              "theme": state.theme,
+            ]
+          )
+        )
+        return .none
+        
       case .alert:
         return .none
         

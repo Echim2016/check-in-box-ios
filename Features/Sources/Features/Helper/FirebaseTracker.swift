@@ -38,6 +38,7 @@ enum FirebaseEvent {
   case clickClassicCheckInPgPickBtn(parameters: [String: Any])
   case clickClassicCheckInPgPreviousBtn(parameters: [String: Any])
   case clickClassicCheckInPgUrlBtn(parameters: [String: Any])
+  case clickClassicCheckInPgWelcomeMessageDoneBtn(parameters: [String: Any])
   case clickSettingsPgShareBtn(parameters: [String: Any])
   case clickSettingsPgGiftCardBtn(parameters: [String: Any])
   case clickSettingsPgFeedbackFormBtn(parameters: [String: Any])
@@ -57,6 +58,8 @@ enum FirebaseEvent {
       "Click_ClassicCheckInPg_PreviousBtn"
     case .clickClassicCheckInPgUrlBtn:
       "Click_ClassicCheckInPg_UrlBtn"
+    case .clickClassicCheckInPgWelcomeMessageDoneBtn:
+      "Click_ClassicCheckInPg_WelcomeMessageDoneBtn"
     case .clickSettingsPgShareBtn:
       "Click_SettingsPg_ShareBtn"
     case .clickSettingsPgGiftCardBtn:
@@ -76,6 +79,7 @@ enum FirebaseEvent {
          let .clickClassicCheckInPgPickBtn(parameters: parameters),
          let .clickClassicCheckInPgPreviousBtn(parameters: parameters),
          let .clickClassicCheckInPgUrlBtn(parameters: parameters),
+         let .clickClassicCheckInPgWelcomeMessageDoneBtn(parameters: parameters),
          let .clickSettingsPgShareBtn(parameters: parameters),
          let .clickSettingsPgGiftCardBtn(parameters: parameters),
          let .clickSettingsPgFeedbackFormBtn(parameters: parameters),

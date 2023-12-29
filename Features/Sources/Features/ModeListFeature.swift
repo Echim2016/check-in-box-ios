@@ -88,7 +88,7 @@ struct ModeListView: View {
                       message: TextState(verbatim: box.alertMessage.replacingOccurrences(of: "\\n", with: "\n")),
                       buttons: [
                         ButtonState(
-                          role: .cancel,
+                          action: .welcomeMessageDoneButtonTapped,
                           label: {
                             TextState("好")
                           }
