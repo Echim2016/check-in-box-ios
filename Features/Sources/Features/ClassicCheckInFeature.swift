@@ -10,31 +10,120 @@ import SwiftUI
 
 public struct ClassicCheckInFeature: Reducer {
   public struct State: Equatable {
-    var questions: CycleIterator<Question> = CycleIterator(base: [])
+    @PresentationState var alert: AlertState<Action.Alert>?
+    var theme: String = ""
+    var questions: CycleIterator<CheckInItem> = CycleIterator(base: [])
+    var imageUrl: URL? = nil
     var displayQuestion: String? = nil
-    
-    init(questions: CycleIterator<Question> = CycleIterator(base: [])) {
+
+    public init(
+      alert: AlertState<Action.Alert>? = nil,
+      theme: String,
+      questions: CycleIterator<CheckInItem> = CycleIterator(base: []),
+      imageUrl: URL? = nil
+    ) {
+      self.alert = alert
+      self.theme = theme
       self.questions = questions
-      self.displayQuestion = questions.current()?.question
+      self.imageUrl = imageUrl
+      self.displayQuestion = questions.current()?.content
     }
   }
 
   public enum Action: Equatable {
+    case alert(PresentationAction<Alert>)
+    case urlButtonTapped
     case pickButtonTapped
     case previousButtonTapped
+    case trackViewClassicCheckInPageEvent
+
+    public enum Alert {
+      case welcomeMessageDoneButtonTapped
+    }
   }
+
+  @Dependency(\.openURL) var openURL
+  @Dependency(\.firebaseTracker) var firebaseTracker
 
   public var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
-      case .pickButtonTapped:
-        state.displayQuestion = state.questions.next()?.question
+        
+      case .alert(.presented(.welcomeMessageDoneButtonTapped)):
+        firebaseTracker.logEvent(
+          .clickClassicCheckInPgWelcomeMessageDoneBtn(
+            parameters: [
+              "theme": state.theme,
+            ]
+          )
+        )
         return .none
+        
+      case .alert:
+        return .none
+        
+      case .urlButtonTapped:
+        guard
+          let urlString = state.questions.current()?.url,
+          let url = URL(string: urlString)
+        else {
+          return .none
+        }
+
+        firebaseTracker.logEvent(
+          .clickClassicCheckInPgUrlBtn(
+            parameters: [
+              "theme": state.theme,
+              "current_content": state.displayQuestion ?? "",
+              "url": url.absoluteString,
+            ]
+          )
+        )
+
+        return .run { _ in
+          await openURL(url)
+        }
+
+      case .pickButtonTapped:
+        firebaseTracker.logEvent(
+          .clickClassicCheckInPgPickBtn(
+            parameters: [
+              "theme": state.theme,
+              "current_content": state.displayQuestion ?? "",
+              "current_index": state.questions.index,
+              "items_total_count": state.questions.base.count,
+            ]
+          )
+        )
+        state.displayQuestion = state.questions.next()?.content
+        return .none
+
       case .previousButtonTapped:
-        state.displayQuestion = state.questions.back()?.question
+        firebaseTracker.logEvent(
+          .clickClassicCheckInPgPreviousBtn(
+            parameters: [
+              "theme": state.theme,
+              "current_content": state.displayQuestion ?? "",
+              "current_index": state.questions.index,
+              "items_total_count": state.questions.base.count,
+            ]
+          )
+        )
+        state.displayQuestion = state.questions.back()?.content
+        return .none
+        
+      case .trackViewClassicCheckInPageEvent:
+        firebaseTracker.logEvent(
+          .viewClassicCheckInPg(
+            parameters: [
+              "theme": state.theme,
+            ]
+          )
+        )
         return .none
       }
     }
+    .ifLet(\.$alert, action: /Action.alert)
   }
 }
 
@@ -66,7 +155,7 @@ struct ClassicCheckInView: View {
               .background(.white)
               .clipShape(RoundedRectangle(cornerRadius: 12.0))
           }
-          
+
           Button {
             store.send(.pickButtonTapped)
           } label: {
@@ -80,7 +169,35 @@ struct ClassicCheckInView: View {
           }
         }
       }
+      .onAppear {
+        store.send(.trackViewClassicCheckInPageEvent)
+      }
       .padding()
+      .toolbar {
+        ToolbarItem {
+          Button {
+            store.send(.urlButtonTapped)
+          } label: {
+            if let item = store.state.questions.current(),
+               let iconName = item.urlIconName
+            {
+              Image(iconName)
+                .foregroundStyle(.white)
+            }
+          }
+        }
+      }
+      .alert(
+        store: self.store.scope(state: \.$alert, action: { .alert($0) })
+      )
+      .background {
+        NetworkImage(url: store.state.imageUrl)
+          .blur(radius: 2)
+          .overlay {
+            Color.black.opacity(0.6)
+          }
+          .ignoresSafeArea()
+      }
     }
   }
 }
@@ -90,15 +207,16 @@ struct ClassicCheckInView: View {
     ClassicCheckInView(
       store: Store(
         initialState: ClassicCheckInFeature.State(
+          theme: "生活",
           questions: CycleIterator(
             base: [
-              Question(question: "身上使用最久的東西是什麼？"),
-              Question(question: "最喜歡的一部電影？"),
-              Question(question: "今年最期待的一件事情？"),
-              Question(question: "我不為人知的一個奇怪技"),
-              Question(question: "做過最像大人的事情"),
-              Question(question: "今年最快樂的回憶"),
-              Question(question: "最想再去一次的國家/城市")
+              .from(Question(question: "身上使用最久的東西是什麼？")),
+              .from(Question(question: "最喜歡的一部電影？")),
+              .from(Question(question: "今年最期待的一件事情？")),
+              .from(Question(question: "我不為人知的一個奇怪技")),
+              .from(Question(question: "做過最像大人的事情")),
+              .from(Question(question: "今年最快樂的回憶")),
+              .from(Question(question: "最想再去一次的國家/城市")),
             ]
           )
         )

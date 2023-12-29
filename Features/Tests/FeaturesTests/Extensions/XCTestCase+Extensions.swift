@@ -20,10 +20,46 @@ extension XCTestCase {
       Question(question: "最想再去一次的國家/城市"),
     ]
   }
+  
+  func getMockMultipleCheckInItems() -> [CheckInItem] {
+    getMockMultipleQuestions()
+      .map(CheckInItem.from)
+  }
 
   func getMockTags() -> [Tag] {
     [
       Tag(id: "1", title: "Deep", subtitle: "", order: 1, code: "deep", isHidden: false),
+    ]
+  }
+
+  func getMockThemeBoxes() -> [ThemeBox] {
+    [
+      ThemeBox(
+        id: "1",
+        title: "主題盒子標題",
+        subtitle: "主題盒子副標題",
+        authorName: "echim",
+        url: "",
+        imageUrl: "",
+        order: 1,
+        isHidden: true,
+        items: ThemeBoxContentItems(
+          items: [
+            ThemeBoxContentItems.ThemeBoxContentItem(
+              content: "內容1",
+              url: "",
+              order: 1,
+              iconName: "threads"
+            ),
+            ThemeBoxContentItems.ThemeBoxContentItem(
+              content: "內容2",
+              url: "",
+              order: 2,
+              iconName: "threads"
+            ),
+          ]
+        )
+      ),
     ]
   }
 }

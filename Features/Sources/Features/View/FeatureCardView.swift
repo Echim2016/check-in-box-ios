@@ -27,7 +27,7 @@ public struct FeatureCardView: View {
     }
     .frame(maxWidth: .infinity, alignment: .leading)
     .padding()
-    .padding(.top, 120)
+    .padding(.top, 90)
     .background(
       Color.white
         .opacity(0.15)
