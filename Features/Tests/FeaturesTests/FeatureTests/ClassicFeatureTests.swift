@@ -40,7 +40,7 @@ final class ClassicFeatureTests: XCTestCase {
 
   func makeSUT(base: [CheckInItem], index: Int = 0) -> TestStore<ClassicCheckInFeature.State, ClassicCheckInFeature.Action> {
     let store = TestStore(
-      initialState: ClassicCheckInFeature.State(questions: CycleIterator(base: base, index: index))
+      initialState: ClassicCheckInFeature.State(theme: "Test", questions: CycleIterator(base: base, index: index))
     ) {
       ClassicCheckInFeature()
     }
