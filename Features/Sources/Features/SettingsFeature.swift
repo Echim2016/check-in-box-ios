@@ -81,7 +81,6 @@ struct SettingsView: View {
     WithViewStore(self.store, observe: { $0 }) { store in
       List {
         Section {
-          // TODO: app store url & app icon image
           Button {} label: {
             ShareLink(item: store.state.shareLinkContent) {
               /// Problem: Slow loading issue after tapping the share link without any UI indication
@@ -100,7 +99,6 @@ struct SettingsView: View {
             )
           }
 
-          // TODO: redeem view
           Button {
             store.send(.redeemGiftCardButtonTapped)
           } label: {
@@ -108,7 +106,6 @@ struct SettingsView: View {
               .foregroundStyle(.white)
           }
 
-          // TODO: feedback form
           Button {
             store.send(.sendFeedbackButtonTapped)
           } label: {
