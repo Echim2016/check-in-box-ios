@@ -83,6 +83,18 @@ struct ModeListView: View {
               NavigationLink(
                 state: AppFeature.Path.State.classic(
                   ClassicCheckInFeature.State(
+                    alert: AlertState(
+                      title: TextState(verbatim: box.alertTitle),
+                      message: TextState(verbatim: box.alertMessage.replacingOccurrences(of: "\\n", with: "\n")),
+                      buttons: [
+                        ButtonState(
+                          role: .cancel,
+                          label: {
+                            TextState("好")
+                          }
+                        )
+                      ]
+                    ),
                     theme: box.title,
                     questions: CycleIterator(
                       base: box.items.items

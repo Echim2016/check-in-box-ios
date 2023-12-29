@@ -10,12 +10,19 @@ import SwiftUI
 
 public struct ClassicCheckInFeature: Reducer {
   public struct State: Equatable {
+    @PresentationState var alert: AlertState<Action.Alert>?
     var theme: String = ""
     var questions: CycleIterator<CheckInItem> = CycleIterator(base: [])
     var imageUrl: URL? = nil
     var displayQuestion: String? = nil
-    
-    public init(theme: String, questions: CycleIterator<CheckInItem> = CycleIterator(base: []), imageUrl: URL? = nil) {
+
+    public init(
+      alert: AlertState<Action.Alert>? = nil,
+      theme: String,
+      questions: CycleIterator<CheckInItem> = CycleIterator(base: []),
+      imageUrl: URL? = nil
+    ) {
+      self.alert = alert
       self.theme = theme
       self.questions = questions
       self.imageUrl = imageUrl
@@ -24,10 +31,15 @@ public struct ClassicCheckInFeature: Reducer {
   }
 
   public enum Action: Equatable {
+    case alert(PresentationAction<Alert>)
     case urlButtonTapped
     case pickButtonTapped
     case previousButtonTapped
     case trackViewClassicCheckInPageEvent
+
+    public enum Alert {
+      case welcomeMessageViewed
+    }
   }
 
   @Dependency(\.openURL) var openURL
@@ -36,6 +48,9 @@ public struct ClassicCheckInFeature: Reducer {
   public var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
+      case .alert:
+        return .none
+        
       case .urlButtonTapped:
         guard
           let urlString = state.questions.current()?.url,
@@ -49,7 +64,7 @@ public struct ClassicCheckInFeature: Reducer {
             parameters: [
               "theme": state.theme,
               "current_content": state.displayQuestion ?? "",
-              "url": url.absoluteString
+              "url": url.absoluteString,
             ]
           )
         )
@@ -57,7 +72,7 @@ public struct ClassicCheckInFeature: Reducer {
         return .run { _ in
           await openURL(url)
         }
-        
+
       case .pickButtonTapped:
         firebaseTracker.logEvent(
           .clickClassicCheckInPgPickBtn(
@@ -65,13 +80,13 @@ public struct ClassicCheckInFeature: Reducer {
               "theme": state.theme,
               "current_content": state.displayQuestion ?? "",
               "current_index": state.questions.index,
-              "items_total_count": state.questions.base.count
+              "items_total_count": state.questions.base.count,
             ]
           )
         )
         state.displayQuestion = state.questions.next()?.content
         return .none
-        
+
       case .previousButtonTapped:
         firebaseTracker.logEvent(
           .clickClassicCheckInPgPreviousBtn(
@@ -79,7 +94,7 @@ public struct ClassicCheckInFeature: Reducer {
               "theme": state.theme,
               "current_content": state.displayQuestion ?? "",
               "current_index": state.questions.index,
-              "items_total_count": state.questions.base.count
+              "items_total_count": state.questions.base.count,
             ]
           )
         )
@@ -90,13 +105,14 @@ public struct ClassicCheckInFeature: Reducer {
         firebaseTracker.logEvent(
           .viewClassicCheckInPg(
             parameters: [
-              "theme": state.theme
+              "theme": state.theme,
             ]
           )
         )
         return .none
       }
     }
+    .ifLet(\.$alert, action: /Action.alert)
   }
 }
 
@@ -152,13 +168,17 @@ struct ClassicCheckInView: View {
             store.send(.urlButtonTapped)
           } label: {
             if let item = store.state.questions.current(),
-               let iconName = item.urlIconName {
+               let iconName = item.urlIconName
+            {
               Image(iconName)
                 .foregroundStyle(.white)
             }
           }
         }
       }
+      .alert(
+        store: self.store.scope(state: \.$alert, action: { .alert($0) })
+      )
       .background {
         NetworkImage(url: store.state.imageUrl)
           .blur(radius: 2)
@@ -176,7 +196,7 @@ struct ClassicCheckInView: View {
     ClassicCheckInView(
       store: Store(
         initialState: ClassicCheckInFeature.State(
-          theme: "生活", 
+          theme: "生活",
           questions: CycleIterator(
             base: [
               .from(Question(question: "身上使用最久的東西是什麼？")),
