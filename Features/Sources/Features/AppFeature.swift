@@ -26,7 +26,7 @@ public struct AppFeature: Reducer {
     case path(StackAction<Path.State, Path.Action>)
     case modeList(ModeListFeature.Action)
     case loadFromRemote
-    case receivedQuestions(IdentifiedArrayOf<Tag>, IdentifiedArrayOf<Question>)
+    case receivedQuestions(IdentifiedArrayOf<ThemeBox>, IdentifiedArrayOf<Tag>, IdentifiedArrayOf<Question>)
   }
 
   public struct Path: Reducer {
@@ -48,7 +48,8 @@ public struct AppFeature: Reducer {
   public init() {}
 
   @Dependency(\.firebaseCheckInLoader) var firebaseCheckInLoader
-
+  @Dependency(\.giftCardAccessManager) var giftCardAccessManager
+  
   public var body: some ReducerOf<Self> {
     Scope(state: \.modeList, action: /Action.modeList) {
       ModeListFeature()
@@ -58,21 +59,23 @@ public struct AppFeature: Reducer {
       switch action {
       case .modeList(.pullToRefreshTriggered):
         return .send(.loadFromRemote)
-
+        
       case .modeList:
         return .none
-
+        
       case .loadFromRemote:
         return .run { send in
           try await send(
             .receivedQuestions(
+              await firebaseCheckInLoader.loadThemeBoxes("Theme_Boxes", giftCardAccessManager.isFullAccess("theme_box_full_access")),
               await firebaseCheckInLoader.loadTags("Question_Tags"),
               await firebaseCheckInLoader.loadQuestions("Questions")
             )
           )
         }
-
-      case let .receivedQuestions(tags, questions):
+        
+      case let .receivedQuestions(themeBoxes, tags, questions):
+        state.modeList.themeBoxes = themeBoxes
         state.modeList.tags = tags
         state.modeList.questions = questions
         return .none
@@ -126,9 +129,7 @@ public struct AppView: View {
   AppView(
     store: Store(
       initialState: AppFeature.State(
-        modeList: ModeListFeature.State(
-          featureCards: FeatureCard.default
-        )
+        modeList: ModeListFeature.State()
       )
     ) {
       AppFeature()

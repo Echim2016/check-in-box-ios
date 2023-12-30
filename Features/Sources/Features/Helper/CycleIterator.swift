@@ -7,12 +7,12 @@
 
 import Foundation
 
-class CycleIterator<T: Equatable>: Equatable {
+public class CycleIterator<T: Equatable>: Equatable {
   let queue = DispatchQueue(label: "serial.queue")
   var base: [T] = []
   var index: Int = 0
 
-  init(base: [T], index: Int = 0) {
+  public init(base: [T], index: Int = 0) {
     self.base = base
     self.index = index
   }
@@ -57,7 +57,7 @@ class CycleIterator<T: Equatable>: Equatable {
     }
   }
 
-  static func == (lhs: CycleIterator<T>, rhs: CycleIterator<T>) -> Bool {
+  public static func == (lhs: CycleIterator<T>, rhs: CycleIterator<T>) -> Bool {
     lhs.base == rhs.base && lhs.index == rhs.index
   }
 }

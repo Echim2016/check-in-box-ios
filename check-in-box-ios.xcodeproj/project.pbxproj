@@ -12,7 +12,7 @@
 		9C873D0D2B299553008D8277 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C873D0C2B299553008D8277 /* Preview Assets.xcassets */; };
 		9C873D172B299553008D8277 /* CheckInBoxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C873D162B299553008D8277 /* CheckInBoxTests.swift */; };
 		9C902E032B340D6700EA5B9F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9C902E022B340D6700EA5B9F /* GoogleService-Info.plist */; };
-		9CAACF5D2B343A35000F86C3 /* Features in Frameworks */ = {isa = PBXBuildFile; productRef = 9CAACF5C2B343A35000F86C3 /* Features */; };
+		9CB330C92B3EA306002B861B /* Features in Frameworks */ = {isa = PBXBuildFile; productRef = 9CB330C82B3EA306002B861B /* Features */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,7 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9CAACF5D2B343A35000F86C3 /* Features in Frameworks */,
+				9CB330C92B3EA306002B861B /* Features in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +121,7 @@
 				9C873CFE2B299551008D8277 /* Sources */,
 				9C873CFF2B299551008D8277 /* Frameworks */,
 				9C873D002B299551008D8277 /* Resources */,
+				9CB330C72B3EA128002B861B /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -128,7 +129,7 @@
 			);
 			name = "check-in-box-ios";
 			packageProductDependencies = (
-				9CAACF5C2B343A35000F86C3 /* Features */,
+				9CB330C82B3EA306002B861B /* Features */,
 			);
 			productName = "check-in-box-ios";
 			productReference = 9C873D022B299551008D8277 /* check-in-box-ios.app */;
@@ -210,6 +211,31 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		9CB330C72B3EA128002B861B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
+				"$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		9C873CFE2B299551008D8277 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -272,7 +298,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -364,6 +390,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "check-in-box-ios/Preview\\ Content";
 				DEVELOPMENT_TEAM = VCPLDP9723;
 				ENABLE_PREVIEWS = YES;
@@ -378,7 +405,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.2;
+				MARKETING_VERSION = 0.1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.echim.check-in-box-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -408,7 +435,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.2;
+				MARKETING_VERSION = 0.1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.echim.check-in-box-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -490,7 +517,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		9CAACF5C2B343A35000F86C3 /* Features */ = {
+		9CB330C82B3EA306002B861B /* Features */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Features;
 		};
