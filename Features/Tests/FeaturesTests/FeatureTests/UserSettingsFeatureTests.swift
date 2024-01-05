@@ -24,6 +24,12 @@ final class UserSettingsFeatureTests: XCTestCase {
     arrange(store, toAssert: .clickSettingsPgAuthorProfileBtn(parameters: [:]))
     await store.send(.authorProfileButtonTapped)
   }
+  
+  func test_shareButton_trackEventWhenTapped() async {
+    let store = makeSUT()
+    arrange(store, toAssert: .clickSettingsPgShareBtn(parameters: [:]))
+    await store.send(.shareButtonTapped)
+  }
 }
 
 extension UserSettingsFeatureTests {
