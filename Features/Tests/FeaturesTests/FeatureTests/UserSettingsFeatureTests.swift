@@ -31,6 +31,14 @@ final class UserSettingsFeatureTests: XCTestCase {
     XCTAssertEqual(store.state.shareLinkUrl, .shareLinkUrl)
     await store.send(.shareButtonTapped)
   }
+  
+  func test_redeemGiftCardButton_presentGiftCardInoutBoxPage() async {
+    let store = makeSUT()
+    arrange(store, toAssert: .clickSettingsPgGiftCardBtn(parameters: [:]))
+    await store.send(.redeemGiftCardButtonTapped) {
+      $0.presentGiftCardInputBoxPage = InputBoxFeature.State()
+    }
+  }
 }
 
 extension UserSettingsFeatureTests {
