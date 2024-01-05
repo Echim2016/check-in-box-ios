@@ -14,40 +14,41 @@ final class UserSettingsFeatureTests: XCTestCase {
   func test_openURL_navigateToFeedbackForm() async {
     let store = makeSUT()
     arrange(store, toAssert: .feedbackFormUrl)
-    arrange(store, toAssert: .clickSettingsPgFeedbackFormBtn(parameters: [:]))
+    arrangeTrackerOf(store, event: .clickSettingsPgFeedbackFormBtn(parameters: [:]))
     await store.send(.sendFeedbackButtonTapped)
   }
 
   func test_openURL_navigateToAuthorProfile() async {
     let store = makeSUT()
     arrange(store, toAssert: .authorProfileUrl)
-    arrange(store, toAssert: .clickSettingsPgAuthorProfileBtn(parameters: [:]))
+    arrangeTrackerOf(store, event: .clickSettingsPgAuthorProfileBtn(parameters: [:]))
     await store.send(.authorProfileButtonTapped)
   }
 
   func test_shareButton_trackEventWhenTapped() async {
     let store = makeSUT()
-    arrange(store, toAssert: .clickSettingsPgShareBtn(parameters: [:]))
+    arrangeTrackerOf(store, event: .clickSettingsPgShareBtn(parameters: [:]))
     XCTAssertEqual(store.state.shareLinkUrl, .shareLinkUrl)
     await store.send(.shareButtonTapped)
   }
 
   func test_redeemGiftCardButton_presentGiftCardInoutBoxPage() async {
     let store = makeSUT()
-    arrange(store, toAssert: .clickSettingsPgGiftCardBtn(parameters: [:]))
+    arrangeTrackerOf(store, event: .clickSettingsPgGiftCardBtn(parameters: [:]))
     await store.send(.redeemGiftCardButtonTapped) {
       $0.presentGiftCardInputBoxPage = InputBoxFeature.State()
     }
   }
-  
+
   func test_settingPage_trackViewEvent() async {
     let store = makeSUT()
-    arrange(store, toAssert: .viewSettingsPg(parameters: [:]))
+    arrangeTrackerOf(store, event: .viewSettingsPg(parameters: [:]))
     await store.send(.trackViewSettingsPageEvent)
   }
 }
 
 // MARK: - Tests for gift card input box page
+
 extension UserSettingsFeatureTests {
   func test_giftCardInputBoxPage_validActivationKeySubmitted() async {
     let activationKey = "valid_key"
@@ -59,7 +60,7 @@ extension UserSettingsFeatureTests {
       )
     )
     arrange(store, toAssert: activationKey)
-    arrange(store, toAssert: nil)
+    arrangeTrackerOf(store, event: nil)
 
     await store.send(.presentGiftCardInputBoxPage(.presented(.activateButtonTapped)))
     await store.receive(.presentGiftCardInputBoxPage(.presented(.activationKeySubmitted(activationKey)))) { state in
@@ -67,7 +68,7 @@ extension UserSettingsFeatureTests {
       state.hapticFeedbackTrigger = true
     }
   }
-  
+
   func test_giftCardInputBoxPage_emptyActivationKeySubmitted() async {
     let activationKey = ""
     let store = makeSUT(
@@ -78,11 +79,11 @@ extension UserSettingsFeatureTests {
       )
     )
     arrange(store, toAssert: activationKey)
-    arrange(store, toAssert: nil)
+    arrangeTrackerOf(store, event: nil)
 
     await store.send(.presentGiftCardInputBoxPage(.presented(.activateButtonTapped)))
   }
-  
+
   func test_giftCardInputBoxPage_keyChanged() async {
     let activationKey = ""
     let store = makeSUT(
@@ -93,7 +94,7 @@ extension UserSettingsFeatureTests {
       )
     )
     arrange(store, toAssert: activationKey)
-    arrange(store, toAssert: nil)
+    arrangeTrackerOf(store, event: nil)
 
     let modifiedKey = "k"
     await store.send(.presentGiftCardInputBoxPage(.presented(.keyChanged(modifiedKey)))) {
@@ -128,9 +129,9 @@ extension UserSettingsFeatureTests {
     )
   }
 
-  func arrange(
+  func arrangeTrackerOf(
     _ store: TestStoreOf<SettingsFeature>,
-    toAssert event: FirebaseEvent?
+    event: FirebaseEvent?
   ) {
     store.dependencies.firebaseTracker = FirebaseTracker(
       logEvent: { trackingEvent in
