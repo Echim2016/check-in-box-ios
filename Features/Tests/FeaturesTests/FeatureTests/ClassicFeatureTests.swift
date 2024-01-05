@@ -72,10 +72,10 @@ final class ClassicFeatureTests: XCTestCase {
     }
   }
   
-  func test_classicCheckIn_urlButtonTapped() async {
+  func test_classicCheckIn_urlButtonTappedForValidUrl() async {
     let testUrl = "https://test.com"
     let questions = [
-      CheckInItem(id: "1", content: "content", url: testUrl)
+      CheckInItem(id: "1", content: "content", url: testUrl),
     ]
     let store = makeSUT(base: questions)
     arrangeTrackerOf(
@@ -89,6 +89,16 @@ final class ClassicFeatureTests: XCTestCase {
       )
     )
     arrangeOpenUrlOf(store, destinationUrl: URL(string: testUrl)!)
+
+    await store.send(.urlButtonTapped)
+  }
+  
+  func test_classicCheckIn_urlButtonTappedForInvalidUrl() async {
+    let invalidUrl = ""
+    let questions = [
+      CheckInItem(id: "1", content: "content", url: invalidUrl),
+    ]
+    let store = makeSUT(base: questions)
 
     await store.send(.urlButtonTapped)
   }
@@ -135,13 +145,11 @@ final class ClassicFeatureTests: XCTestCase {
   
   func arrangeTrackerOf(
     _ store: TestStoreOf<ClassicCheckInFeature>,
-    event: FirebaseEvent?
+    event: FirebaseEvent
   ) {
     store.dependencies.firebaseTracker = FirebaseTracker(
       logEvent: { trackingEvent in
-        if let event {
-          XCTAssertEqual(trackingEvent, event)
-        }
+        XCTAssertEqual(trackingEvent, event)
       }
     )
   }
