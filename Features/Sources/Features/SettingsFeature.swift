@@ -14,7 +14,7 @@ public struct SettingsFeature: Reducer {
     var feedbackFormUrl: URL = .feedbackFormUrl
     var authorProfileUrl: URL = .authorProfileUrl
     var authorProfileImageUrl: URL? = .authorProfileImageUrl
-    var shareLinkContent: String = "https://portaly.cc/check-in-box"
+    var shareLinkUrl: URL = .shareLinkUrl
     var hapticFeedbackTrigger: Bool = false
   }
 
@@ -84,7 +84,7 @@ struct SettingsView: View {
       List {
         Section {
           Button {} label: {
-            ShareLink(item: store.state.shareLinkContent) {
+            ShareLink(item: store.state.shareLinkUrl) {
               /// Problem: Slow loading issue after tapping the share link without any UI indication
               /// Solution: Implement wide label for better pressed state indication
               HStack {
