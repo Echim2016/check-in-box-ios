@@ -38,6 +38,17 @@ final class ClassicFeatureTests: XCTestCase {
     }
   }
 
+  func test_classicCheckIn_trackViewEvent() async {
+    let store = makeSUT(base: [])
+    store.dependencies.firebaseTracker = FirebaseTracker(
+      logEvent: { event in
+        XCTAssertEqual(event, .viewClassicCheckInPg(parameters: ["theme": "Test"]))
+      }
+    )
+
+    await store.send(.trackViewClassicCheckInPageEvent)
+  }
+
   func makeSUT(base: [CheckInItem], index: Int = 0) -> TestStore<ClassicCheckInFeature.State, ClassicCheckInFeature.Action> {
     let store = TestStore(
       initialState: ClassicCheckInFeature.State(
