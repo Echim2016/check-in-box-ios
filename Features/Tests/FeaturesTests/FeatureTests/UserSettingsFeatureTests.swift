@@ -22,7 +22,9 @@ final class UserSettingsFeatureTests: XCTestCase {
     assert(store, open: .authorProfileUrl)
     await store.send(.authorProfileButtonTapped)
   }
-  
+}
+
+extension UserSettingsFeatureTests {
   func makeSUT() -> TestStoreOf<SettingsFeature> {
     TestStore(
       initialState: SettingsFeature.State(),
