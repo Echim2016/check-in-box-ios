@@ -95,4 +95,19 @@ final class ModelListFeatureTests: XCTestCase {
       $0.modeList.questions = updatedQuestions
     }
   }
+  
+  func test_modeList_trackViewEvent() async {
+    let store = TestStore(
+      initialState: ModeListFeature.State(),
+      reducer: { ModeListFeature() }
+    ) {
+      $0.firebaseTracker = FirebaseTracker(
+        logEvent: { event in
+          XCTAssertEqual(event, .viewModeListPg(parameters: [:]))
+        }
+      )
+    }
+
+    await store.send(.trackViewModeListEvent)
+  }
 }
