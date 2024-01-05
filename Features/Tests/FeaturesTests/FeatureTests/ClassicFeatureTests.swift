@@ -32,6 +32,17 @@ final class ClassicFeatureTests: XCTestCase {
   func test_classicCheckIn_pickedPreviousQuestionFromDefaultState() async {
     let questions = getMockMultipleCheckInItems()
     let store = makeSUT(base: questions)
+    arrangeTrackerOf(
+      store,
+      event: .clickClassicCheckInPgPreviousBtn(
+        parameters: [
+          "theme": "Test",
+          "current_content": questions.first?.content,
+          "current_index": 0,
+          "items_total_count": questions.count,
+        ]
+      )
+    )
 
     await store.send(.previousButtonTapped) {
       $0.displayQuestion = questions.last?.content
@@ -60,5 +71,18 @@ final class ClassicFeatureTests: XCTestCase {
       $0.firebaseTracker = FirebaseTracker(logEvent: { _ in })
     }
     return store
+  }
+  
+  func arrangeTrackerOf(
+    _ store: TestStoreOf<ClassicCheckInFeature>,
+    event: FirebaseEvent?
+  ) {
+    store.dependencies.firebaseTracker = FirebaseTracker(
+      logEvent: { trackingEvent in
+        if let event {
+          XCTAssertEqual(trackingEvent, event)
+        }
+      }
+    )
   }
 }
