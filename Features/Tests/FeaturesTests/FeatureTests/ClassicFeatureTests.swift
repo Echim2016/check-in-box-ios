@@ -71,6 +71,27 @@ final class ClassicFeatureTests: XCTestCase {
       $0.displayQuestion = questions.last?.content
     }
   }
+  
+  func test_classicCheckIn_urlButtonTapped() async {
+    let testUrl = "https://test.com"
+    let questions = [
+      CheckInItem(id: "1", content: "content", url: testUrl)
+    ]
+    let store = makeSUT(base: questions)
+    arrangeTrackerOf(
+      store,
+      event: .clickClassicCheckInPgUrlBtn(
+        parameters: [
+          "theme": "Test",
+          "current_content": questions.first?.content,
+          "url": testUrl,
+        ]
+      )
+    )
+    arrangeOpenUrlOf(store, destinationUrl: URL(string: testUrl)!)
+
+    await store.send(.urlButtonTapped)
+  }
 
   func test_classicCheckIn_trackViewEvent() async {
     let store = makeSUT(base: [])
@@ -98,6 +119,18 @@ final class ClassicFeatureTests: XCTestCase {
       )
     }
     return store
+  }
+  
+  func arrangeOpenUrlOf(
+    _ store: TestStoreOf<ClassicCheckInFeature>,
+    destinationUrl: URL
+  ) {
+    store.dependencies.openURL = OpenURLEffect(
+      handler: { url in
+        XCTAssertEqual(url, destinationUrl)
+        return true
+      }
+    )
   }
   
   func arrangeTrackerOf(
