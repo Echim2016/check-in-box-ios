@@ -12,19 +12,8 @@ import XCTest
 @MainActor
 final class UserSettingsFeatureTests: XCTestCase {
   func test_openURL_navigateToFeedbackForm() async {
-    let store = TestStore(
-      initialState: SettingsFeature.State(),
-      reducer: { SettingsFeature() }
-    ) {
-      $0.openURL = OpenURLEffect(
-        handler: { url in
-          XCTAssertEqual(url, .feedbackFormUrl)
-          return true
-        }
-      )
-      $0.firebaseTracker = FirebaseTracker(logEvent: { _ in })
-    }
-
+    let store = makeSUT()
+    assert(store, open: .feedbackFormUrl)
     await store.send(.sendFeedbackButtonTapped)
   }
   
