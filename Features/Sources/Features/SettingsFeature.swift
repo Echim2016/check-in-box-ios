@@ -12,7 +12,7 @@ public struct SettingsFeature: Reducer {
   public struct State: Equatable {
     @PresentationState var presentGiftCardInputBoxPage: InputBoxFeature.State?
     var feedbackFormUrl: URL = .feedbackFormUrl
-    var authorProfileUrl: URL? = URL(string: "https://pbs.twimg.com/profile_images/1473910380540088321/Cw9ziBcy_400x400.jpg")
+    var authorProfileImageUrl: URL? = .authorProfileImageUrl
     var shareLinkContent: String = "https://portaly.cc/check-in-box"
     var hapticFeedbackTrigger: Bool = false
   }
@@ -121,7 +121,7 @@ struct SettingsView: View {
           Button {
             store.send(.authorProfileButtonTapped)
           } label: {
-            ProfileCellView(url: store.state.authorProfileUrl)
+            ProfileCellView(url: store.state.authorProfileImageUrl)
           }
           .padding(.vertical, 2)
 
