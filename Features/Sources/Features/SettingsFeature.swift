@@ -11,6 +11,7 @@ import SwiftUI
 public struct SettingsFeature: Reducer {
   public struct State: Equatable {
     @PresentationState var presentGiftCardInputBoxPage: InputBoxFeature.State?
+    var feedbackFormUrl: URL = .feedbackFormUrl
     var authorProfileUrl: URL? = URL(string: "https://pbs.twimg.com/profile_images/1473910380540088321/Cw9ziBcy_400x400.jpg")
     var shareLinkContent: String = "https://portaly.cc/check-in-box"
     var hapticFeedbackTrigger: Bool = false
@@ -45,8 +46,8 @@ public struct SettingsFeature: Reducer {
 
       case .sendFeedbackButtonTapped:
         firebaseTracker.logEvent(.clickSettingsPgFeedbackFormBtn(parameters: [:]))
-        return .run { _ in
-          let url = URL(string: "https://forms.gle/Vr4MjtowWPxBxr5r9")!
+        return .run { [state] _ in
+          let url = state.feedbackFormUrl
           await openURL(url)
         }
 

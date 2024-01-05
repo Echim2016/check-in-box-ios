@@ -18,7 +18,7 @@ final class UserSettingsFeatureTests: XCTestCase {
     ) {
       $0.openURL = OpenURLEffect(
         handler: { url in
-          XCTAssertEqual(url, URL(string: "https://forms.gle/Vr4MjtowWPxBxr5r9")!)
+          XCTAssertEqual(url, .feedbackFormUrl)
           return true
         }
       )
