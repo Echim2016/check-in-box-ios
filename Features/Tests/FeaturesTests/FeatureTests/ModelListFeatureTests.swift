@@ -27,6 +27,15 @@ final class ModelListFeatureTests: XCTestCase {
       $0.presentSettingsPage = nil
     }
   }
+  
+  func test_settingsSheet_dismissed() async {
+    let store = makeSUT(isSettingsPagePresented: true)
+    arrangeTrackerOf(store, event: .viewModeListPg(parameters: [:]))
+
+    await store.send(.presentSettingsPage(.dismiss)) {
+      $0.presentSettingsPage = nil
+    }
+  }
 
   func test_questions_reloadWhenPullToRefresh() async {
     let questions = IdentifiedArray(uniqueElements: getMockMultipleQuestions())
