@@ -59,7 +59,7 @@ extension UserSettingsFeatureTests {
         )
       )
     )
-    arrange(store, toAssert: activationKey)
+    arrangeGiftCardAccessManagerOf(store, activationKey: activationKey)
     arrangeTrackerOf(store, event: nil)
 
     await store.send(.presentGiftCardInputBoxPage(.presented(.activateButtonTapped)))
@@ -78,7 +78,7 @@ extension UserSettingsFeatureTests {
         )
       )
     )
-    arrange(store, toAssert: activationKey)
+    arrangeGiftCardAccessManagerOf(store, activationKey: activationKey)
     arrangeTrackerOf(store, event: nil)
 
     await store.send(.presentGiftCardInputBoxPage(.presented(.activateButtonTapped)))
@@ -93,7 +93,7 @@ extension UserSettingsFeatureTests {
         )
       )
     )
-    arrange(store, toAssert: activationKey)
+    arrangeGiftCardAccessManagerOf(store, activationKey: activationKey)
     arrangeTrackerOf(store, event: nil)
 
     let modifiedKey = "k"
@@ -142,9 +142,9 @@ extension UserSettingsFeatureTests {
     )
   }
   
-  func arrange(
+  func arrangeGiftCardAccessManagerOf(
     _ store: TestStoreOf<SettingsFeature>,
-    toAssert activationKey: String
+    activationKey: String
   ) {
     store.dependencies.giftCardAccessManager = GiftCardAccessManager(
       isFullAccess: { key in
