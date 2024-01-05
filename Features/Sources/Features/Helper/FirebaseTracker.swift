@@ -31,7 +31,7 @@ extension DependencyValues {
   }
 }
 
-enum FirebaseEvent {
+enum FirebaseEvent: Equatable {
   case viewModeListPg(parameters: [String: Any])
   case viewClassicCheckInPg(parameters: [String: Any])
   case viewSettingsPg(parameters: [String: Any])
@@ -86,5 +86,9 @@ enum FirebaseEvent {
          let .clickSettingsPgAuthorProfileBtn(parameters: parameters):
       return parameters
     }
+  }
+  
+  static func == (lhs: FirebaseEvent, rhs: FirebaseEvent) -> Bool {
+    lhs.name == rhs.name && (lhs.parameters as NSDictionary) == (rhs.parameters as NSDictionary)
   }
 }

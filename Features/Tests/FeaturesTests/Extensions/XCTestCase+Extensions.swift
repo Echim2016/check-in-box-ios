@@ -38,6 +38,8 @@ extension XCTestCase {
         id: "1",
         title: "主題盒子標題",
         subtitle: "主題盒子副標題",
+        alertTitle: "",
+        alertMessage: "",
         authorName: "echim",
         url: "",
         imageUrl: "",

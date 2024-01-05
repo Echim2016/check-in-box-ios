@@ -11,8 +11,10 @@ import SwiftUI
 public struct SettingsFeature: Reducer {
   public struct State: Equatable {
     @PresentationState var presentGiftCardInputBoxPage: InputBoxFeature.State?
-    var authorProfileUrl: URL? = URL(string: "https://pbs.twimg.com/profile_images/1473910380540088321/Cw9ziBcy_400x400.jpg")
-    var shareLinkContent: String = "https://portaly.cc/check-in-box"
+    var feedbackFormUrl: URL = .feedbackFormUrl
+    var authorProfileUrl: URL = .authorProfileUrl
+    var authorProfileImageUrl: URL? = .authorProfileImageUrl
+    var shareLinkUrl: URL = .shareLinkUrl
     var hapticFeedbackTrigger: Bool = false
   }
 
@@ -34,8 +36,8 @@ public struct SettingsFeature: Reducer {
       switch action {
       case .authorProfileButtonTapped:
         firebaseTracker.logEvent(.clickSettingsPgAuthorProfileBtn(parameters: [:]))
-        return .run { _ in
-          let url = URL(string: "https://twitter.com/echim2021")!
+        return .run { [state] _ in
+          let url = state.authorProfileUrl
           await openURL(url)
         }
 
@@ -45,12 +47,13 @@ public struct SettingsFeature: Reducer {
 
       case .sendFeedbackButtonTapped:
         firebaseTracker.logEvent(.clickSettingsPgFeedbackFormBtn(parameters: [:]))
-        return .run { _ in
-          let url = URL(string: "https://forms.gle/Vr4MjtowWPxBxr5r9")!
+        return .run { [state] _ in
+          let url = state.feedbackFormUrl
           await openURL(url)
         }
 
       case .redeemGiftCardButtonTapped:
+        firebaseTracker.logEvent(.clickSettingsPgGiftCardBtn(parameters: [:]))
         state.presentGiftCardInputBoxPage = InputBoxFeature.State()
         return .none
 
@@ -61,7 +64,6 @@ public struct SettingsFeature: Reducer {
         return .none
 
       case .presentGiftCardInputBoxPage:
-        firebaseTracker.logEvent(.clickSettingsPgGiftCardBtn(parameters: [:]))
         return .none
 
       case .trackViewSettingsPageEvent:
@@ -82,7 +84,7 @@ struct SettingsView: View {
       List {
         Section {
           Button {} label: {
-            ShareLink(item: store.state.shareLinkContent) {
+            ShareLink(item: store.state.shareLinkUrl) {
               /// Problem: Slow loading issue after tapping the share link without any UI indication
               /// Solution: Implement wide label for better pressed state indication
               HStack {
@@ -120,7 +122,7 @@ struct SettingsView: View {
           Button {
             store.send(.authorProfileButtonTapped)
           } label: {
-            ProfileCellView(url: store.state.authorProfileUrl)
+            ProfileCellView(url: store.state.authorProfileImageUrl)
           }
           .padding(.vertical, 2)
 
