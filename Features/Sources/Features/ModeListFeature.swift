@@ -46,6 +46,7 @@ public struct ModeListFeature: Reducer {
         return .none
       case .settingsSheetDoneButtonTapped:
         state.presentSettingsPage = nil
+        firebaseTracker.logEvent(.viewModeListPg(parameters: [:]))
         return .none
         
       case .presentSettingsPage(.dismiss):
