@@ -41,6 +41,7 @@ final class UserSettingsFeatureTests: XCTestCase {
   }
 }
 
+// MARK: - Tests for gift card input box page
 extension UserSettingsFeatureTests {
   func test_giftCardInputBoxPage_validActivationKeySubmitted() async {
     let activationKey = "valid_key"
@@ -72,6 +73,23 @@ extension UserSettingsFeatureTests {
     arrange(store, toAssert: activationKey)
 
     await store.send(.presentGiftCardInputBoxPage(.presented(.activateButtonTapped)))
+  }
+  
+  func test_giftCardInputBoxPage_keyChanged() async {
+    let activationKey = ""
+    let store = makeSUT(
+      state: SettingsFeature.State(
+        presentGiftCardInputBoxPage: InputBoxFeature.State(
+          activationKey: activationKey
+        )
+      )
+    )
+    arrange(store, toAssert: activationKey)
+
+    let modifiedKey = "k"
+    await store.send(.presentGiftCardInputBoxPage(.presented(.keyChanged(modifiedKey)))) {
+      $0.presentGiftCardInputBoxPage = InputBoxFeature.State(activationKey: modifiedKey)
+    }
   }
 }
 
