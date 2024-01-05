@@ -12,11 +12,7 @@ import XCTest
 @MainActor
 final class ModelListFeatureTests: XCTestCase {
   func test_settingsSheet_presentedWhenSettingButtonTapped() async {
-    let store = TestStore(
-      initialState: ModeListFeature.State()
-    ) {
-      ModeListFeature()
-    }
+    let store = makeSUT()
 
     await store.send(.settingsButtonTapped) {
       $0.presentSettingsPage = SettingsFeature.State()
@@ -24,7 +20,7 @@ final class ModelListFeatureTests: XCTestCase {
   }
 
   func test_settingsSheet_dismissedWhenDoneButtonTapped() async {
-    let store = makeSUT()
+    let store = makeSUT(isSettingsPagePresented: true)
     arrangeTrackerOf(store, event: .viewModeListPg(parameters: [:]))
 
     await store.send(.settingsSheetDoneButtonTapped) {
@@ -106,10 +102,10 @@ final class ModelListFeatureTests: XCTestCase {
     await store.send(.trackViewModeListEvent)
   }
   
-  func makeSUT() -> TestStoreOf<ModeListFeature> {
+  func makeSUT(isSettingsPagePresented: Bool = false) -> TestStoreOf<ModeListFeature> {
     TestStore(
       initialState: ModeListFeature.State(
-        presentSettingsPage: SettingsFeature.State()
+        presentSettingsPage: isSettingsPagePresented ? SettingsFeature.State() : nil
       ),
       reducer: { ModeListFeature() }
     ) {
