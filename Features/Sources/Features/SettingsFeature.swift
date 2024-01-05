@@ -53,6 +53,7 @@ public struct SettingsFeature: Reducer {
         }
 
       case .redeemGiftCardButtonTapped:
+        firebaseTracker.logEvent(.clickSettingsPgGiftCardBtn(parameters: [:]))
         state.presentGiftCardInputBoxPage = InputBoxFeature.State()
         return .none
 
@@ -63,7 +64,6 @@ public struct SettingsFeature: Reducer {
         return .none
 
       case .presentGiftCardInputBoxPage:
-        firebaseTracker.logEvent(.clickSettingsPgGiftCardBtn(parameters: [:]))
         return .none
 
       case .trackViewSettingsPageEvent:
