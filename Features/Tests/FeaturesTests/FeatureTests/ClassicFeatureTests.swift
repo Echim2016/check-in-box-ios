@@ -14,6 +14,17 @@ final class ClassicFeatureTests: XCTestCase {
   func test_classicCheckIn_pickedQuestionFromDefaultState() async {
     let questions = getMockMultipleCheckInItems()
     let store = makeSUT(base: questions)
+    arrangeTrackerOf(
+      store,
+      event: .clickClassicCheckInPgPickBtn(
+        parameters: [
+          "theme": "Test",
+          "current_content": questions.first?.content,
+          "current_index": 0,
+          "items_total_count": questions.count,
+        ]
+      )
+    )
 
     await store.send(.pickButtonTapped) {
       $0.displayQuestion = questions[1].content
@@ -22,7 +33,19 @@ final class ClassicFeatureTests: XCTestCase {
 
   func test_classicCheckIn_pickedQuestionFromLastIndex() async {
     let questions = getMockMultipleCheckInItems()
-    let store = makeSUT(base: questions, index: questions.count - 1)
+    let lastIndex = questions.count - 1
+    let store = makeSUT(base: questions, index: lastIndex)
+    arrangeTrackerOf(
+      store,
+      event: .clickClassicCheckInPgPickBtn(
+        parameters: [
+          "theme": "Test",
+          "current_content": questions[lastIndex].content,
+          "current_index": lastIndex,
+          "items_total_count": questions.count,
+        ]
+      )
+    )
 
     await store.send(.pickButtonTapped) {
       $0.displayQuestion = questions.first?.content
@@ -68,7 +91,11 @@ final class ClassicFeatureTests: XCTestCase {
       ),
       reducer: { ClassicCheckInFeature() }
     ) {
-      $0.firebaseTracker = FirebaseTracker(logEvent: { _ in })
+      $0.firebaseTracker = FirebaseTracker(
+        logEvent: { event in
+          XCTFail("\(event) is not handled")
+        }
+      )
     }
     return store
   }
