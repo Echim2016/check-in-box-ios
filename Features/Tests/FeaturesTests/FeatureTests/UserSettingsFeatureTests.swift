@@ -27,4 +27,31 @@ final class UserSettingsFeatureTests: XCTestCase {
 
     await store.send(.sendFeedbackButtonTapped)
   }
+  
+  func test_openURL_navigateToAuthorProfile() async {
+    let store = makeSUT()
+    assert(store, open: .authorProfileUrl)
+    await store.send(.authorProfileButtonTapped)
+  }
+  
+  func makeSUT() -> TestStoreOf<SettingsFeature> {
+    TestStore(
+      initialState: SettingsFeature.State(),
+      reducer: { SettingsFeature() }
+    ) {
+      $0.firebaseTracker = FirebaseTracker(logEvent: { _ in })
+    }
+  }
+  
+  func assert(
+    _ store: TestStoreOf<SettingsFeature>,
+    open destinationUrl: URL
+  ) {
+    store.dependencies.openURL = OpenURLEffect(
+      handler: { url in
+        XCTAssertEqual(url, destinationUrl)
+        return true
+      }
+    )
+  }
 }

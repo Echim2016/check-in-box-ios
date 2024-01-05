@@ -12,6 +12,7 @@ public struct SettingsFeature: Reducer {
   public struct State: Equatable {
     @PresentationState var presentGiftCardInputBoxPage: InputBoxFeature.State?
     var feedbackFormUrl: URL = .feedbackFormUrl
+    var authorProfileUrl: URL = .authorProfileUrl
     var authorProfileImageUrl: URL? = .authorProfileImageUrl
     var shareLinkContent: String = "https://portaly.cc/check-in-box"
     var hapticFeedbackTrigger: Bool = false
@@ -35,8 +36,8 @@ public struct SettingsFeature: Reducer {
       switch action {
       case .authorProfileButtonTapped:
         firebaseTracker.logEvent(.clickSettingsPgAuthorProfileBtn(parameters: [:]))
-        return .run { _ in
-          let url = URL(string: "https://twitter.com/echim2021")!
+        return .run { [state] _ in
+          let url = state.authorProfileUrl
           await openURL(url)
         }
 
