@@ -28,6 +28,7 @@ final class UserSettingsFeatureTests: XCTestCase {
   func test_shareButton_trackEventWhenTapped() async {
     let store = makeSUT()
     arrange(store, toAssert: .clickSettingsPgShareBtn(parameters: [:]))
+    XCTAssertEqual(store.state.shareLinkUrl, .shareLinkUrl)
     await store.send(.shareButtonTapped)
   }
 }
