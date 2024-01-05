@@ -13,14 +13,14 @@ import XCTest
 final class UserSettingsFeatureTests: XCTestCase {
   func test_openURL_navigateToFeedbackForm() async {
     let store = makeSUT()
-    arrange(store, toAssert: .feedbackFormUrl)
+    arrangeOpenUrlOf(store, destinationUrl: .feedbackFormUrl)
     arrangeTrackerOf(store, event: .clickSettingsPgFeedbackFormBtn(parameters: [:]))
     await store.send(.sendFeedbackButtonTapped)
   }
 
   func test_openURL_navigateToAuthorProfile() async {
     let store = makeSUT()
-    arrange(store, toAssert: .authorProfileUrl)
+    arrangeOpenUrlOf(store, destinationUrl: .authorProfileUrl)
     arrangeTrackerOf(store, event: .clickSettingsPgAuthorProfileBtn(parameters: [:]))
     await store.send(.authorProfileButtonTapped)
   }
@@ -117,9 +117,9 @@ extension UserSettingsFeatureTests {
     }
   }
 
-  func arrange(
+  func arrangeOpenUrlOf(
     _ store: TestStoreOf<SettingsFeature>,
-    toAssert destinationUrl: URL
+    destinationUrl: URL
   ) {
     store.dependencies.openURL = OpenURLEffect(
       handler: { url in
