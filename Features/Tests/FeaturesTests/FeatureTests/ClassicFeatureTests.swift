@@ -71,7 +71,7 @@ final class ClassicFeatureTests: XCTestCase {
       $0.displayQuestion = questions.last?.content
     }
   }
-  
+
   func test_classicCheckIn_urlButtonTappedForValidUrl() async {
     let testUrl = "https://test.com"
     let questions = [
@@ -92,7 +92,7 @@ final class ClassicFeatureTests: XCTestCase {
 
     await store.send(.urlButtonTapped)
   }
-  
+
   func test_classicCheckIn_urlButtonTappedForInvalidUrl() async {
     let invalidUrl = ""
     let questions = [
@@ -101,6 +101,43 @@ final class ClassicFeatureTests: XCTestCase {
     let store = makeSUT(base: questions)
 
     await store.send(.urlButtonTapped)
+  }
+
+  func test_classicCheckIn_welcomeMessageAlertDoneButtonTapped() async {
+    let alert = AlertState<ClassicCheckInFeature.Action.Alert>(
+      title: TextState(verbatim: "Alert title"),
+      message: TextState(verbatim: "welcome message"),
+      buttons: [
+        ButtonState(
+          action: .welcomeMessageDoneButtonTapped,
+          label: {
+            TextState("好")
+          }
+        ),
+      ]
+    )
+    let store = TestStore(
+      initialState: ClassicCheckInFeature.State(
+        alert: alert,
+        theme: "Test",
+        questions: CycleIterator(base: [])
+      )
+    ) {
+      ClassicCheckInFeature()
+    }
+
+    arrangeTrackerOf(
+      store,
+      event: .clickClassicCheckInPgWelcomeMessageDoneBtn(
+        parameters: [
+          "theme": "Test",
+        ]
+      )
+    )
+
+    await store.send(.alert(.presented(.welcomeMessageDoneButtonTapped))) {
+      $0.alert = nil
+    }
   }
 
   func test_classicCheckIn_trackViewEvent() async {
@@ -130,7 +167,7 @@ final class ClassicFeatureTests: XCTestCase {
     }
     return store
   }
-  
+
   func arrangeOpenUrlOf(
     _ store: TestStoreOf<ClassicCheckInFeature>,
     destinationUrl: URL
@@ -142,7 +179,7 @@ final class ClassicFeatureTests: XCTestCase {
       }
     )
   }
-  
+
   func arrangeTrackerOf(
     _ store: TestStoreOf<ClassicCheckInFeature>,
     event: FirebaseEvent
