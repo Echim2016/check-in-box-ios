@@ -22,6 +22,7 @@ final class UserSettingsFeatureTests: XCTestCase {
           return true
         }
       )
+      $0.firebaseTracker = FirebaseTracker(logEvent: { _ in })
     }
 
     await store.send(.sendFeedbackButtonTapped)

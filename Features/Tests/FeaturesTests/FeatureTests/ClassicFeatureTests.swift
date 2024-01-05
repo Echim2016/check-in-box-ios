@@ -1,6 +1,6 @@
 //
 //  ClassicFeatureTests.swift
-//  
+//
 //
 //  Created by Yi-Chin Hsu on 2023/12/21.
 //
@@ -40,9 +40,13 @@ final class ClassicFeatureTests: XCTestCase {
 
   func makeSUT(base: [CheckInItem], index: Int = 0) -> TestStore<ClassicCheckInFeature.State, ClassicCheckInFeature.Action> {
     let store = TestStore(
-      initialState: ClassicCheckInFeature.State(theme: "Test", questions: CycleIterator(base: base, index: index))
+      initialState: ClassicCheckInFeature.State(
+        theme: "Test",
+        questions: CycleIterator(base: base, index: index)
+      ),
+      reducer: { ClassicCheckInFeature() }
     ) {
-      ClassicCheckInFeature()
+      $0.firebaseTracker = FirebaseTracker(logEvent: { _ in })
     }
     return store
   }
