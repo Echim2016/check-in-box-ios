@@ -111,7 +111,7 @@ extension UserSettingsFeatureTests {
     ) {
       $0.firebaseTracker = FirebaseTracker(
         logEvent: { event in
-          XCTAssertNil(event, "\(event) is not handled")
+          XCTFail("\(event) is not handled")
         }
       )
     }
