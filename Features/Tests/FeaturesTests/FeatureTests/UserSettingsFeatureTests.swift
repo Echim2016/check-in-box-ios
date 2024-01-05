@@ -14,12 +14,14 @@ final class UserSettingsFeatureTests: XCTestCase {
   func test_openURL_navigateToFeedbackForm() async {
     let store = makeSUT()
     assert(store, open: .feedbackFormUrl)
+    arrange(store, toAssert: .clickSettingsPgFeedbackFormBtn(parameters: [:]))
     await store.send(.sendFeedbackButtonTapped)
   }
   
   func test_openURL_navigateToAuthorProfile() async {
     let store = makeSUT()
     assert(store, open: .authorProfileUrl)
+    arrange(store, toAssert: .clickSettingsPgAuthorProfileBtn(parameters: [:]))
     await store.send(.authorProfileButtonTapped)
   }
 }
@@ -42,6 +44,17 @@ extension UserSettingsFeatureTests {
       handler: { url in
         XCTAssertEqual(url, destinationUrl)
         return true
+      }
+    )
+  }
+  
+  func arrange(
+    _ store: TestStoreOf<SettingsFeature>,
+    toAssert event: FirebaseEvent
+  ) {
+    store.dependencies.firebaseTracker = FirebaseTracker(
+      logEvent: { trackingEvent in
+        XCTAssertEqual(trackingEvent, event)
       }
     )
   }
