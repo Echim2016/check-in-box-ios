@@ -39,6 +39,12 @@ final class UserSettingsFeatureTests: XCTestCase {
       $0.presentGiftCardInputBoxPage = InputBoxFeature.State()
     }
   }
+  
+  func test_settingPage_trackViewEvent() async {
+    let store = makeSUT()
+    arrange(store, toAssert: .viewSettingsPg(parameters: [:]))
+    await store.send(.trackViewSettingsPageEvent)
+  }
 }
 
 // MARK: - Tests for gift card input box page
@@ -53,6 +59,7 @@ extension UserSettingsFeatureTests {
       )
     )
     arrange(store, toAssert: activationKey)
+    arrange(store, toAssert: nil)
 
     await store.send(.presentGiftCardInputBoxPage(.presented(.activateButtonTapped)))
     await store.receive(.presentGiftCardInputBoxPage(.presented(.activationKeySubmitted(activationKey)))) { state in
@@ -71,6 +78,7 @@ extension UserSettingsFeatureTests {
       )
     )
     arrange(store, toAssert: activationKey)
+    arrange(store, toAssert: nil)
 
     await store.send(.presentGiftCardInputBoxPage(.presented(.activateButtonTapped)))
   }
@@ -85,6 +93,7 @@ extension UserSettingsFeatureTests {
       )
     )
     arrange(store, toAssert: activationKey)
+    arrange(store, toAssert: nil)
 
     let modifiedKey = "k"
     await store.send(.presentGiftCardInputBoxPage(.presented(.keyChanged(modifiedKey)))) {
@@ -99,7 +108,11 @@ extension UserSettingsFeatureTests {
       initialState: state,
       reducer: { SettingsFeature() }
     ) {
-      $0.firebaseTracker = FirebaseTracker(logEvent: { _ in })
+      $0.firebaseTracker = FirebaseTracker(
+        logEvent: { event in
+          XCTAssertNil(event, "\(event) is not handled")
+        }
+      )
     }
   }
 
@@ -117,11 +130,13 @@ extension UserSettingsFeatureTests {
 
   func arrange(
     _ store: TestStoreOf<SettingsFeature>,
-    toAssert event: FirebaseEvent
+    toAssert event: FirebaseEvent?
   ) {
     store.dependencies.firebaseTracker = FirebaseTracker(
       logEvent: { trackingEvent in
-        XCTAssertEqual(trackingEvent, event)
+        if let event {
+          XCTAssertEqual(trackingEvent, event)
+        }
       }
     )
   }
