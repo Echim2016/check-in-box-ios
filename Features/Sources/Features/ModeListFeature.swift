@@ -11,17 +11,20 @@ import SwiftUI
 public struct ModeListFeature: Reducer {
   public struct State: Equatable {
     @PresentationState var presentSettingsPage: SettingsFeature.State?
+    @PresentationState var presentInfoPage: InfoSheetFeature.State?
     var themeBoxes: IdentifiedArrayOf<ThemeBox> = []
     var questions: IdentifiedArrayOf<Question>
     var tags: IdentifiedArrayOf<Tag>
 
     public init(
       presentSettingsPage: SettingsFeature.State? = nil,
+      presentInfoPage: InfoSheetFeature.State? = nil,
       themeBoxes: IdentifiedArrayOf<ThemeBox> = [],
       questions: IdentifiedArrayOf<Question> = [],
       tags: IdentifiedArrayOf<Tag> = []
     ) {
       self.presentSettingsPage = presentSettingsPage
+      self.presentInfoPage = presentInfoPage
       self.themeBoxes = themeBoxes
       self.questions = questions
       self.tags = tags
@@ -32,10 +35,12 @@ public struct ModeListFeature: Reducer {
     case settingsButtonTapped
     case settingsSheetDoneButtonTapped
     case presentSettingsPage(PresentationAction<SettingsFeature.Action>)
+    case infoButtonTapped
+    case presentInfoPage(PresentationAction<InfoSheetFeature.Action>)
     case pullToRefreshTriggered
     case trackViewModeListEvent
   }
-  
+
   @Dependency(\.firebaseTracker) var firebaseTracker
 
   public var body: some ReducerOf<Self> {
@@ -48,13 +53,25 @@ public struct ModeListFeature: Reducer {
         state.presentSettingsPage = nil
         firebaseTracker.logEvent(.viewModeListPg(parameters: [:]))
         return .none
-        
+
       case .presentSettingsPage(.dismiss):
         firebaseTracker.logEvent(.viewModeListPg(parameters: [:]))
         return .none
-        
+
       case .presentSettingsPage:
         return .none
+
+      case .infoButtonTapped:
+        state.presentInfoPage = InfoSheetFeature.State()
+        return .none
+
+      case .presentInfoPage(.dismiss):
+        firebaseTracker.logEvent(.viewModeListPg(parameters: [:]))
+        return .none
+
+      case .presentInfoPage:
+        return .none
+
       case .pullToRefreshTriggered:
         return .none
       case .trackViewModeListEvent:
@@ -64,6 +81,9 @@ public struct ModeListFeature: Reducer {
     }
     .ifLet(\.$presentSettingsPage, action: /Action.presentSettingsPage) {
       SettingsFeature()
+    }
+    .ifLet(\.$presentInfoPage, action: /Action.presentInfoPage) {
+      InfoSheetFeature()
     }
   }
 }
@@ -93,7 +113,7 @@ struct ModeListView: View {
                           label: {
                             TextState("好")
                           }
-                        )
+                        ),
                       ]
                     ),
                     theme: box.title,
@@ -174,6 +194,16 @@ struct ModeListView: View {
       .toolbar {
         ToolbarItem {
           Button {
+            store.send(.infoButtonTapped)
+
+          } label: {
+            Image(systemName: "info.circle")
+              .foregroundStyle(.white)
+          }
+        }
+
+        ToolbarItem {
+          Button {
             store.send(.settingsButtonTapped)
           } label: {
             Image(systemName: "gearshape")
@@ -200,6 +230,14 @@ struct ModeListView: View {
               }
             }
         }
+      }
+      .sheet(
+        store: self.store.scope(
+          state: \.$presentInfoPage,
+          action: { .presentInfoPage($0) }
+        )
+      ) { infoViewStore in
+        InfoSheetView(store: infoViewStore)
       }
     }
   }
