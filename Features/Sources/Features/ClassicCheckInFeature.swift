@@ -139,6 +139,10 @@ struct ClassicCheckInView: View {
           .multilineTextAlignment(.center)
           .font(.title)
           .bold()
+          .animation(
+            .easeInOut(duration: 0.25),
+            value: store.displayQuestion
+          )
 
         Spacer()
         Spacer()
