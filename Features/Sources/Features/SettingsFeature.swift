@@ -11,6 +11,7 @@ import SwiftUI
 public struct SettingsFeature: Reducer {
   public struct State: Equatable {
     @PresentationState var presentGiftCardInputBoxPage: InputBoxFeature.State?
+    @PresentationState var presentInAppWebViewPage: InAppWebFeature.State?
     var feedbackFormUrl: URL = .feedbackFormUrl
     var authorProfileUrl: URL = .authorProfileUrl
     var authorProfileImageUrl: URL? = .authorProfileImageUrl
@@ -26,6 +27,7 @@ public struct SettingsFeature: Reducer {
     case redeemGiftCardButtonTapped
     case submitQuestionsButtonTapped
     case presentGiftCardInputBoxPage(PresentationAction<InputBoxFeature.Action>)
+    case presentInAppWebViewPage(PresentationAction<InAppWebFeature.Action>)
     case trackViewSettingsPageEvent
   }
 
@@ -49,22 +51,18 @@ public struct SettingsFeature: Reducer {
 
       case .sendFeedbackButtonTapped:
         firebaseTracker.logEvent(.clickSettingsPgFeedbackFormBtn(parameters: [:]))
-        return .run { [state] _ in
-          let url = state.feedbackFormUrl
-          await openURL(url)
-        }
+        state.presentInAppWebViewPage = InAppWebFeature.State(url: .feedbackFormUrl)
+        return .none
 
       case .redeemGiftCardButtonTapped:
         firebaseTracker.logEvent(.clickSettingsPgGiftCardBtn(parameters: [:]))
         state.presentGiftCardInputBoxPage = InputBoxFeature.State()
         return .none
-        
+
       case .submitQuestionsButtonTapped:
         firebaseTracker.logEvent(.clickSettingsPgSubmitQuestionsBtn(parameters: [:]))
-        return .run { [state] _ in
-          let url = state.submitQuestionsUrl
-          await openURL(url)
-        }
+        state.presentInAppWebViewPage = InAppWebFeature.State(url: .submitQuestionsUrl)
+        return .none
 
       case let .presentGiftCardInputBoxPage(.presented(.activationKeySubmitted(key))):
         state.presentGiftCardInputBoxPage = nil
@@ -73,6 +71,13 @@ public struct SettingsFeature: Reducer {
         return .none
 
       case .presentGiftCardInputBoxPage:
+        return .none
+
+      case .presentInAppWebViewPage(.presented(.closeButtonTapped)):
+        state.presentInAppWebViewPage = nil
+        return .none
+
+      case .presentInAppWebViewPage:
         return .none
 
       case .trackViewSettingsPageEvent:
@@ -123,11 +128,11 @@ struct SettingsView: View {
             Label("回饋真心話", systemImage: "paperplane")
               .foregroundStyle(.white)
           }
-          
+
           Button {
             store.send(.submitQuestionsButtonTapped)
           } label: {
-            Label("我想出一題", systemImage: "square.and.pencil")
+            Label("我想出一題", systemImage: "lightbulb")
               .foregroundStyle(.white)
           }
         } header: {
@@ -168,6 +173,14 @@ struct SettingsView: View {
     ) { inputBoxViewStore in
       InputBoxView(store: inputBoxViewStore)
         .presentationDetents([.height(180)])
+    }
+    .fullScreenCover(
+      store: self.store.scope(
+        state: \.$presentInAppWebViewPage,
+        action: { .presentInAppWebViewPage($0) }
+      )
+    ) { webViewStore in
+      InAppWebView(store: webViewStore)
     }
   }
 }
