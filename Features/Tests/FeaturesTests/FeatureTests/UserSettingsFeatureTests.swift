@@ -11,11 +11,12 @@ import XCTest
 
 @MainActor
 final class UserSettingsFeatureTests: XCTestCase {
-  func test_openURL_navigateToFeedbackForm() async {
+  func test_openURL_presentFeedbackForm() async {
     let store = makeSUT()
-    arrangeOpenUrlOf(store, destinationUrl: .feedbackFormUrl)
     arrangeTrackerOf(store, event: .clickSettingsPgFeedbackFormBtn(parameters: [:]))
-    await store.send(.sendFeedbackButtonTapped)
+    await store.send(.sendFeedbackButtonTapped) {
+      $0.presentInAppWebViewPage = InAppWebFeature.State(url: .feedbackFormUrl)
+    }
   }
 
   func test_openURL_navigateToAuthorProfile() async {
@@ -24,12 +25,13 @@ final class UserSettingsFeatureTests: XCTestCase {
     arrangeTrackerOf(store, event: .clickSettingsPgAuthorProfileBtn(parameters: [:]))
     await store.send(.authorProfileButtonTapped)
   }
-  
-  func test_openURL_navigateToSubmitQuestionsForm() async {
+
+  func test_openURL_presentSubmitQuestionsForm() async {
     let store = makeSUT()
-    arrangeOpenUrlOf(store, destinationUrl: .submitQuestionsUrl)
     arrangeTrackerOf(store, event: .clickSettingsPgSubmitQuestionsBtn(parameters: [:]))
-    await store.send(.submitQuestionsButtonTapped)
+    await store.send(.submitQuestionsButtonTapped) {
+      $0.presentInAppWebViewPage = InAppWebFeature.State(url: .submitQuestionsUrl)
+    }
   }
 
   func test_shareButton_trackEventWhenTapped() async {
@@ -121,6 +123,12 @@ extension UserSettingsFeatureTests {
           XCTFail("\(event) is not handled")
         }
       )
+      $0.openURL = OpenURLEffect(
+        handler: { url in
+          XCTFail("\(url) is not handled")
+          return false
+        }
+      )
     }
   }
 
@@ -148,7 +156,7 @@ extension UserSettingsFeatureTests {
       }
     )
   }
-  
+
   func arrangeGiftCardAccessManagerOf(
     _ store: TestStoreOf<SettingsFeature>,
     activationKey: String
