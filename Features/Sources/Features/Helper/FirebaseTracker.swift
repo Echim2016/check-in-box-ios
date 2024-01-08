@@ -68,7 +68,7 @@ enum FirebaseEvent: Equatable {
     case .clickSettingsPgFeedbackFormBtn:
       "Click_SettingsPg_FeedbackFormBtn"
     case .clickSettingsPgAuthorProfileBtn:
-      "Click_SettingsPgAuthor_ProfileBtn"
+      "Click_SettingsPg_AuthorProfileBtn"
     case .clickSettingsPgSubmitQuestionsBtn:
       "Click_SettingsPg_SubmitQuestionsBtn"
     }
