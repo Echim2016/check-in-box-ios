@@ -24,6 +24,13 @@ final class UserSettingsFeatureTests: XCTestCase {
     arrangeTrackerOf(store, event: .clickSettingsPgAuthorProfileBtn(parameters: [:]))
     await store.send(.authorProfileButtonTapped)
   }
+  
+  func test_openURL_navigateToSubmitQuestionsForm() async {
+    let store = makeSUT()
+    arrangeOpenUrlOf(store, destinationUrl: .submitQuestionsUrl)
+    arrangeTrackerOf(store, event: .clickSettingsPgSubmitQuestionsBtn(parameters: [:]))
+    await store.send(.submitQuestionsButtonTapped)
+  }
 
   func test_shareButton_trackEventWhenTapped() async {
     let store = makeSUT()
