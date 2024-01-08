@@ -43,6 +43,7 @@ enum FirebaseEvent: Equatable {
   case clickSettingsPgGiftCardBtn(parameters: [String: Any])
   case clickSettingsPgFeedbackFormBtn(parameters: [String: Any])
   case clickSettingsPgAuthorProfileBtn(parameters: [String: Any])
+  case clickSettingsPgSubmitQuestionsBtn(parameters: [String: Any])
 
   var name: String {
     switch self {
@@ -68,6 +69,8 @@ enum FirebaseEvent: Equatable {
       "Click_SettingsPg_FeedbackFormBtn"
     case .clickSettingsPgAuthorProfileBtn:
       "Click_SettingsPgAuthor_ProfileBtn"
+    case .clickSettingsPgSubmitQuestionsBtn:
+      "Click_SettingsPg_SubmitQuestionsBtn"
     }
   }
 
@@ -83,7 +86,8 @@ enum FirebaseEvent: Equatable {
          let .clickSettingsPgShareBtn(parameters: parameters),
          let .clickSettingsPgGiftCardBtn(parameters: parameters),
          let .clickSettingsPgFeedbackFormBtn(parameters: parameters),
-         let .clickSettingsPgAuthorProfileBtn(parameters: parameters):
+         let .clickSettingsPgAuthorProfileBtn(parameters: parameters),
+         let .clickSettingsPgSubmitQuestionsBtn(parameters: parameters):
       return parameters
     }
   }

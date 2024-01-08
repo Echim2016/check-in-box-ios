@@ -60,6 +60,7 @@ public struct SettingsFeature: Reducer {
         return .none
         
       case .submitQuestionsButtonTapped:
+        firebaseTracker.logEvent(.clickSettingsPgSubmitQuestionsBtn(parameters: [:]))
         return .run { [state] _ in
           let url = state.submitQuestionsUrl
           await openURL(url)
