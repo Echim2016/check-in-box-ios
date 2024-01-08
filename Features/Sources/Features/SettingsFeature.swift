@@ -15,6 +15,7 @@ public struct SettingsFeature: Reducer {
     var authorProfileUrl: URL = .authorProfileUrl
     var authorProfileImageUrl: URL? = .authorProfileImageUrl
     var shareLinkUrl: URL = .shareLinkUrl
+    var submitQuestionsUrl: URL = .submitQuestionsUrl
     var hapticFeedbackTrigger: Bool = false
   }
 
@@ -23,6 +24,7 @@ public struct SettingsFeature: Reducer {
     case sendFeedbackButtonTapped
     case shareButtonTapped
     case redeemGiftCardButtonTapped
+    case submitQuestionsButtonTapped
     case presentGiftCardInputBoxPage(PresentationAction<InputBoxFeature.Action>)
     case trackViewSettingsPageEvent
   }
@@ -56,6 +58,12 @@ public struct SettingsFeature: Reducer {
         firebaseTracker.logEvent(.clickSettingsPgGiftCardBtn(parameters: [:]))
         state.presentGiftCardInputBoxPage = InputBoxFeature.State()
         return .none
+        
+      case .submitQuestionsButtonTapped:
+        return .run { [state] _ in
+          let url = state.submitQuestionsUrl
+          await openURL(url)
+        }
 
       case let .presentGiftCardInputBoxPage(.presented(.activationKeySubmitted(key))):
         state.presentGiftCardInputBoxPage = nil
@@ -112,6 +120,13 @@ struct SettingsView: View {
             store.send(.sendFeedbackButtonTapped)
           } label: {
             Label("回饋真心話", systemImage: "paperplane")
+              .foregroundStyle(.white)
+          }
+          
+          Button {
+            store.send(.submitQuestionsButtonTapped)
+          } label: {
+            Label("我想出一題", systemImage: "square.and.pencil")
               .foregroundStyle(.white)
           }
         } header: {
