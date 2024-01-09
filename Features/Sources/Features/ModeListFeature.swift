@@ -66,7 +66,7 @@ public struct ModeListFeature: Reducer {
         state.presentInfoPage = InfoSheetFeature.State()
         return .none
 
-      case .presentInfoPage(.presented(.mainActionButtonTapped)):
+      case .presentInfoPage(.presented(.doneButtonTapped)):
         state.presentInfoPage = nil
         firebaseTracker.logEvent(.viewModeListPg(parameters: [:]))
         return .none

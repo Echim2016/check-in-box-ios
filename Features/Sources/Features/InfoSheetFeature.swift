@@ -12,13 +12,13 @@ public struct InfoSheetFeature: Reducer {
   public struct State: Equatable {}
 
   public enum Action: Equatable {
-    case mainActionButtonTapped
+    case doneButtonTapped
   }
 
   public var body: some ReducerOf<Self> {
     Reduce { _, action in
       switch action {
-      case .mainActionButtonTapped:
+      case .doneButtonTapped:
         return .none
       }
     }
@@ -34,7 +34,7 @@ public struct InfoSheetView: View {
         .toolbar {
           ToolbarItem {
             Button {
-              store.send(.mainActionButtonTapped)
+              store.send(.doneButtonTapped)
             } label: {
               Text("完成")
                 .foregroundStyle(.white)
