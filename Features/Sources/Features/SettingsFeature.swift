@@ -154,7 +154,7 @@ struct SettingsView: View {
         if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
            let buildNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
           Section {
-            Text("v\(version)(\(buildNumber))")
+            Text("v\(version) (\(buildNumber))")
               .foregroundStyle(.secondary)
           } header: {
             Text("版本")
