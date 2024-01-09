@@ -203,6 +203,10 @@ struct ModeListView: View {
         ToolbarItem {
           Button {
             store.send(.infoButtonTapped)
+            
+            /// Problem: Button not working issue when popover tip is displaying on some devices
+            /// Solution: Implement @Parameter `isCheck` for hiding the popover tip manually
+            PlainTextTip.isChecked = true
 
           } label: {
             Image(systemName: "info.circle")

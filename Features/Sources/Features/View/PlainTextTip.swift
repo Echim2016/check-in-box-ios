@@ -10,10 +10,16 @@ import TipKit
 struct PlainTextTip: Tip {
   let tipTitle: String
   let tipMessage: String?
-  
+
   init(title: String, message: String? = nil) {
     self.tipTitle = title
     self.tipMessage = message
+  }
+
+  @Parameter static var isChecked: Bool = false
+  
+  var rules: [Rule] {
+    #Rule(Self.$isChecked) { $0 == false }
   }
 
   var title: Text {
