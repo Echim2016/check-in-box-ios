@@ -58,21 +58,21 @@ struct InfoIntroView: View {
     TabView(selection: $selectedPage) {
       introItem(
         title: "Check-in 是什麼？",
-        content: "Check-in 是一種引人入勝的暖身遊戲，透過特定話題啟動對話，拉進你與夥伴之間更緊密的連結。",
+        content: "Check-in 是一種引人入勝的暖身遊戲，透過特定話題啟動對話，拉近你與夥伴之間更緊密的連結。",
         imageName: "info-talks"
       )
       .tag(1)
 
       introItem(
         title: "團隊，煥然一新",
-        content: "會議之前，來一場 10 分鐘的 Check-in，啟動工作氛圍，讓每個夥伴都準備好發揮最佳表現。",
+        content: "會議之前，來一場 10 分鐘的 Check-in 暖身，啟動工作氛圍，讓每個夥伴都準備好發揮最佳表現。",
         imageName: "info-teambuilding"
       )
       .tag(2)
 
       introItem(
         title: "聚會，意猶未盡",
-        content: "歡聚時刻，用一場精彩萬分的 Check-in 來炒熱氣氛，發現夥伴們不為人知的另一面！",
+        content: "歡聚時刻，和夥伴們用一場精彩萬分的 Check-in 來炒熱氣氛，發現他們不為人知的另一面！",
         imageName: "info-chat"
       )
       .tag(3)
