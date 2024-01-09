@@ -34,15 +34,18 @@ extension DependencyValues {
 enum FirebaseEvent: Equatable {
   case viewModeListPg(parameters: [String: Any])
   case viewClassicCheckInPg(parameters: [String: Any])
+  case viewInfoIntroPg(parameters: [String: Any])
   case viewSettingsPg(parameters: [String: Any])
   case clickClassicCheckInPgPickBtn(parameters: [String: Any])
   case clickClassicCheckInPgPreviousBtn(parameters: [String: Any])
   case clickClassicCheckInPgUrlBtn(parameters: [String: Any])
   case clickClassicCheckInPgWelcomeMessageDoneBtn(parameters: [String: Any])
+  case clickInfoIntroPgDoneBtn(parameters: [String: Any])
   case clickSettingsPgShareBtn(parameters: [String: Any])
   case clickSettingsPgGiftCardBtn(parameters: [String: Any])
   case clickSettingsPgFeedbackFormBtn(parameters: [String: Any])
   case clickSettingsPgAuthorProfileBtn(parameters: [String: Any])
+  case clickSettingsPgSubmitQuestionsBtn(parameters: [String: Any])
 
   var name: String {
     switch self {
@@ -50,6 +53,8 @@ enum FirebaseEvent: Equatable {
       "View_ModeListPg"
     case .viewClassicCheckInPg:
       "View_ClassicCheckInPg"
+    case .viewInfoIntroPg:
+      "View_InfoIntroPg"
     case .viewSettingsPg:
       "View_SettingsPg"
     case .clickClassicCheckInPgPickBtn:
@@ -60,6 +65,8 @@ enum FirebaseEvent: Equatable {
       "Click_ClassicCheckInPg_UrlBtn"
     case .clickClassicCheckInPgWelcomeMessageDoneBtn:
       "Click_ClassicCheckInPg_WelcomeMessageDoneBtn"
+    case .clickInfoIntroPgDoneBtn:
+      "Click_InfoIntroPg_DoneBtn"
     case .clickSettingsPgShareBtn:
       "Click_SettingsPg_ShareBtn"
     case .clickSettingsPgGiftCardBtn:
@@ -67,7 +74,9 @@ enum FirebaseEvent: Equatable {
     case .clickSettingsPgFeedbackFormBtn:
       "Click_SettingsPg_FeedbackFormBtn"
     case .clickSettingsPgAuthorProfileBtn:
-      "Click_SettingsPgAuthor_ProfileBtn"
+      "Click_SettingsPg_AuthorProfileBtn"
+    case .clickSettingsPgSubmitQuestionsBtn:
+      "Click_SettingsPg_SubmitQuestionsBtn"
     }
   }
 
@@ -75,15 +84,18 @@ enum FirebaseEvent: Equatable {
     switch self {
     case let .viewModeListPg(parameters: parameters),
          let .viewClassicCheckInPg(parameters: parameters),
+         let .viewInfoIntroPg(parameters: parameters),
          let .viewSettingsPg(parameters: parameters),
          let .clickClassicCheckInPgPickBtn(parameters: parameters),
          let .clickClassicCheckInPgPreviousBtn(parameters: parameters),
          let .clickClassicCheckInPgUrlBtn(parameters: parameters),
          let .clickClassicCheckInPgWelcomeMessageDoneBtn(parameters: parameters),
+         let .clickInfoIntroPgDoneBtn(parameters: parameters),
          let .clickSettingsPgShareBtn(parameters: parameters),
          let .clickSettingsPgGiftCardBtn(parameters: parameters),
          let .clickSettingsPgFeedbackFormBtn(parameters: parameters),
-         let .clickSettingsPgAuthorProfileBtn(parameters: parameters):
+         let .clickSettingsPgAuthorProfileBtn(parameters: parameters),
+         let .clickSettingsPgSubmitQuestionsBtn(parameters: parameters):
       return parameters
     }
   }

@@ -12,4 +12,5 @@ extension URL {
   static let authorProfileUrl = URL(string: "https://twitter.com/echim2021")!
   static let authorProfileImageUrl = URL(string: "https://pbs.twimg.com/profile_images/1473910380540088321/Cw9ziBcy_400x400.jpg")
   static let shareLinkUrl = URL(string: "https://portaly.cc/check-in-box")!
+  static let submitQuestionsUrl = URL(string: "https://forms.gle/A6hfPQfAMEXF1kya6")!
 }
