@@ -84,7 +84,7 @@ final class ClassicFeatureTests: XCTestCase {
         ]
       )
     )
-    arrangeOpenUrlOf(store, destinationUrl: URL(string: testUrl)!)
+    store.arrangeOpenUrl(of: URL(string: testUrl)!)
 
     await store.send(.urlButtonTapped)
   }
@@ -158,17 +158,5 @@ final class ClassicFeatureTests: XCTestCase {
       )
     }
     return store
-  }
-
-  func arrangeOpenUrlOf(
-    _ store: TestStoreOf<ClassicCheckInFeature>,
-    destinationUrl: URL
-  ) {
-    store.dependencies.openURL = OpenURLEffect(
-      handler: { url in
-        XCTAssertEqual(url, destinationUrl)
-        return true
-      }
-    )
   }
 }

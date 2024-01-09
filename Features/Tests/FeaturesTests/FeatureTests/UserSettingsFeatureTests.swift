@@ -21,7 +21,7 @@ final class UserSettingsFeatureTests: XCTestCase {
 
   func test_openURL_navigateToAuthorProfile() async {
     let store = makeSUT()
-    arrangeOpenUrlOf(store, destinationUrl: .authorProfileUrl)
+    store.arrangeOpenUrl(of: .authorProfileUrl)
     store.arrangeTracker(for: .clickSettingsPgAuthorProfileBtn(parameters: [:]))
     await store.send(.authorProfileButtonTapped)
   }
@@ -130,18 +130,6 @@ extension UserSettingsFeatureTests {
         }
       )
     }
-  }
-
-  func arrangeOpenUrlOf(
-    _ store: TestStoreOf<SettingsFeature>,
-    destinationUrl: URL
-  ) {
-    store.dependencies.openURL = OpenURLEffect(
-      handler: { url in
-        XCTAssertEqual(url, destinationUrl)
-        return true
-      }
-    )
   }
 
   func arrangeGiftCardAccessManagerOf(

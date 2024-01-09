@@ -19,4 +19,13 @@ extension TestStore {
       }
     )
   }
+  
+  func arrangeOpenUrl(of destinationUrl: URL) {
+    dependencies.openURL = OpenURLEffect(
+      handler: { url in
+        XCTAssertEqual(url, destinationUrl)
+        return true
+      }
+    )
+  }
 }
