@@ -20,7 +20,7 @@ final class ModelListFeatureTests: XCTestCase {
   }
 
   func test_settingsSheet_dismissedWhenDoneButtonTapped() async {
-    let store = makeSUT(isSettingsPagePresented: true)
+    let store = makeSUT(of: ModeListFeature.State(presentSettingsPage: SettingsFeature.State()))
     store.arrangeTracker(for: .viewModeListPg(parameters: [:]))
 
     await store.send(.settingsSheetDoneButtonTapped) {
@@ -29,7 +29,7 @@ final class ModelListFeatureTests: XCTestCase {
   }
   
   func test_settingsSheet_dismissed() async {
-    let store = makeSUT(isSettingsPagePresented: true)
+    let store = makeSUT(of: ModeListFeature.State(presentSettingsPage: SettingsFeature.State()))
     store.arrangeTracker(for: .viewModeListPg(parameters: [:]))
 
     await store.send(.presentSettingsPage(.dismiss)) {
@@ -111,11 +111,9 @@ final class ModelListFeatureTests: XCTestCase {
     await store.send(.trackViewModeListEvent)
   }
   
-  func makeSUT(isSettingsPagePresented: Bool = false) -> TestStoreOf<ModeListFeature> {
+  func makeSUT(of state: ModeListFeature.State = ModeListFeature.State()) -> TestStoreOf<ModeListFeature> {
     TestStore(
-      initialState: ModeListFeature.State(
-        presentSettingsPage: isSettingsPagePresented ? SettingsFeature.State() : nil
-      ),
+      initialState: state,
       reducer: { ModeListFeature() }
     ) {
       $0.firebaseTracker = FirebaseTracker(
