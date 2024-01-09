@@ -9,7 +9,9 @@ import ComposableArchitecture
 import SwiftUI
 
 public struct InfoSheetFeature: Reducer {
-  public struct State: Equatable {}
+  public struct State: Equatable {
+    public init() {}
+  }
 
   public enum Action: Equatable {
     case doneButtonTapped

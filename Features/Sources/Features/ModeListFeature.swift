@@ -7,7 +7,6 @@
 
 import ComposableArchitecture
 import SwiftUI
-import TipKit
 
 public struct ModeListFeature: Reducer {
   public struct State: Equatable {
@@ -73,6 +72,7 @@ public struct ModeListFeature: Reducer {
         state.presentInfoPage = nil
         state.hapticFeedbackTrigger.toggle()
         firebaseTracker.logEvent(.viewModeListPg(parameters: [:]))
+        UserDefaults.standard.setValue(true, forKey: "info-intro-checked")
         return .none
 
       case .presentInfoPage:
@@ -97,7 +97,6 @@ public struct ModeListFeature: Reducer {
 struct ModeListView: View {
   let store: StoreOf<ModeListFeature>
   let gridItemLayout = [GridItem(.flexible()), GridItem(.flexible())]
-  let infoButtonTip = PlainTextTip(title: "查看 Check-in 教學", message: "點擊此按鈕，立即查看入門指南")
 
   var body: some View {
     WithViewStore(self.store, observe: { $0 }) { store in
@@ -203,16 +202,11 @@ struct ModeListView: View {
         ToolbarItem {
           Button {
             store.send(.infoButtonTapped)
-            
-            /// Problem: Button not working issue when popover tip is displaying on some devices
-            /// Solution: Implement @Parameter `isCheck` for hiding the popover tip manually
-            PlainTextTip.isChecked = true
 
           } label: {
             Image(systemName: "info.circle")
               .foregroundStyle(.white)
           }
-          .popoverTip(infoButtonTip)
         }
 
         ToolbarItem {
@@ -222,18 +216,6 @@ struct ModeListView: View {
             Image(systemName: "gearshape")
               .foregroundStyle(.white)
           }
-        }
-      }
-      .task {
-        do {
-          try Tips.configure(
-            [
-              .displayFrequency(.immediate),
-              .datastoreLocation(.applicationDefault),
-            ]
-          )
-        } catch {
-          print("Tips configure error: \(error.localizedDescription)")
         }
       }
       .sheet(
