@@ -14,11 +14,14 @@ public struct InfoSheetFeature: Reducer {
   public enum Action: Equatable {
     case doneButtonTapped
   }
+  
+  @Dependency(\.firebaseTracker) var firebaseTracker
 
   public var body: some ReducerOf<Self> {
     Reduce { _, action in
       switch action {
       case .doneButtonTapped:
+        firebaseTracker.logEvent(.clickInfoIntroPgDoneBtn(parameters: [:]))
         return .none
       }
     }
