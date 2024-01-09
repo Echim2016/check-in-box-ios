@@ -14,9 +14,8 @@ final class ClassicFeatureTests: XCTestCase {
   func test_classicCheckIn_pickedQuestionFromDefaultState() async {
     let questions = getMockMultipleCheckInItems()
     let store = makeSUT(base: questions)
-    arrangeTrackerOf(
-      store,
-      event: .clickClassicCheckInPgPickBtn(
+    store.arrangeTracker(
+      for: .clickClassicCheckInPgPickBtn(
         parameters: [
           "theme": "Test",
           "current_content": questions.first?.content,
@@ -35,9 +34,8 @@ final class ClassicFeatureTests: XCTestCase {
     let questions = getMockMultipleCheckInItems()
     let lastIndex = questions.count - 1
     let store = makeSUT(base: questions, index: lastIndex)
-    arrangeTrackerOf(
-      store,
-      event: .clickClassicCheckInPgPickBtn(
+    store.arrangeTracker(
+      for: .clickClassicCheckInPgPickBtn(
         parameters: [
           "theme": "Test",
           "current_content": questions[lastIndex].content,
@@ -55,9 +53,8 @@ final class ClassicFeatureTests: XCTestCase {
   func test_classicCheckIn_pickedPreviousQuestionFromDefaultState() async {
     let questions = getMockMultipleCheckInItems()
     let store = makeSUT(base: questions)
-    arrangeTrackerOf(
-      store,
-      event: .clickClassicCheckInPgPreviousBtn(
+    store.arrangeTracker(
+      for: .clickClassicCheckInPgPreviousBtn(
         parameters: [
           "theme": "Test",
           "current_content": questions.first?.content,
@@ -78,9 +75,8 @@ final class ClassicFeatureTests: XCTestCase {
       CheckInItem(id: "1", content: "content", url: testUrl),
     ]
     let store = makeSUT(base: questions)
-    arrangeTrackerOf(
-      store,
-      event: .clickClassicCheckInPgUrlBtn(
+    store.arrangeTracker(
+      for: .clickClassicCheckInPgUrlBtn(
         parameters: [
           "theme": "Test",
           "current_content": questions.first?.content,
@@ -125,10 +121,8 @@ final class ClassicFeatureTests: XCTestCase {
     ) {
       ClassicCheckInFeature()
     }
-
-    arrangeTrackerOf(
-      store,
-      event: .clickClassicCheckInPgWelcomeMessageDoneBtn(
+    store.arrangeTracker(
+      for: .clickClassicCheckInPgWelcomeMessageDoneBtn(
         parameters: [
           "theme": "Test",
         ]
@@ -142,7 +136,9 @@ final class ClassicFeatureTests: XCTestCase {
 
   func test_classicCheckIn_trackViewEvent() async {
     let store = makeSUT(base: [])
-    arrangeTrackerOf(store, event: .viewClassicCheckInPg(parameters: ["theme": "Test"]))
+    store.arrangeTracker(
+      for: .viewClassicCheckInPg(parameters: ["theme": "Test"])
+    )
 
     await store.send(.trackViewClassicCheckInPageEvent)
   }
@@ -172,17 +168,6 @@ final class ClassicFeatureTests: XCTestCase {
       handler: { url in
         XCTAssertEqual(url, destinationUrl)
         return true
-      }
-    )
-  }
-
-  func arrangeTrackerOf(
-    _ store: TestStoreOf<ClassicCheckInFeature>,
-    event: FirebaseEvent
-  ) {
-    store.dependencies.firebaseTracker = FirebaseTracker(
-      logEvent: { trackingEvent in
-        XCTAssertEqual(trackingEvent, event)
       }
     )
   }

@@ -13,7 +13,7 @@ import XCTest
 final class UserSettingsFeatureTests: XCTestCase {
   func test_openURL_presentFeedbackForm() async {
     let store = makeSUT()
-    arrangeTrackerOf(store, event: .clickSettingsPgFeedbackFormBtn(parameters: [:]))
+    store.arrangeTracker(for: .clickSettingsPgFeedbackFormBtn(parameters: [:]))
     await store.send(.sendFeedbackButtonTapped) {
       $0.presentInAppWebViewPage = InAppWebFeature.State(url: .feedbackFormUrl)
     }
@@ -22,13 +22,13 @@ final class UserSettingsFeatureTests: XCTestCase {
   func test_openURL_navigateToAuthorProfile() async {
     let store = makeSUT()
     arrangeOpenUrlOf(store, destinationUrl: .authorProfileUrl)
-    arrangeTrackerOf(store, event: .clickSettingsPgAuthorProfileBtn(parameters: [:]))
+    store.arrangeTracker(for: .clickSettingsPgAuthorProfileBtn(parameters: [:]))
     await store.send(.authorProfileButtonTapped)
   }
 
   func test_openURL_presentSubmitQuestionsForm() async {
     let store = makeSUT()
-    arrangeTrackerOf(store, event: .clickSettingsPgSubmitQuestionsBtn(parameters: [:]))
+    store.arrangeTracker(for: .clickSettingsPgSubmitQuestionsBtn(parameters: [:]))
     await store.send(.submitQuestionsButtonTapped) {
       $0.presentInAppWebViewPage = InAppWebFeature.State(url: .submitQuestionsUrl)
     }
@@ -36,14 +36,14 @@ final class UserSettingsFeatureTests: XCTestCase {
 
   func test_shareButton_trackEventWhenTapped() async {
     let store = makeSUT()
-    arrangeTrackerOf(store, event: .clickSettingsPgShareBtn(parameters: [:]))
+    store.arrangeTracker(for: .clickSettingsPgShareBtn(parameters: [:]))
     XCTAssertEqual(store.state.shareLinkUrl, .shareLinkUrl)
     await store.send(.shareButtonTapped)
   }
 
   func test_redeemGiftCardButton_presentGiftCardInoutBoxPage() async {
     let store = makeSUT()
-    arrangeTrackerOf(store, event: .clickSettingsPgGiftCardBtn(parameters: [:]))
+    store.arrangeTracker(for: .clickSettingsPgGiftCardBtn(parameters: [:]))
     await store.send(.redeemGiftCardButtonTapped) {
       $0.presentGiftCardInputBoxPage = InputBoxFeature.State()
     }
@@ -51,7 +51,7 @@ final class UserSettingsFeatureTests: XCTestCase {
 
   func test_settingPage_trackViewEvent() async {
     let store = makeSUT()
-    arrangeTrackerOf(store, event: .viewSettingsPg(parameters: [:]))
+    store.arrangeTracker(for: .viewSettingsPg(parameters: [:]))
     await store.send(.trackViewSettingsPageEvent)
   }
 }
@@ -69,7 +69,7 @@ extension UserSettingsFeatureTests {
       )
     )
     arrangeGiftCardAccessManagerOf(store, activationKey: activationKey)
-    arrangeTrackerOf(store, event: nil)
+    store.arrangeTracker(for: nil)
 
     await store.send(.presentGiftCardInputBoxPage(.presented(.activateButtonTapped)))
     await store.receive(.presentGiftCardInputBoxPage(.presented(.activationKeySubmitted(activationKey)))) { state in
@@ -88,7 +88,7 @@ extension UserSettingsFeatureTests {
       )
     )
     arrangeGiftCardAccessManagerOf(store, activationKey: activationKey)
-    arrangeTrackerOf(store, event: nil)
+    store.arrangeTracker(for: nil)
 
     await store.send(.presentGiftCardInputBoxPage(.presented(.activateButtonTapped)))
   }
@@ -103,7 +103,7 @@ extension UserSettingsFeatureTests {
       )
     )
     arrangeGiftCardAccessManagerOf(store, activationKey: activationKey)
-    arrangeTrackerOf(store, event: nil)
+    store.arrangeTracker(for: nil)
 
     let modifiedKey = "k"
     await store.send(.presentGiftCardInputBoxPage(.presented(.keyChanged(modifiedKey)))) {
@@ -140,19 +140,6 @@ extension UserSettingsFeatureTests {
       handler: { url in
         XCTAssertEqual(url, destinationUrl)
         return true
-      }
-    )
-  }
-
-  func arrangeTrackerOf(
-    _ store: TestStoreOf<SettingsFeature>,
-    event: FirebaseEvent?
-  ) {
-    store.dependencies.firebaseTracker = FirebaseTracker(
-      logEvent: { trackingEvent in
-        if let event {
-          XCTAssertEqual(trackingEvent, event)
-        }
       }
     )
   }
