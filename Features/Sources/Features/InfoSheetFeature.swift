@@ -13,6 +13,7 @@ public struct InfoSheetFeature: Reducer {
 
   public enum Action: Equatable {
     case doneButtonTapped
+    case trackViewInfoIntroEvent
   }
   
   @Dependency(\.firebaseTracker) var firebaseTracker
@@ -22,6 +23,9 @@ public struct InfoSheetFeature: Reducer {
       switch action {
       case .doneButtonTapped:
         firebaseTracker.logEvent(.clickInfoIntroPgDoneBtn(parameters: [:]))
+        return .none
+      case .trackViewInfoIntroEvent:
+        firebaseTracker.logEvent(.viewInfoIntroPg(parameters: [:]))
         return .none
       }
     }
@@ -34,6 +38,9 @@ public struct InfoSheetView: View {
   public var body: some View {
     NavigationStack {
       InfoIntroView()
+        .onAppear {
+          store.send(.trackViewInfoIntroEvent)
+        }
         .toolbar {
           ToolbarItem {
             Button {

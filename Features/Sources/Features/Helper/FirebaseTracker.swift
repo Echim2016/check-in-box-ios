@@ -34,6 +34,7 @@ extension DependencyValues {
 enum FirebaseEvent: Equatable {
   case viewModeListPg(parameters: [String: Any])
   case viewClassicCheckInPg(parameters: [String: Any])
+  case viewInfoIntroPg(parameters: [String: Any])
   case viewSettingsPg(parameters: [String: Any])
   case clickClassicCheckInPgPickBtn(parameters: [String: Any])
   case clickClassicCheckInPgPreviousBtn(parameters: [String: Any])
@@ -52,6 +53,8 @@ enum FirebaseEvent: Equatable {
       "View_ModeListPg"
     case .viewClassicCheckInPg:
       "View_ClassicCheckInPg"
+    case .viewInfoIntroPg:
+      "View_InfoIntroPg"
     case .viewSettingsPg:
       "View_SettingsPg"
     case .clickClassicCheckInPgPickBtn:
@@ -81,6 +84,7 @@ enum FirebaseEvent: Equatable {
     switch self {
     case let .viewModeListPg(parameters: parameters),
          let .viewClassicCheckInPg(parameters: parameters),
+         let .viewInfoIntroPg(parameters: parameters),
          let .viewSettingsPg(parameters: parameters),
          let .clickClassicCheckInPgPickBtn(parameters: parameters),
          let .clickClassicCheckInPgPreviousBtn(parameters: parameters),
