@@ -65,7 +65,8 @@ public struct ModeListFeature: Reducer {
         state.presentInfoPage = InfoSheetFeature.State()
         return .none
 
-      case .presentInfoPage(.dismiss):
+      case .presentInfoPage(.presented(.mainActionButtonTapped)):
+        state.presentInfoPage = nil
         firebaseTracker.logEvent(.viewModeListPg(parameters: [:]))
         return .none
 
@@ -238,6 +239,8 @@ struct ModeListView: View {
         )
       ) { infoViewStore in
         InfoSheetView(store: infoViewStore)
+          .presentationDetents([.height(600)])
+          .interactiveDismissDisabled()
       }
     }
   }
