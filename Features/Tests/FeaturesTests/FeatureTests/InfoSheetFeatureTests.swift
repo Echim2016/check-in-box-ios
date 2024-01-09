@@ -40,15 +40,3 @@ final class InfoSheetFeatureTests: XCTestCase {
     }
   }
 }
-
-extension TestStore {
-  func arrangeTracker(for event: FirebaseEvent?) {
-    dependencies.firebaseTracker = FirebaseTracker(
-      logEvent: { trackingEvent in
-        if let event {
-          XCTAssertEqual(trackingEvent, event)
-        }
-      }
-    )
-  }
-}
