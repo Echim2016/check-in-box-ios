@@ -16,19 +16,22 @@ public struct ModeListFeature: Reducer {
     var themeBoxes: IdentifiedArrayOf<ThemeBox> = []
     var questions: IdentifiedArrayOf<Question>
     var tags: IdentifiedArrayOf<Tag>
+    var hapticFeedbackTrigger: Bool = false
 
     public init(
       presentSettingsPage: SettingsFeature.State? = nil,
       presentInfoPage: InfoSheetFeature.State? = nil,
       themeBoxes: IdentifiedArrayOf<ThemeBox> = [],
       questions: IdentifiedArrayOf<Question> = [],
-      tags: IdentifiedArrayOf<Tag> = []
+      tags: IdentifiedArrayOf<Tag> = [],
+      hapticFeedbackTrigger: Bool = false
     ) {
       self.presentSettingsPage = presentSettingsPage
       self.presentInfoPage = presentInfoPage
       self.themeBoxes = themeBoxes
       self.questions = questions
       self.tags = tags
+      self.hapticFeedbackTrigger = hapticFeedbackTrigger
     }
   }
 
@@ -68,6 +71,7 @@ public struct ModeListFeature: Reducer {
 
       case .presentInfoPage(.presented(.doneButtonTapped)):
         state.presentInfoPage = nil
+        state.hapticFeedbackTrigger.toggle()
         firebaseTracker.logEvent(.viewModeListPg(parameters: [:]))
         return .none
 
@@ -194,6 +198,7 @@ struct ModeListView: View {
       .onAppear {
         store.send(.trackViewModeListEvent)
       }
+      .sensoryFeedback(.success, trigger: store.state.hapticFeedbackTrigger)
       .toolbar {
         ToolbarItem {
           Button {
