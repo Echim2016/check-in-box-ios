@@ -37,6 +37,24 @@ final class ModelListFeatureTests: XCTestCase {
     }
   }
 
+  func test_infoIntroSheet_presentedWhenInfoButtonTapped() async {
+    let store = makeSUT()
+
+    await store.send(.infoButtonTapped) {
+      $0.presentInfoPage = InfoSheetFeature.State()
+    }
+  }
+
+  func test_infoIntroSheet_dismissedWhenDoneButtonTapped() async {
+    let store = makeSUT(of: ModeListFeature.State(presentInfoPage: InfoSheetFeature.State()))
+    store.arrangeTracker(for: .clickInfoIntroPgDoneBtn(parameters: [:]), .viewModeListPg(parameters: [:]))
+
+    await store.send(.presentInfoPage(.presented(.doneButtonTapped))) {
+      $0.presentInfoPage = nil
+      $0.hapticFeedbackTrigger = true
+    }
+  }
+
   func test_questions_reloadWhenPullToRefresh() async {
     let questions = IdentifiedArray(uniqueElements: getMockMultipleQuestions())
     let tags = IdentifiedArray(uniqueElements: getMockTags())

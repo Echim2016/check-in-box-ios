@@ -10,12 +10,10 @@ import ComposableArchitecture
 import XCTest
 
 extension TestStore {
-  func arrangeTracker(for event: FirebaseEvent?) {
+  func arrangeTracker(for events: FirebaseEvent?...) {
     dependencies.firebaseTracker = FirebaseTracker(
       logEvent: { trackingEvent in
-        if let event {
-          XCTAssertEqual(trackingEvent, event)
-        }
+        XCTAssertTrue(events.contains(trackingEvent))
       }
     )
   }
