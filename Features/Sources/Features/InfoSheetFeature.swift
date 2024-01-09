@@ -82,7 +82,7 @@ struct InfoIntroView: View {
 
       introItem(
         title: "聚會，意猶未盡",
-        content: "歡聚時刻，和夥伴們用一場精彩萬分的 Check-in 來炒熱氣氛，發現他們不為人知的另一面！",
+        content: "歡聚時刻，和夥伴們用一場精彩萬分的 Check-in 來炒熱氣氛，發現彼此不為人知的另一面！",
         imageName: "info-chat"
       )
       .tag(3)
