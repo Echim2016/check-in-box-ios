@@ -20,8 +20,8 @@ final class ModelListFeatureTests: XCTestCase {
   }
 
   func test_settingsSheet_dismissedWhenDoneButtonTapped() async {
-    let store = makeSUT(isSettingsPagePresented: true)
-    arrangeTrackerOf(store, event: .viewModeListPg(parameters: [:]))
+    let store = makeSUT(of: ModeListFeature.State(presentSettingsPage: SettingsFeature.State()))
+    store.arrangeTracker(for: .viewModeListPg(parameters: [:]))
 
     await store.send(.settingsSheetDoneButtonTapped) {
       $0.presentSettingsPage = nil
@@ -29,11 +29,29 @@ final class ModelListFeatureTests: XCTestCase {
   }
   
   func test_settingsSheet_dismissed() async {
-    let store = makeSUT(isSettingsPagePresented: true)
-    arrangeTrackerOf(store, event: .viewModeListPg(parameters: [:]))
+    let store = makeSUT(of: ModeListFeature.State(presentSettingsPage: SettingsFeature.State()))
+    store.arrangeTracker(for: .viewModeListPg(parameters: [:]))
 
     await store.send(.presentSettingsPage(.dismiss)) {
       $0.presentSettingsPage = nil
+    }
+  }
+
+  func test_infoIntroSheet_presentedWhenInfoButtonTapped() async {
+    let store = makeSUT()
+
+    await store.send(.infoButtonTapped) {
+      $0.presentInfoPage = InfoSheetFeature.State()
+    }
+  }
+
+  func test_infoIntroSheet_dismissedWhenDoneButtonTapped() async {
+    let store = makeSUT(of: ModeListFeature.State(presentInfoPage: InfoSheetFeature.State()))
+    store.arrangeTracker(for: .clickInfoIntroPgDoneBtn(parameters: [:]), .viewModeListPg(parameters: [:]))
+
+    await store.send(.presentInfoPage(.presented(.doneButtonTapped))) {
+      $0.presentInfoPage = nil
+      $0.hapticFeedbackTrigger = true
     }
   }
 
@@ -111,11 +129,9 @@ final class ModelListFeatureTests: XCTestCase {
     await store.send(.trackViewModeListEvent)
   }
   
-  func makeSUT(isSettingsPagePresented: Bool = false) -> TestStoreOf<ModeListFeature> {
+  func makeSUT(of state: ModeListFeature.State = ModeListFeature.State()) -> TestStoreOf<ModeListFeature> {
     TestStore(
-      initialState: ModeListFeature.State(
-        presentSettingsPage: isSettingsPagePresented ? SettingsFeature.State() : nil
-      ),
+      initialState: state,
       reducer: { ModeListFeature() }
     ) {
       $0.firebaseTracker = FirebaseTracker(
@@ -124,16 +140,5 @@ final class ModelListFeatureTests: XCTestCase {
         }
       )
     }
-  }
-  
-  func arrangeTrackerOf(
-    _ store: TestStoreOf<ModeListFeature>,
-    event: FirebaseEvent
-  ) {
-    store.dependencies.firebaseTracker = FirebaseTracker(
-      logEvent: { trackingEvent in
-        XCTAssertEqual(trackingEvent, event)
-      }
-    )
   }
 }

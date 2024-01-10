@@ -16,7 +16,11 @@ struct CheckInBoxApp: App {
     WindowGroup {
       AppView(
         store: Store(
-          initialState: AppFeature.State()
+          initialState: AppFeature.State(
+            modeList: ModeListFeature.State(
+              presentInfoPage: UserDefaults.standard.bool(forKey: "info-intro-checked") ? nil : InfoSheetFeature.State()
+            )
+          )
         ) {
           AppFeature()
         }
