@@ -139,27 +139,19 @@ struct ClassicCheckInView: View {
           .multilineTextAlignment(.center)
           .font(.title)
           .bold()
+          .animation(
+            .easeInOut(duration: 0.25),
+            value: store.displayQuestion
+          )
 
         Spacer()
         Spacer()
 
         HStack {
           Button {
-            store.send(.previousButtonTapped)
-          } label: {
-            Text("👋 上一題")
-              .font(.headline)
-              .foregroundColor(.black)
-              .frame(maxWidth: .infinity)
-              .padding(.vertical, 16)
-              .background(.white)
-              .clipShape(RoundedRectangle(cornerRadius: 12.0))
-          }
-
-          Button {
             store.send(.pickButtonTapped)
           } label: {
-            Text("🔮 下一題")
+            Text("🔮 抽一題")
               .font(.headline)
               .foregroundColor(.black)
               .frame(maxWidth: .infinity)

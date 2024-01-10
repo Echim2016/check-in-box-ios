@@ -84,7 +84,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-FIRDebugEnabled "
+            argument = "-FIRDebugEnabled"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

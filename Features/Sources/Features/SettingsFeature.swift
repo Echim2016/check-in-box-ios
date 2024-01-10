@@ -11,8 +11,12 @@ import SwiftUI
 public struct SettingsFeature: Reducer {
   public struct State: Equatable {
     @PresentationState var presentGiftCardInputBoxPage: InputBoxFeature.State?
-    var authorProfileUrl: URL? = URL(string: "https://pbs.twimg.com/profile_images/1473910380540088321/Cw9ziBcy_400x400.jpg")
-    var shareLinkContent: String = "https://portaly.cc/check-in-box"
+    @PresentationState var presentInAppWebViewPage: InAppWebFeature.State?
+    var feedbackFormUrl: URL = .feedbackFormUrl
+    var authorProfileUrl: URL = .authorProfileUrl
+    var authorProfileImageUrl: URL? = .authorProfileImageUrl
+    var shareLinkUrl: URL = .shareLinkUrl
+    var submitQuestionsUrl: URL = .submitQuestionsUrl
     var hapticFeedbackTrigger: Bool = false
   }
 
@@ -21,7 +25,9 @@ public struct SettingsFeature: Reducer {
     case sendFeedbackButtonTapped
     case shareButtonTapped
     case redeemGiftCardButtonTapped
+    case submitQuestionsButtonTapped
     case presentGiftCardInputBoxPage(PresentationAction<InputBoxFeature.Action>)
+    case presentInAppWebViewPage(PresentationAction<InAppWebFeature.Action>)
     case trackViewSettingsPageEvent
   }
 
@@ -34,8 +40,8 @@ public struct SettingsFeature: Reducer {
       switch action {
       case .authorProfileButtonTapped:
         firebaseTracker.logEvent(.clickSettingsPgAuthorProfileBtn(parameters: [:]))
-        return .run { _ in
-          let url = URL(string: "https://twitter.com/echim2021")!
+        return .run { [state] _ in
+          let url = state.authorProfileUrl
           await openURL(url)
         }
 
@@ -45,13 +51,17 @@ public struct SettingsFeature: Reducer {
 
       case .sendFeedbackButtonTapped:
         firebaseTracker.logEvent(.clickSettingsPgFeedbackFormBtn(parameters: [:]))
-        return .run { _ in
-          let url = URL(string: "https://forms.gle/Vr4MjtowWPxBxr5r9")!
-          await openURL(url)
-        }
+        state.presentInAppWebViewPage = InAppWebFeature.State(url: .feedbackFormUrl)
+        return .none
 
       case .redeemGiftCardButtonTapped:
+        firebaseTracker.logEvent(.clickSettingsPgGiftCardBtn(parameters: [:]))
         state.presentGiftCardInputBoxPage = InputBoxFeature.State()
+        return .none
+
+      case .submitQuestionsButtonTapped:
+        firebaseTracker.logEvent(.clickSettingsPgSubmitQuestionsBtn(parameters: [:]))
+        state.presentInAppWebViewPage = InAppWebFeature.State(url: .submitQuestionsUrl)
         return .none
 
       case let .presentGiftCardInputBoxPage(.presented(.activationKeySubmitted(key))):
@@ -61,7 +71,13 @@ public struct SettingsFeature: Reducer {
         return .none
 
       case .presentGiftCardInputBoxPage:
-        firebaseTracker.logEvent(.clickSettingsPgGiftCardBtn(parameters: [:]))
+        return .none
+
+      case .presentInAppWebViewPage(.presented(.closeButtonTapped)):
+        state.presentInAppWebViewPage = nil
+        return .none
+
+      case .presentInAppWebViewPage:
         return .none
 
       case .trackViewSettingsPageEvent:
@@ -82,7 +98,7 @@ struct SettingsView: View {
       List {
         Section {
           Button {} label: {
-            ShareLink(item: store.state.shareLinkContent) {
+            ShareLink(item: store.state.shareLinkUrl) {
               /// Problem: Slow loading issue after tapping the share link without any UI indication
               /// Solution: Implement wide label for better pressed state indication
               HStack {
@@ -112,6 +128,13 @@ struct SettingsView: View {
             Label("回饋真心話", systemImage: "paperplane")
               .foregroundStyle(.white)
           }
+
+          Button {
+            store.send(.submitQuestionsButtonTapped)
+          } label: {
+            Label("我想出一題", systemImage: "lightbulb")
+              .foregroundStyle(.white)
+          }
         } header: {
           Text("服務")
         }
@@ -120,7 +143,7 @@ struct SettingsView: View {
           Button {
             store.send(.authorProfileButtonTapped)
           } label: {
-            ProfileCellView(url: store.state.authorProfileUrl)
+            ProfileCellView(url: store.state.authorProfileImageUrl)
           }
           .padding(.vertical, 2)
 
@@ -128,9 +151,10 @@ struct SettingsView: View {
           Text("作者")
         }
 
-        if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
+        if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+           let buildNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
           Section {
-            Text("v\(version)")
+            Text("v\(version) (\(buildNumber))")
               .foregroundStyle(.secondary)
           } header: {
             Text("版本")
@@ -150,6 +174,14 @@ struct SettingsView: View {
     ) { inputBoxViewStore in
       InputBoxView(store: inputBoxViewStore)
         .presentationDetents([.height(180)])
+    }
+    .fullScreenCover(
+      store: self.store.scope(
+        state: \.$presentInAppWebViewPage,
+        action: { .presentInAppWebViewPage($0) }
+      )
+    ) { webViewStore in
+      InAppWebView(store: webViewStore)
     }
   }
 }

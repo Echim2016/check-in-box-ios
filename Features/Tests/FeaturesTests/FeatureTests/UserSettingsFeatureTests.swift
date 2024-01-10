@@ -1,6 +1,6 @@
 //
 //  UserSettingsFeatureTests.swift
-//  
+//
 //
 //  Created by Yi-Chin Hsu on 2023/12/21.
 //
@@ -11,19 +11,139 @@ import XCTest
 
 @MainActor
 final class UserSettingsFeatureTests: XCTestCase {
-  func test_openURL_navigateToFeedbackForm() async {
-    let store = TestStore(
-      initialState: SettingsFeature.State(),
+  func test_openURL_presentFeedbackForm() async {
+    let store = makeSUT()
+    store.arrangeTracker(for: .clickSettingsPgFeedbackFormBtn(parameters: [:]))
+    await store.send(.sendFeedbackButtonTapped) {
+      $0.presentInAppWebViewPage = InAppWebFeature.State(url: .feedbackFormUrl)
+    }
+  }
+
+  func test_openURL_navigateToAuthorProfile() async {
+    let store = makeSUT()
+    store.arrangeOpenUrl(of: .authorProfileUrl)
+    store.arrangeTracker(for: .clickSettingsPgAuthorProfileBtn(parameters: [:]))
+    await store.send(.authorProfileButtonTapped)
+  }
+
+  func test_openURL_presentSubmitQuestionsForm() async {
+    let store = makeSUT()
+    store.arrangeTracker(for: .clickSettingsPgSubmitQuestionsBtn(parameters: [:]))
+    await store.send(.submitQuestionsButtonTapped) {
+      $0.presentInAppWebViewPage = InAppWebFeature.State(url: .submitQuestionsUrl)
+    }
+  }
+
+  func test_shareButton_trackEventWhenTapped() async {
+    let store = makeSUT()
+    store.arrangeTracker(for: .clickSettingsPgShareBtn(parameters: [:]))
+    XCTAssertEqual(store.state.shareLinkUrl, .shareLinkUrl)
+    await store.send(.shareButtonTapped)
+  }
+
+  func test_redeemGiftCardButton_presentGiftCardInoutBoxPage() async {
+    let store = makeSUT()
+    store.arrangeTracker(for: .clickSettingsPgGiftCardBtn(parameters: [:]))
+    await store.send(.redeemGiftCardButtonTapped) {
+      $0.presentGiftCardInputBoxPage = InputBoxFeature.State()
+    }
+  }
+
+  func test_settingPage_trackViewEvent() async {
+    let store = makeSUT()
+    store.arrangeTracker(for: .viewSettingsPg(parameters: [:]))
+    await store.send(.trackViewSettingsPageEvent)
+  }
+}
+
+// MARK: - Tests for gift card input box page
+
+extension UserSettingsFeatureTests {
+  func test_giftCardInputBoxPage_validActivationKeySubmitted() async {
+    let activationKey = "valid_key"
+    let store = makeSUT(
+      state: SettingsFeature.State(
+        presentGiftCardInputBoxPage: InputBoxFeature.State(
+          activationKey: activationKey
+        )
+      )
+    )
+    arrangeGiftCardAccessManagerOf(store, activationKey: activationKey)
+    store.arrangeTracker(for: nil)
+
+    await store.send(.presentGiftCardInputBoxPage(.presented(.activateButtonTapped)))
+    await store.receive(.presentGiftCardInputBoxPage(.presented(.activationKeySubmitted(activationKey)))) { state in
+      state.presentGiftCardInputBoxPage = nil
+      state.hapticFeedbackTrigger = true
+    }
+  }
+
+  func test_giftCardInputBoxPage_emptyActivationKeySubmitted() async {
+    let activationKey = ""
+    let store = makeSUT(
+      state: SettingsFeature.State(
+        presentGiftCardInputBoxPage: InputBoxFeature.State(
+          activationKey: activationKey
+        )
+      )
+    )
+    arrangeGiftCardAccessManagerOf(store, activationKey: activationKey)
+    store.arrangeTracker(for: nil)
+
+    await store.send(.presentGiftCardInputBoxPage(.presented(.activateButtonTapped)))
+  }
+
+  func test_giftCardInputBoxPage_keyChanged() async {
+    let activationKey = ""
+    let store = makeSUT(
+      state: SettingsFeature.State(
+        presentGiftCardInputBoxPage: InputBoxFeature.State(
+          activationKey: activationKey
+        )
+      )
+    )
+    arrangeGiftCardAccessManagerOf(store, activationKey: activationKey)
+    store.arrangeTracker(for: nil)
+
+    let modifiedKey = "k"
+    await store.send(.presentGiftCardInputBoxPage(.presented(.keyChanged(modifiedKey)))) {
+      $0.presentGiftCardInputBoxPage = InputBoxFeature.State(activationKey: modifiedKey)
+    }
+  }
+}
+
+extension UserSettingsFeatureTests {
+  func makeSUT(state: SettingsFeature.State = SettingsFeature.State()) -> TestStoreOf<SettingsFeature> {
+    TestStore(
+      initialState: state,
       reducer: { SettingsFeature() }
     ) {
+      $0.firebaseTracker = FirebaseTracker(
+        logEvent: { event in
+          XCTFail("\(event) is not handled")
+        }
+      )
       $0.openURL = OpenURLEffect(
         handler: { url in
-          XCTAssertEqual(url, URL(string: "https://forms.gle/Vr4MjtowWPxBxr5r9")!)
-          return true
+          XCTFail("\(url) is not handled")
+          return false
         }
       )
     }
+  }
 
-    await store.send(.sendFeedbackButtonTapped)
+  func arrangeGiftCardAccessManagerOf(
+    _ store: TestStoreOf<SettingsFeature>,
+    activationKey: String
+  ) {
+    store.dependencies.giftCardAccessManager = GiftCardAccessManager(
+      isFullAccess: { key in
+        XCTAssertEqual(activationKey, key)
+        return true
+      },
+      setAccess: { key in
+        XCTAssertEqual(activationKey, key)
+      }
+    )
   }
 }
