@@ -27,6 +27,7 @@ final class ClassicFeatureTests: XCTestCase {
 
     await store.send(.pickButtonTapped) {
       $0.displayQuestion = questions[1].content
+      $0.displaySubtitle = questions[1].subtitle
     }
   }
 
@@ -47,6 +48,7 @@ final class ClassicFeatureTests: XCTestCase {
 
     await store.send(.pickButtonTapped) {
       $0.displayQuestion = questions.first?.content
+      $0.displaySubtitle = questions.first?.subtitle
     }
   }
 

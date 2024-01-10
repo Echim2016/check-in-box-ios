@@ -97,8 +97,9 @@ public struct ClassicCheckInFeature: Reducer {
             ]
           )
         )
-        state.displayQuestion = state.questions.next()?.content
-        state.displaySubtitle = state.questions.next()?.subtitle
+        state.questions.next()
+        state.displayQuestion = state.questions.current()?.content
+        state.displaySubtitle = state.questions.current()?.subtitle
         return .none
 
       case .previousButtonTapped:
