@@ -15,6 +15,7 @@ public struct ClassicCheckInFeature: Reducer {
     var questions: CycleIterator<CheckInItem> = CycleIterator(base: [])
     var imageUrl: URL? = nil
     var displayQuestion: String? = nil
+    var displaySubtitle: String? = nil
 
     public init(
       alert: AlertState<Action.Alert>? = nil,
@@ -27,6 +28,7 @@ public struct ClassicCheckInFeature: Reducer {
       self.questions = questions
       self.imageUrl = imageUrl
       self.displayQuestion = questions.current()?.content
+      self.displaySubtitle = questions.current()?.subtitle
     }
   }
 
@@ -95,7 +97,9 @@ public struct ClassicCheckInFeature: Reducer {
             ]
           )
         )
-        state.displayQuestion = state.questions.next()?.content
+        state.questions.next()
+        state.displayQuestion = state.questions.current()?.content
+        state.displaySubtitle = state.questions.current()?.subtitle
         return .none
 
       case .previousButtonTapped:
@@ -109,7 +113,9 @@ public struct ClassicCheckInFeature: Reducer {
             ]
           )
         )
-        state.displayQuestion = state.questions.back()?.content
+        state.questions.back()
+        state.displayQuestion = state.questions.current()?.content
+        state.displaySubtitle = state.questions.current()?.subtitle
         return .none
         
       case .trackViewClassicCheckInPageEvent:
@@ -134,15 +140,26 @@ struct ClassicCheckInView: View {
     WithViewStore(self.store, observe: { $0 }) { store in
       VStack {
         Spacer()
-
-        Text(store.displayQuestion ?? "")
-          .multilineTextAlignment(.center)
-          .font(.title)
-          .bold()
-          .animation(
-            .easeInOut(duration: 0.25),
-            value: store.displayQuestion
-          )
+        
+        VStack(spacing: 32) {
+          Text(store.displayQuestion ?? "")
+            .multilineTextAlignment(.center)
+            .font(.title)
+            .bold()
+            .animation(
+              .easeInOut(duration: 0.25),
+              value: store.displayQuestion
+            )
+          
+          Text(store.displaySubtitle ?? "")
+            .multilineTextAlignment(.center)
+            .font(.headline)
+            .foregroundStyle(.secondary)
+            .animation(
+              .easeInOut(duration: 0.25),
+              value: store.displaySubtitle
+            )
+        }
 
         Spacer()
         Spacer()
@@ -173,8 +190,13 @@ struct ClassicCheckInView: View {
             if let item = store.state.questions.current(),
                let iconName = item.urlIconName
             {
-              Image(iconName)
-                .foregroundStyle(.white)
+              if iconName == iconName.uppercased() {
+                Image(iconName)
+                  .foregroundStyle(.white)
+              } else {
+                Image(systemName: iconName)
+                  .foregroundStyle(.white)
+              }
             }
           }
         }

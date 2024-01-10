@@ -40,12 +40,14 @@ public struct ThemeBoxContentItems: Equatable, Decodable {
   
   public struct ThemeBoxContentItem: Equatable, Decodable {
     public let content: String
+    public let subtitle: String?
     public let url: String?
     public let order: Int
     public let iconName: String?
     
     enum CodingKeys: String, CodingKey {
       case content
+      case subtitle
       case url
       case order
       case iconName = "icon_name"
