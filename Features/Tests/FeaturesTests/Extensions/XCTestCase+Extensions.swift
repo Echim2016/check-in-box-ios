@@ -49,12 +49,14 @@ extension XCTestCase {
           items: [
             ThemeBoxContentItems.ThemeBoxContentItem(
               content: "內容1",
+              subtitle: "副標題1",
               url: "",
               order: 1,
               iconName: "threads"
             ),
             ThemeBoxContentItems.ThemeBoxContentItem(
               content: "內容2",
+              subtitle: "副標題1",
               url: "",
               order: 2,
               iconName: "threads"
