@@ -173,8 +173,13 @@ struct ClassicCheckInView: View {
             if let item = store.state.questions.current(),
                let iconName = item.urlIconName
             {
-              Image(iconName)
-                .foregroundStyle(.white)
+              if iconName == iconName.uppercased() {
+                Image(iconName)
+                  .foregroundStyle(.white)
+              } else {
+                Image(systemName: iconName)
+                  .foregroundStyle(.white)
+              }
             }
           }
         }
