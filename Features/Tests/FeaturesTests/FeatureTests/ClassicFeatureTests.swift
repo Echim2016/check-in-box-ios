@@ -68,6 +68,7 @@ final class ClassicFeatureTests: XCTestCase {
 
     await store.send(.previousButtonTapped) {
       $0.displayQuestion = questions.last?.content
+      $0.displaySubtitle = questions.last?.subtitle
     }
   }
 

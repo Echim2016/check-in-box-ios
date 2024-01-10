@@ -113,7 +113,9 @@ public struct ClassicCheckInFeature: Reducer {
             ]
           )
         )
-        state.displayQuestion = state.questions.back()?.content
+        state.questions.back()
+        state.displayQuestion = state.questions.current()?.content
+        state.displaySubtitle = state.questions.current()?.subtitle
         return .none
         
       case .trackViewClassicCheckInPageEvent:
