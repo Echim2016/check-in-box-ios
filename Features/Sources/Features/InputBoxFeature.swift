@@ -10,6 +10,7 @@ import SwiftUI
 
 public struct InputBoxFeature: Reducer {
   public struct State: Equatable {
+    var placeholderText: String = "請輸入驗證碼"
     var activationKey: String = ""
   }
 
@@ -45,7 +46,7 @@ struct InputBoxView: View {
     WithViewStore(self.store, observe: { $0 }) { store in
       VStack(spacing: 12) {
         TextField(
-          "請輸入禮物卡序號",
+          store.placeholderText,
           text: store.binding(
             get: \.activationKey,
             send: InputBoxFeature.Action.keyChanged
@@ -60,7 +61,7 @@ struct InputBoxView: View {
         Button {
           store.send(.activateButtonTapped)
         } label: {
-          Text("兌換")
+          Text("確認")
             .font(.headline)
             .foregroundColor(store.state.activationKey.isEmpty ? .secondary : .black)
             .frame(maxWidth: .infinity)
