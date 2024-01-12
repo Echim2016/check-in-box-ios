@@ -10,7 +10,6 @@ import SwiftUI
 
 public struct SettingsFeature: Reducer {
   public struct State: Equatable {
-    @PresentationState var presentGiftCardInputBoxPage: InputBoxFeature.State?
     @PresentationState var presentInAppWebViewPage: InAppWebFeature.State?
     var feedbackFormUrl: URL = .feedbackFormUrl
     var authorProfileUrl: URL = .authorProfileUrl
@@ -24,15 +23,12 @@ public struct SettingsFeature: Reducer {
     case authorProfileButtonTapped
     case sendFeedbackButtonTapped
     case shareButtonTapped
-    case redeemGiftCardButtonTapped
     case submitQuestionsButtonTapped
-    case presentGiftCardInputBoxPage(PresentationAction<InputBoxFeature.Action>)
     case presentInAppWebViewPage(PresentationAction<InAppWebFeature.Action>)
     case trackViewSettingsPageEvent
   }
 
   @Dependency(\.openURL) var openURL
-  @Dependency(\.giftCardAccessManager) var giftCardAccessManager
   @Dependency(\.firebaseTracker) var firebaseTracker
 
   public var body: some ReducerOf<Self> {
@@ -54,23 +50,9 @@ public struct SettingsFeature: Reducer {
         state.presentInAppWebViewPage = InAppWebFeature.State(url: .feedbackFormUrl)
         return .none
 
-      case .redeemGiftCardButtonTapped:
-        firebaseTracker.logEvent(.clickSettingsPgGiftCardBtn(parameters: [:]))
-        state.presentGiftCardInputBoxPage = InputBoxFeature.State()
-        return .none
-
       case .submitQuestionsButtonTapped:
         firebaseTracker.logEvent(.clickSettingsPgSubmitQuestionsBtn(parameters: [:]))
         state.presentInAppWebViewPage = InAppWebFeature.State(url: .submitQuestionsUrl)
-        return .none
-
-      case let .presentGiftCardInputBoxPage(.presented(.activationKeySubmitted(key))):
-        state.presentGiftCardInputBoxPage = nil
-        state.hapticFeedbackTrigger.toggle()
-        giftCardAccessManager.setAccess(key)
-        return .none
-
-      case .presentGiftCardInputBoxPage:
         return .none
 
       case .presentInAppWebViewPage(.presented(.closeButtonTapped)):
@@ -84,9 +66,6 @@ public struct SettingsFeature: Reducer {
         firebaseTracker.logEvent(.viewSettingsPg(parameters: [:]))
         return .none
       }
-    }
-    .ifLet(\.$presentGiftCardInputBoxPage, action: /Action.presentGiftCardInputBoxPage) {
-      InputBoxFeature()
     }
   }
 }
@@ -113,13 +92,6 @@ struct SettingsView: View {
                 store.send(.shareButtonTapped)
               }
             )
-          }
-
-          Button {
-            store.send(.redeemGiftCardButtonTapped)
-          } label: {
-            Label("兌換禮物卡", systemImage: "giftcard")
-              .foregroundStyle(.white)
           }
 
           Button {
@@ -165,15 +137,6 @@ struct SettingsView: View {
         store.send(.trackViewSettingsPageEvent)
       }
       .sensoryFeedback(.success, trigger: store.state.hapticFeedbackTrigger)
-    }
-    .sheet(
-      store: self.store.scope(
-        state: \.$presentGiftCardInputBoxPage,
-        action: { .presentGiftCardInputBoxPage($0) }
-      )
-    ) { inputBoxViewStore in
-      InputBoxView(store: inputBoxViewStore)
-        .presentationDetents([.height(180)])
     }
     .fullScreenCover(
       store: self.store.scope(
