@@ -45,7 +45,7 @@ struct InputBoxView: View {
   var body: some View {
     WithViewStore(self.store, observe: { $0 }) { store in
       VStack(spacing: 12) {
-        TextField(
+        SecureField(
           store.placeholderText,
           text: store.binding(
             get: \.activationKey,
