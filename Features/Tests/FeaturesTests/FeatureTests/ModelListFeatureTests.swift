@@ -75,12 +75,6 @@ final class ModelListFeatureTests: XCTestCase {
           themeBoxes
         }
       )
-      $0.giftCardAccessManager = GiftCardAccessManager(
-        isFullAccess: { _ in
-          true
-        },
-        setAccess: { _ in }
-      )
     }
 
     await store.send(.loadFromRemote)

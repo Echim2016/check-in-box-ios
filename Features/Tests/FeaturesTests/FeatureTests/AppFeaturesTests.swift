@@ -46,12 +46,6 @@ final class AppFeaturesTests: XCTestCase {
           return IdentifiedArray(uniqueElements: mockThemeBoxes)
         }
       )
-      $0.giftCardAccessManager = GiftCardAccessManager(
-        isFullAccess: { _ in
-          true
-        },
-        setAccess: { _ in }
-      )
     }
 
     await store.send(.loadFromRemote)

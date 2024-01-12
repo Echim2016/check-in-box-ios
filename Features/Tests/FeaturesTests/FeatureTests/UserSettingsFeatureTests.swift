@@ -41,74 +41,10 @@ final class UserSettingsFeatureTests: XCTestCase {
     await store.send(.shareButtonTapped)
   }
 
-  func test_redeemGiftCardButton_presentGiftCardInoutBoxPage() async {
-    let store = makeSUT()
-    store.arrangeTracker(for: .clickSettingsPgGiftCardBtn(parameters: [:]))
-    await store.send(.redeemGiftCardButtonTapped) {
-      $0.presentGiftCardInputBoxPage = InputBoxFeature.State()
-    }
-  }
-
   func test_settingPage_trackViewEvent() async {
     let store = makeSUT()
     store.arrangeTracker(for: .viewSettingsPg(parameters: [:]))
     await store.send(.trackViewSettingsPageEvent)
-  }
-}
-
-// MARK: - Tests for gift card input box page
-
-extension UserSettingsFeatureTests {
-  func test_giftCardInputBoxPage_validActivationKeySubmitted() async {
-    let activationKey = "valid_key"
-    let store = makeSUT(
-      state: SettingsFeature.State(
-        presentGiftCardInputBoxPage: InputBoxFeature.State(
-          activationKey: activationKey
-        )
-      )
-    )
-    arrangeGiftCardAccessManagerOf(store, activationKey: activationKey)
-    store.arrangeTracker(for: nil)
-
-    await store.send(.presentGiftCardInputBoxPage(.presented(.activateButtonTapped)))
-    await store.receive(.presentGiftCardInputBoxPage(.presented(.activationKeySubmitted(activationKey)))) { state in
-      state.presentGiftCardInputBoxPage = nil
-      state.hapticFeedbackTrigger = true
-    }
-  }
-
-  func test_giftCardInputBoxPage_emptyActivationKeySubmitted() async {
-    let activationKey = ""
-    let store = makeSUT(
-      state: SettingsFeature.State(
-        presentGiftCardInputBoxPage: InputBoxFeature.State(
-          activationKey: activationKey
-        )
-      )
-    )
-    arrangeGiftCardAccessManagerOf(store, activationKey: activationKey)
-    store.arrangeTracker(for: nil)
-
-    await store.send(.presentGiftCardInputBoxPage(.presented(.activateButtonTapped)))
-  }
-
-  func test_giftCardInputBoxPage_keyChanged() async {
-    let activationKey = ""
-    let store = makeSUT(
-      state: SettingsFeature.State(
-        presentGiftCardInputBoxPage: InputBoxFeature.State(
-          activationKey: activationKey
-        )
-      )
-    )
-    arrangeGiftCardAccessManagerOf(store, activationKey: activationKey)
-    store.arrangeTracker(for: nil)
-
-    let modifiedKey = "k"
-    await store.send(.presentGiftCardInputBoxPage(.presented(.keyChanged(modifiedKey)))) {
-      $0.presentGiftCardInputBoxPage = InputBoxFeature.State(activationKey: modifiedKey)
-    }
   }
 }
 
@@ -130,20 +66,5 @@ extension UserSettingsFeatureTests {
         }
       )
     }
-  }
-
-  func arrangeGiftCardAccessManagerOf(
-    _ store: TestStoreOf<SettingsFeature>,
-    activationKey: String
-  ) {
-    store.dependencies.giftCardAccessManager = GiftCardAccessManager(
-      isFullAccess: { key in
-        XCTAssertEqual(activationKey, key)
-        return true
-      },
-      setAccess: { key in
-        XCTAssertEqual(activationKey, key)
-      }
-    )
   }
 }
