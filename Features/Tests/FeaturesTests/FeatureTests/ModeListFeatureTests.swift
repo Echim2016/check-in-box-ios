@@ -1,5 +1,5 @@
 //
-//  ModelListFeatureTests.swift
+//  ModeListFeatureTests.swift
 //
 //
 //  Created by Yi-Chin Hsu on 2023/12/21.
@@ -10,7 +10,7 @@ import ComposableArchitecture
 import XCTest
 
 @MainActor
-final class ModelListFeatureTests: XCTestCase {
+final class ModeListFeatureTests: XCTestCase {
   func test_settingsSheet_presentedWhenSettingButtonTapped() async {
     let store = makeSUT()
 
