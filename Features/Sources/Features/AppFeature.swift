@@ -47,6 +47,7 @@ public struct AppFeature: Reducer {
 
   public init() {}
 
+  @Dependency(\.debugModeManager) var debugModeManager
   @Dependency(\.firebaseCheckInLoader) var firebaseCheckInLoader
   
   public var body: some ReducerOf<Self> {
@@ -66,8 +67,7 @@ public struct AppFeature: Reducer {
         return .run { send in
           try await send(
             .receivedQuestions(
-              // TODO: debug mode for full access
-              await firebaseCheckInLoader.loadThemeBoxes("Theme_Boxes", false),
+              await firebaseCheckInLoader.loadThemeBoxes("Theme_Boxes", debugModeManager.isFullAccess("admin_full_access")),
               await firebaseCheckInLoader.loadTags("Question_Tags"),
               await firebaseCheckInLoader.loadQuestions("Questions")
             )
