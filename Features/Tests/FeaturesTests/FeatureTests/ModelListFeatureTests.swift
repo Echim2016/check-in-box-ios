@@ -75,6 +75,12 @@ final class ModelListFeatureTests: XCTestCase {
           themeBoxes
         }
       )
+      $0.debugModeManager = DebugModeManager(
+        isFullAccess: { _ in
+          true
+        },
+        setAccess: { _ in }
+      )
     }
 
     await store.send(.loadFromRemote)

@@ -46,6 +46,12 @@ final class AppFeaturesTests: XCTestCase {
           return IdentifiedArray(uniqueElements: mockThemeBoxes)
         }
       )
+      $0.debugModeManager = DebugModeManager(
+        isFullAccess: { _ in
+          true
+        },
+        setAccess: { _ in }
+      )
     }
 
     await store.send(.loadFromRemote)
