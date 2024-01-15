@@ -5,6 +5,7 @@
 //  Created by Yi-Chin Hsu on 2023/12/15.
 //
 
+import AppTrackingTransparency
 import ComposableArchitecture
 import SwiftUI
 
@@ -47,9 +48,9 @@ public struct AppFeature: Reducer {
 
   public init() {}
 
+  @Dependency(\.debugModeManager) var debugModeManager
   @Dependency(\.firebaseCheckInLoader) var firebaseCheckInLoader
-  @Dependency(\.giftCardAccessManager) var giftCardAccessManager
-  
+
   public var body: some ReducerOf<Self> {
     Scope(state: \.modeList, action: /Action.modeList) {
       ModeListFeature()
@@ -59,21 +60,21 @@ public struct AppFeature: Reducer {
       switch action {
       case .modeList(.pullToRefreshTriggered):
         return .send(.loadFromRemote)
-        
+
       case .modeList:
         return .none
-        
+
       case .loadFromRemote:
         return .run { send in
           try await send(
             .receivedQuestions(
-              await firebaseCheckInLoader.loadThemeBoxes("Theme_Boxes", giftCardAccessManager.isFullAccess("theme_box_full_access")),
+              await firebaseCheckInLoader.loadThemeBoxes("Theme_Boxes", debugModeManager.isFullAccess("admin_full_access")),
               await firebaseCheckInLoader.loadTags("Question_Tags"),
               await firebaseCheckInLoader.loadQuestions("Questions")
             )
           )
         }
-        
+
       case let .receivedQuestions(themeBoxes, tags, questions):
         state.modeList.themeBoxes = themeBoxes
         state.modeList.tags = tags
@@ -120,6 +121,11 @@ public struct AppView: View {
     }
     .task {
       store.send(.loadFromRemote)
+      
+      /// Problem: Failed to present tracking authorization alert in SwiftUI
+      /// Solution: Add time delay to fix the display issue
+      try? await Task.sleep(for: .seconds(0.1))
+      await ATTrackingManager.requestTrackingAuthorization()
     }
     .tint(.white)
   }

@@ -10,29 +10,30 @@ import SwiftUI
 
 public struct SettingsFeature: Reducer {
   public struct State: Equatable {
-    @PresentationState var presentGiftCardInputBoxPage: InputBoxFeature.State?
+    @PresentationState var presentDebugModeInputBoxPage: InputBoxFeature.State?
     @PresentationState var presentInAppWebViewPage: InAppWebFeature.State?
     var feedbackFormUrl: URL = .feedbackFormUrl
     var authorProfileUrl: URL = .authorProfileUrl
     var authorProfileImageUrl: URL? = .authorProfileImageUrl
     var shareLinkUrl: URL = .shareLinkUrl
     var submitQuestionsUrl: URL = .submitQuestionsUrl
-    var hapticFeedbackTrigger: Bool = false
+    var debugModeButtonEnabled: Bool = false
   }
 
   public enum Action: Equatable {
     case authorProfileButtonTapped
+    case debugModeButtonEnabled
+    case debugModeButtonTapped
     case sendFeedbackButtonTapped
     case shareButtonTapped
-    case redeemGiftCardButtonTapped
     case submitQuestionsButtonTapped
-    case presentGiftCardInputBoxPage(PresentationAction<InputBoxFeature.Action>)
+    case presentDebugModeInputBoxPage(PresentationAction<InputBoxFeature.Action>)
     case presentInAppWebViewPage(PresentationAction<InAppWebFeature.Action>)
     case trackViewSettingsPageEvent
   }
 
   @Dependency(\.openURL) var openURL
-  @Dependency(\.giftCardAccessManager) var giftCardAccessManager
+  @Dependency(\.debugModeManager) var debugModeManager
   @Dependency(\.firebaseTracker) var firebaseTracker
 
   public var body: some ReducerOf<Self> {
@@ -45,6 +46,14 @@ public struct SettingsFeature: Reducer {
           await openURL(url)
         }
 
+      case .debugModeButtonEnabled:
+        state.debugModeButtonEnabled = true
+        return .none
+
+      case .debugModeButtonTapped:
+        state.presentDebugModeInputBoxPage = InputBoxFeature.State()
+        return .none
+
       case .shareButtonTapped:
         firebaseTracker.logEvent(.clickSettingsPgShareBtn(parameters: [:]))
         return .none
@@ -54,23 +63,17 @@ public struct SettingsFeature: Reducer {
         state.presentInAppWebViewPage = InAppWebFeature.State(url: .feedbackFormUrl)
         return .none
 
-      case .redeemGiftCardButtonTapped:
-        firebaseTracker.logEvent(.clickSettingsPgGiftCardBtn(parameters: [:]))
-        state.presentGiftCardInputBoxPage = InputBoxFeature.State()
-        return .none
-
       case .submitQuestionsButtonTapped:
         firebaseTracker.logEvent(.clickSettingsPgSubmitQuestionsBtn(parameters: [:]))
         state.presentInAppWebViewPage = InAppWebFeature.State(url: .submitQuestionsUrl)
         return .none
 
-      case let .presentGiftCardInputBoxPage(.presented(.activationKeySubmitted(key))):
-        state.presentGiftCardInputBoxPage = nil
-        state.hapticFeedbackTrigger.toggle()
-        giftCardAccessManager.setAccess(key)
+      case let .presentDebugModeInputBoxPage(.presented(.activationKeySubmitted(key))):
+        state.presentDebugModeInputBoxPage = nil
+        debugModeManager.setAccess(key)
         return .none
-
-      case .presentGiftCardInputBoxPage:
+        
+      case .presentDebugModeInputBoxPage:
         return .none
 
       case .presentInAppWebViewPage(.presented(.closeButtonTapped)):
@@ -85,7 +88,7 @@ public struct SettingsFeature: Reducer {
         return .none
       }
     }
-    .ifLet(\.$presentGiftCardInputBoxPage, action: /Action.presentGiftCardInputBoxPage) {
+    .ifLet(\.$presentDebugModeInputBoxPage, action: /Action.presentDebugModeInputBoxPage) {
       InputBoxFeature()
     }
   }
@@ -113,13 +116,6 @@ struct SettingsView: View {
                 store.send(.shareButtonTapped)
               }
             )
-          }
-
-          Button {
-            store.send(.redeemGiftCardButtonTapped)
-          } label: {
-            Label("兌換禮物卡", systemImage: "giftcard")
-              .foregroundStyle(.white)
           }
 
           Button {
@@ -151,11 +147,28 @@ struct SettingsView: View {
           Text("作者")
         }
 
+        if store.debugModeButtonEnabled {
+          Section {
+            Button {
+              store.send(.debugModeButtonTapped)
+            } label: {
+              Label("Debug Mode", systemImage: "wrench.adjustable")
+                .foregroundStyle(.white)
+            }
+          } header: {
+            Text("Debug")
+          }
+        }
+
         if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
-           let buildNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
+           let buildNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
+        {
           Section {
             Text("v\(version) (\(buildNumber))")
               .foregroundStyle(.secondary)
+              .onTapGesture(count: 10) {
+                store.send(.debugModeButtonEnabled)
+              }
           } header: {
             Text("版本")
           }
@@ -164,12 +177,11 @@ struct SettingsView: View {
       .onAppear {
         store.send(.trackViewSettingsPageEvent)
       }
-      .sensoryFeedback(.success, trigger: store.state.hapticFeedbackTrigger)
     }
     .sheet(
       store: self.store.scope(
-        state: \.$presentGiftCardInputBoxPage,
-        action: { .presentGiftCardInputBoxPage($0) }
+        state: \.$presentDebugModeInputBoxPage,
+        action: { .presentDebugModeInputBoxPage($0) }
       )
     ) { inputBoxViewStore in
       InputBoxView(store: inputBoxViewStore)
