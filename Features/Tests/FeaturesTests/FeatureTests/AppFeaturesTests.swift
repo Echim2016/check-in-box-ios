@@ -46,7 +46,7 @@ final class AppFeaturesTests: XCTestCase {
           return IdentifiedArray(uniqueElements: mockThemeBoxes)
         }
       )
-      $0.giftCardAccessManager = GiftCardAccessManager(
+      $0.debugModeManager = DebugModeManager(
         isFullAccess: { _ in
           true
         },

@@ -41,11 +41,17 @@ final class UserSettingsFeatureTests: XCTestCase {
     await store.send(.shareButtonTapped)
   }
 
-  func test_redeemGiftCardButton_presentGiftCardInoutBoxPage() async {
+  func test_debugModeButton_presentDebugModeInoutBoxPage() async {
     let store = makeSUT()
-    store.arrangeTracker(for: .clickSettingsPgGiftCardBtn(parameters: [:]))
-    await store.send(.redeemGiftCardButtonTapped) {
-      $0.presentGiftCardInputBoxPage = InputBoxFeature.State()
+    await store.send(.debugModeButtonTapped) {
+      $0.presentDebugModeInputBoxPage = InputBoxFeature.State()
+    }
+  }
+  
+  func test_debugModeButton_enabled() async {
+    let store = makeSUT()
+    await store.send(.debugModeButtonEnabled) {
+      $0.debugModeButtonEnabled = true
     }
   }
 
@@ -56,58 +62,57 @@ final class UserSettingsFeatureTests: XCTestCase {
   }
 }
 
-// MARK: - Tests for gift card input box page
+// MARK: - Tests for debug mode input box page
 
 extension UserSettingsFeatureTests {
-  func test_giftCardInputBoxPage_validActivationKeySubmitted() async {
+  func test_debugModeInputBoxPage_validActivationKeySubmitted() async {
     let activationKey = "valid_key"
     let store = makeSUT(
       state: SettingsFeature.State(
-        presentGiftCardInputBoxPage: InputBoxFeature.State(
+        presentDebugModeInputBoxPage: InputBoxFeature.State(
           activationKey: activationKey
         )
       )
     )
-    arrangeGiftCardAccessManagerOf(store, activationKey: activationKey)
+    arrangeDebugModeManagerOf(store, activationKey: activationKey)
     store.arrangeTracker(for: nil)
 
-    await store.send(.presentGiftCardInputBoxPage(.presented(.activateButtonTapped)))
-    await store.receive(.presentGiftCardInputBoxPage(.presented(.activationKeySubmitted(activationKey)))) { state in
-      state.presentGiftCardInputBoxPage = nil
-      state.hapticFeedbackTrigger = true
+    await store.send(.presentDebugModeInputBoxPage(.presented(.activateButtonTapped)))
+    await store.receive(.presentDebugModeInputBoxPage(.presented(.activationKeySubmitted(activationKey)))) { state in
+      state.presentDebugModeInputBoxPage = nil
     }
   }
 
-  func test_giftCardInputBoxPage_emptyActivationKeySubmitted() async {
+  func test_debugModeInputBoxPage_emptyActivationKeySubmitted() async {
     let activationKey = ""
     let store = makeSUT(
       state: SettingsFeature.State(
-        presentGiftCardInputBoxPage: InputBoxFeature.State(
+        presentDebugModeInputBoxPage: InputBoxFeature.State(
           activationKey: activationKey
         )
       )
     )
-    arrangeGiftCardAccessManagerOf(store, activationKey: activationKey)
+    arrangeDebugModeManagerOf(store, activationKey: activationKey)
     store.arrangeTracker(for: nil)
 
-    await store.send(.presentGiftCardInputBoxPage(.presented(.activateButtonTapped)))
+    await store.send(.presentDebugModeInputBoxPage(.presented(.activateButtonTapped)))
   }
 
-  func test_giftCardInputBoxPage_keyChanged() async {
+  func test_debugModeInputBoxPage_keyChanged() async {
     let activationKey = ""
     let store = makeSUT(
       state: SettingsFeature.State(
-        presentGiftCardInputBoxPage: InputBoxFeature.State(
+        presentDebugModeInputBoxPage: InputBoxFeature.State(
           activationKey: activationKey
         )
       )
     )
-    arrangeGiftCardAccessManagerOf(store, activationKey: activationKey)
+    arrangeDebugModeManagerOf(store, activationKey: activationKey)
     store.arrangeTracker(for: nil)
 
     let modifiedKey = "k"
-    await store.send(.presentGiftCardInputBoxPage(.presented(.keyChanged(modifiedKey)))) {
-      $0.presentGiftCardInputBoxPage = InputBoxFeature.State(activationKey: modifiedKey)
+    await store.send(.presentDebugModeInputBoxPage(.presented(.keyChanged(modifiedKey)))) {
+      $0.presentDebugModeInputBoxPage = InputBoxFeature.State(activationKey: modifiedKey)
     }
   }
 }
@@ -132,11 +137,11 @@ extension UserSettingsFeatureTests {
     }
   }
 
-  func arrangeGiftCardAccessManagerOf(
+  func arrangeDebugModeManagerOf(
     _ store: TestStoreOf<SettingsFeature>,
     activationKey: String
   ) {
-    store.dependencies.giftCardAccessManager = GiftCardAccessManager(
+    store.dependencies.debugModeManager = DebugModeManager(
       isFullAccess: { key in
         XCTAssertEqual(activationKey, key)
         return true

@@ -5,6 +5,7 @@
 //  Created by Yi-Chin Hsu on 2023/12/29.
 //
 
+import AppTrackingTransparency
 import Dependencies
 import FirebaseAnalytics
 
@@ -14,6 +15,7 @@ struct FirebaseTracker {
 
 extension FirebaseTracker: DependencyKey {
   static var liveValue: FirebaseTracker = FirebaseTracker { event in
+    guard ATTrackingManager.trackingAuthorizationStatus == .authorized else { return }
     Analytics.logEvent(event.name, parameters: event.parameters)
   }
 }
@@ -42,7 +44,6 @@ enum FirebaseEvent: Equatable {
   case clickClassicCheckInPgWelcomeMessageDoneBtn(parameters: [String: Any])
   case clickInfoIntroPgDoneBtn(parameters: [String: Any])
   case clickSettingsPgShareBtn(parameters: [String: Any])
-  case clickSettingsPgGiftCardBtn(parameters: [String: Any])
   case clickSettingsPgFeedbackFormBtn(parameters: [String: Any])
   case clickSettingsPgAuthorProfileBtn(parameters: [String: Any])
   case clickSettingsPgSubmitQuestionsBtn(parameters: [String: Any])
@@ -69,8 +70,6 @@ enum FirebaseEvent: Equatable {
       "Click_InfoIntroPg_DoneBtn"
     case .clickSettingsPgShareBtn:
       "Click_SettingsPg_ShareBtn"
-    case .clickSettingsPgGiftCardBtn:
-      "Click_SettingsPg_GiftCardBtn"
     case .clickSettingsPgFeedbackFormBtn:
       "Click_SettingsPg_FeedbackFormBtn"
     case .clickSettingsPgAuthorProfileBtn:
@@ -92,7 +91,6 @@ enum FirebaseEvent: Equatable {
          let .clickClassicCheckInPgWelcomeMessageDoneBtn(parameters: parameters),
          let .clickInfoIntroPgDoneBtn(parameters: parameters),
          let .clickSettingsPgShareBtn(parameters: parameters),
-         let .clickSettingsPgGiftCardBtn(parameters: parameters),
          let .clickSettingsPgFeedbackFormBtn(parameters: parameters),
          let .clickSettingsPgAuthorProfileBtn(parameters: parameters),
          let .clickSettingsPgSubmitQuestionsBtn(parameters: parameters):
