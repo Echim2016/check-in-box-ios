@@ -167,7 +167,7 @@ struct ModeListView: View {
               NavigationLink(
                 state: AppFeature.Path.State.classic(
                   ClassicCheckInFeature.State(
-                    theme: tag.title,
+                    theme: tag.code,
                     questions: CycleIterator(
                       base: store.state.questions
                         .filter(by: tag.code)
