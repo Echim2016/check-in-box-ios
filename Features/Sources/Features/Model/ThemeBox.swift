@@ -11,6 +11,7 @@ public struct ThemeBox: Equatable, Identifiable, Decodable {
   public let id: String
   public let title: String
   public let subtitle: String
+  public let code: String
   public let alertTitle: String
   public let alertMessage: String
   public let authorName: String
@@ -24,6 +25,7 @@ public struct ThemeBox: Equatable, Identifiable, Decodable {
     case id
     case title
     case subtitle
+    case code
     case alertTitle = "alert_title"
     case alertMessage = "alert_message"
     case authorName
