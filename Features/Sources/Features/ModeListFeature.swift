@@ -122,7 +122,7 @@ struct ModeListView: View {
                         ),
                       ]
                     ),
-                    theme: box.title,
+                    theme: box.code,
                     questions: CycleIterator(
                       base: box.items.items
                         .map { CheckInItem.from($0) }
