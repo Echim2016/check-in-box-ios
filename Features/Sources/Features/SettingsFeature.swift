@@ -72,6 +72,7 @@ public struct SettingsFeature: Reducer {
         return .none
 
       case .submitAppReviewButtonTapped:
+        firebaseTracker.logEvent(.clickSettingsPgSubmitAppReviewBtn(parameters: [:]))
         return .none
         
       case let .presentDebugModeInputBoxPage(.presented(.activationKeySubmitted(key))):
