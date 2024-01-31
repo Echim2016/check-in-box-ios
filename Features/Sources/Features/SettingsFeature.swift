@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import StoreKit
 import SwiftUI
 
 public struct SettingsFeature: Reducer {
@@ -27,6 +28,7 @@ public struct SettingsFeature: Reducer {
     case sendFeedbackButtonTapped
     case shareButtonTapped
     case submitQuestionsButtonTapped
+    case submitAppReviewButtonTapped
     case presentDebugModeInputBoxPage(PresentationAction<InputBoxFeature.Action>)
     case presentInAppWebViewPage(PresentationAction<InAppWebFeature.Action>)
     case trackViewSettingsPageEvent
@@ -35,6 +37,7 @@ public struct SettingsFeature: Reducer {
   @Dependency(\.openURL) var openURL
   @Dependency(\.debugModeManager) var debugModeManager
   @Dependency(\.firebaseTracker) var firebaseTracker
+  
 
   public var body: some ReducerOf<Self> {
     Reduce { state, action in
@@ -68,6 +71,10 @@ public struct SettingsFeature: Reducer {
         state.presentInAppWebViewPage = InAppWebFeature.State(url: .submitQuestionsUrl)
         return .none
 
+      case .submitAppReviewButtonTapped:
+        firebaseTracker.logEvent(.clickSettingsPgSubmitAppReviewBtn(parameters: [:]))
+        return .none
+        
       case let .presentDebugModeInputBoxPage(.presented(.activationKeySubmitted(key))):
         state.presentDebugModeInputBoxPage = nil
         debugModeManager.setAccess(key)
@@ -96,6 +103,8 @@ public struct SettingsFeature: Reducer {
 
 struct SettingsView: View {
   let store: StoreOf<SettingsFeature>
+  @Environment(\.requestReview) var requestReview
+
   var body: some View {
     WithViewStore(self.store, observe: { $0 }) { store in
       List {
@@ -129,6 +138,14 @@ struct SettingsView: View {
             store.send(.submitQuestionsButtonTapped)
           } label: {
             Label("我想出一題", systemImage: "lightbulb")
+              .foregroundStyle(.white)
+          }
+          
+          Button {
+            store.send(.submitAppReviewButtonTapped)
+            requestReview()
+          } label: {
+            Label("評價五顆星", systemImage: "star")
               .foregroundStyle(.white)
           }
         } header: {
