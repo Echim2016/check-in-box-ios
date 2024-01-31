@@ -118,7 +118,7 @@ final class ClassicFeatureTests: XCTestCase {
     let store = TestStore(
       initialState: ClassicCheckInFeature.State(
         alert: alert,
-        theme: "Test",
+        tag: Tag(code: "Test"),
         questions: CycleIterator(base: [])
       )
     ) {
@@ -140,7 +140,12 @@ final class ClassicFeatureTests: XCTestCase {
   func test_classicCheckIn_trackViewEvent() async {
     let store = makeSUT(base: [])
     store.arrangeTracker(
-      for: .viewClassicCheckInPg(parameters: ["theme": "Test"])
+      for: .viewClassicCheckInPg(
+        parameters: [
+          "theme": "Test",
+          "order": -1,
+        ]
+      )
     )
 
     await store.send(.trackViewClassicCheckInPageEvent)
@@ -149,7 +154,7 @@ final class ClassicFeatureTests: XCTestCase {
   func makeSUT(base: [CheckInItem], index: Int = 0) -> TestStore<ClassicCheckInFeature.State, ClassicCheckInFeature.Action> {
     let store = TestStore(
       initialState: ClassicCheckInFeature.State(
-        theme: "Test",
+        tag: Tag(code: "Test"),
         questions: CycleIterator(base: base, index: index)
       ),
       reducer: { ClassicCheckInFeature() }

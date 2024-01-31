@@ -53,11 +53,11 @@ enum FirebaseEvent: Equatable {
     case .viewModeListPg:
       "View_ModeListPg"
     case .viewClassicCheckInPg:
-      "View_ClassicCheckInPg"
+      "View_CheckInPg"
     case .viewInfoIntroPg:
       "View_InfoIntroPg"
     case .viewSettingsPg:
-      "View_SettingsPg"
+      "View_SettingPg"
     case .clickClassicCheckInPgPickBtn:
       "Click_ClassicCheckInPg_PickBtn"
     case .clickClassicCheckInPgPreviousBtn:
