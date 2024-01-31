@@ -11,7 +11,7 @@ import SwiftUI
 public struct ClassicCheckInFeature: Reducer {
   public struct State: Equatable {
     @PresentationState var alert: AlertState<Action.Alert>?
-    var theme: String = ""
+    var tag: Tag? = nil
     var questions: CycleIterator<CheckInItem> = CycleIterator(base: [])
     var imageUrl: URL? = nil
     var displayQuestion: String? = nil
@@ -19,12 +19,12 @@ public struct ClassicCheckInFeature: Reducer {
 
     public init(
       alert: AlertState<Action.Alert>? = nil,
-      theme: String,
+      tag: Tag? = nil,
       questions: CycleIterator<CheckInItem> = CycleIterator(base: []),
       imageUrl: URL? = nil
     ) {
       self.alert = alert
-      self.theme = theme
+      self.tag = tag
       self.questions = questions
       self.imageUrl = imageUrl
       self.displayQuestion = questions.current()?.content
@@ -55,7 +55,7 @@ public struct ClassicCheckInFeature: Reducer {
         firebaseTracker.logEvent(
           .clickClassicCheckInPgWelcomeMessageDoneBtn(
             parameters: [
-              "theme": state.theme,
+              "theme": state.tag?.code ?? "",
             ]
           )
         )
@@ -75,7 +75,7 @@ public struct ClassicCheckInFeature: Reducer {
         firebaseTracker.logEvent(
           .clickClassicCheckInPgUrlBtn(
             parameters: [
-              "theme": state.theme,
+              "theme": state.tag?.code ?? "",
               "current_content": state.displayQuestion ?? "",
               "url": url.absoluteString,
             ]
@@ -90,7 +90,7 @@ public struct ClassicCheckInFeature: Reducer {
         firebaseTracker.logEvent(
           .clickClassicCheckInPgPickBtn(
             parameters: [
-              "theme": state.theme,
+              "theme": state.tag?.code ?? "",
               "current_content": state.displayQuestion ?? "",
               "current_index": state.questions.index,
               "items_total_count": state.questions.base.count,
@@ -106,7 +106,7 @@ public struct ClassicCheckInFeature: Reducer {
         firebaseTracker.logEvent(
           .clickClassicCheckInPgPreviousBtn(
             parameters: [
-              "theme": state.theme,
+              "theme": state.tag?.code ?? "",
               "current_content": state.displayQuestion ?? "",
               "current_index": state.questions.index,
               "items_total_count": state.questions.base.count,
@@ -122,7 +122,8 @@ public struct ClassicCheckInFeature: Reducer {
         firebaseTracker.logEvent(
           .viewClassicCheckInPg(
             parameters: [
-              "theme": state.theme,
+              "theme": state.tag?.code ?? "",
+              "order": state.tag?.order ?? -1,
             ]
           )
         )
@@ -221,7 +222,6 @@ struct ClassicCheckInView: View {
     ClassicCheckInView(
       store: Store(
         initialState: ClassicCheckInFeature.State(
-          theme: "生活",
           questions: CycleIterator(
             base: [
               .from(Question(question: "身上使用最久的東西是什麼？")),
