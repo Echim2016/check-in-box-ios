@@ -47,17 +47,18 @@ enum FirebaseEvent: Equatable {
   case clickSettingsPgFeedbackFormBtn(parameters: [String: Any])
   case clickSettingsPgAuthorProfileBtn(parameters: [String: Any])
   case clickSettingsPgSubmitQuestionsBtn(parameters: [String: Any])
+  case clickSettingsPgSubmitAppReviewBtn(parameters: [String: Any])
 
   var name: String {
     switch self {
     case .viewModeListPg:
       "View_ModeListPg"
     case .viewClassicCheckInPg:
-      "View_ClassicCheckInPg"
+      "View_CheckInPg"
     case .viewInfoIntroPg:
       "View_InfoIntroPg"
     case .viewSettingsPg:
-      "View_SettingsPg"
+      "View_SettingPg"
     case .clickClassicCheckInPgPickBtn:
       "Click_ClassicCheckInPg_PickBtn"
     case .clickClassicCheckInPgPreviousBtn:
@@ -76,6 +77,8 @@ enum FirebaseEvent: Equatable {
       "Click_SettingsPg_AuthorProfileBtn"
     case .clickSettingsPgSubmitQuestionsBtn:
       "Click_SettingsPg_SubmitQuestionsBtn"
+    case .clickSettingsPgSubmitAppReviewBtn:
+      "Click_SettingsPg_SubmitAppReviewBtn"
     }
   }
 
@@ -93,7 +96,8 @@ enum FirebaseEvent: Equatable {
          let .clickSettingsPgShareBtn(parameters: parameters),
          let .clickSettingsPgFeedbackFormBtn(parameters: parameters),
          let .clickSettingsPgAuthorProfileBtn(parameters: parameters),
-         let .clickSettingsPgSubmitQuestionsBtn(parameters: parameters):
+         let .clickSettingsPgSubmitQuestionsBtn(parameters: parameters),
+         let .clickSettingsPgSubmitAppReviewBtn(parameters: parameters):
       return parameters
     }
   }

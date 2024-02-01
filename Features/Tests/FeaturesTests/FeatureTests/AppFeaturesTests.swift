@@ -18,8 +18,8 @@ final class AppFeaturesTests: XCTestCase {
       AppFeature()
     }
 
-    await store.send(.path(.push(id: 0, state: .classic(ClassicCheckInFeature.State(theme: "Test"))))) {
-      $0.path[id: 0] = .classic(ClassicCheckInFeature.State(theme: "Test"))
+    await store.send(.path(.push(id: 0, state: .classic(ClassicCheckInFeature.State(tag: Tag(code: "Test")))))) {
+      $0.path[id: 0] = .classic(ClassicCheckInFeature.State(tag: Tag(code: "Test")))
     }
   }
 

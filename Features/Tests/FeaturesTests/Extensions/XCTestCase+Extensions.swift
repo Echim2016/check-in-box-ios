@@ -39,6 +39,7 @@ extension XCTestCase {
       id: "1",
       title: "主題盒子標題",
       subtitle: "主題盒子副標題",
+      code: "test",
       alertTitle: "",
       alertMessage: "",
       authorName: "echim",
