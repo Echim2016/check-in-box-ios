@@ -48,6 +48,7 @@ public struct ModeListFeature: Reducer {
   }
 
   @Dependency(\.firebaseTracker) var firebaseTracker
+  @Dependency(\.itemRandomizer) var itemRandomizer
 
   public var body: some ReducerOf<Self> {
     Reduce { state, action in
@@ -61,16 +62,18 @@ public struct ModeListFeature: Reducer {
             ]
           )
         )
+        let base = itemRandomizer
+          .shuffling(
+            state.questions
+              .filter(by: tag.code)
+              .map { CheckInItem.from($0) }
+          )
+        
         return .send(
           .navigateToCheckInPage(
             ClassicCheckInFeature.State(
               tag: tag,
-              questions: CycleIterator(
-                base: state.questions
-                  .filter(by: tag.code)
-                  .map { CheckInItem.from($0) }
-                  .shuffled()
-              )
+              questions: CycleIterator(base: base)
             )
           )
         )
@@ -84,6 +87,11 @@ public struct ModeListFeature: Reducer {
             ]
           )
         )
+        let base = itemRandomizer
+          .shuffling(
+            box.items.items.map { CheckInItem.from($0) }
+          )
+        
         return .send(
           .navigateToCheckInPage(
             ClassicCheckInFeature.State(
@@ -100,16 +108,12 @@ public struct ModeListFeature: Reducer {
                 ]
               ),
               tag: .from(box),
-              questions: CycleIterator(
-                base: box.items.items
-                  .map { CheckInItem.from($0) }
-                  .shuffled()
-              ),
+              questions: CycleIterator(base: base),
               imageUrl: URL(string: box.imageUrl)
             )
           )
         )
-        
+
       case .navigateToCheckInPage:
         return .none
 

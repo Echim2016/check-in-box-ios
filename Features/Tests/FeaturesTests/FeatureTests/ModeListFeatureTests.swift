@@ -145,10 +145,37 @@ final class ModeListFeatureTests: XCTestCase {
           ))
         }
       )
+      $0.itemRandomizer = ItemRandomizer(
+        shuffleHandler: { items in
+          items
+        }
+      )
     }
-    store.exhaustivity = .off(showSkippedAssertions: true)
 
     await store.send(.themeBoxCardTapped(box))
+    await store.receive(
+      .navigateToCheckInPage(
+        ClassicCheckInFeature.State(
+          alert: AlertState(
+            title: TextState(verbatim: box.alertTitle),
+            message: TextState(verbatim: box.alertMessage.replacingOccurrences(of: "\\n", with: "\n")),
+            buttons: [
+              ButtonState(
+                action: .welcomeMessageDoneButtonTapped,
+                label: {
+                  TextState("好")
+                }
+              ),
+            ]
+          ),
+          tag: .from(box),
+          questions: CycleIterator(
+            base: box.items.items.map { CheckInItem.from($0) }
+          ),
+          imageUrl: URL(string: box.imageUrl)
+        )
+      )
+    )
   }
 
   func test_modeList_trackClickCheckInCardEvent() async {
@@ -165,6 +192,11 @@ final class ModeListFeatureTests: XCTestCase {
               "order": tag.order,
             ]
           ))
+        }
+      )
+      $0.itemRandomizer = ItemRandomizer(
+        shuffleHandler: { items in
+          items
         }
       )
     }
