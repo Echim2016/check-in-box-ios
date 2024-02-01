@@ -122,7 +122,7 @@ struct ModeListView: View {
                         ),
                       ]
                     ),
-                    theme: box.code,
+                    tag: .from(box),
                     questions: CycleIterator(
                       base: box.items.items
                         .map { CheckInItem.from($0) }
@@ -167,7 +167,7 @@ struct ModeListView: View {
               NavigationLink(
                 state: AppFeature.Path.State.classic(
                   ClassicCheckInFeature.State(
-                    theme: tag.code,
+                    tag: tag,
                     questions: CycleIterator(
                       base: store.state.questions
                         .filter(by: tag.code)

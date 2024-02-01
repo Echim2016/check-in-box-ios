@@ -8,6 +8,7 @@
 import ComposableArchitecture
 import Features
 import FirebaseCore
+import FirebaseAnalytics
 import SwiftUI
 
 @main
@@ -29,6 +30,12 @@ struct CheckInBoxApp: App {
   }
 
   init() {
+    #if DEBUG
+      Analytics.setAnalyticsCollectionEnabled(false)
+    #else
+      Analytics.setAnalyticsCollectionEnabled(true)
+    #endif
+    
     FirebaseApp.configure()
   }
 }
