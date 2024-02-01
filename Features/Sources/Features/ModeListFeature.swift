@@ -53,6 +53,14 @@ public struct ModeListFeature: Reducer {
     Reduce { state, action in
       switch action {
       case let .checkInCardTapped(tag):
+        firebaseTracker.logEvent(
+          .clickModeListPgCheckInCard(
+            parameters: [
+              "theme": tag.code,
+              "order": tag.order,
+            ]
+          )
+        )
         return .send(
           .navigateToCheckInPage(
             ClassicCheckInFeature.State(
@@ -68,6 +76,14 @@ public struct ModeListFeature: Reducer {
         )
 
       case let .themeBoxCardTapped(box):
+        firebaseTracker.logEvent(
+          .clickModeListPgThemeBoxCard(
+            parameters: [
+              "theme": box.code,
+              "order": box.order,
+            ]
+          )
+        )
         return .send(
           .navigateToCheckInPage(
             ClassicCheckInFeature.State(
