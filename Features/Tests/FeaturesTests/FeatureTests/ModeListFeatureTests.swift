@@ -129,6 +129,28 @@ final class ModeListFeatureTests: XCTestCase {
     await store.send(.trackViewModeListEvent)
   }
 
+  func test_modeList_trackClickThemeBoxEvent() async {
+    let box = getMockThemeBox()
+    let store = TestStore(
+      initialState: ModeListFeature.State(),
+      reducer: { ModeListFeature() }
+    ) {
+      $0.firebaseTracker = FirebaseTracker(
+        logEvent: { event in
+          XCTAssertEqual(event, .clickModeListPgThemeBoxCard(
+            parameters: [
+              "theme": box.code,
+              "order": box.order,
+            ]
+          ))
+        }
+      )
+    }
+    store.exhaustivity = .off(showSkippedAssertions: true)
+
+    await store.send(.themeBoxCardTapped(box))
+  }
+
   func test_modeList_trackClickCheckInCardEvent() async {
     let tag = Tag(order: 1, code: "Test")
     let store = TestStore(
