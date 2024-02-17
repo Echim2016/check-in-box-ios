@@ -60,6 +60,10 @@ public struct AppFeature: Reducer {
       switch action {
       case .modeList(.pullToRefreshTriggered):
         return .send(.loadFromRemote)
+        
+      case let .modeList(.navigateToCheckInPage(checkInState)):
+        state.path.append(.classic(checkInState))
+        return .none
 
       case .modeList:
         return .none

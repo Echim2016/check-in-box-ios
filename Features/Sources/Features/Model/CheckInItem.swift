@@ -7,21 +7,18 @@
 
 import Foundation
 
-public struct CheckInItem: Identifiable, Codable {
-  public let id: String
+public struct CheckInItem: Codable, Hashable {
   public let content: String
   public let subtitle: String?
   public let url: String?
   public let urlIconName: String?
 
   public init(
-    id: String = UUID().uuidString,
     content: String,
     subtitle: String? = nil,
     url: String? = nil,
     urlIconName: String? = nil
   ) {
-    self.id = id
     self.content = content
     self.subtitle = subtitle
     self.url = url
@@ -33,7 +30,7 @@ extension CheckInItem: Equatable, Sendable {}
 
 extension CheckInItem {
   static func from(_ question: Question) -> Self {
-    CheckInItem(id: question.id, content: question.question)
+    CheckInItem(content: question.question)
   }
 }
 

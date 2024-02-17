@@ -35,6 +35,9 @@ public struct ModeListFeature: Reducer {
   }
 
   public enum Action: Equatable {
+    case checkInCardTapped(Tag)
+    case themeBoxCardTapped(ThemeBox)
+    case navigateToCheckInPage(ClassicCheckInFeature.State)
     case settingsButtonTapped
     case settingsSheetDoneButtonTapped
     case presentSettingsPage(PresentationAction<SettingsFeature.Action>)
@@ -45,10 +48,75 @@ public struct ModeListFeature: Reducer {
   }
 
   @Dependency(\.firebaseTracker) var firebaseTracker
+  @Dependency(\.itemRandomizer) var itemRandomizer
 
   public var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
+      case let .checkInCardTapped(tag):
+        firebaseTracker.logEvent(
+          .clickModeListPgCheckInCard(
+            parameters: [
+              "theme": tag.code,
+              "order": tag.order,
+            ]
+          )
+        )
+        let base = itemRandomizer
+          .shuffling(
+            state.questions
+              .filter(by: tag.code)
+              .map { CheckInItem.from($0) }
+          )
+        
+        return .send(
+          .navigateToCheckInPage(
+            ClassicCheckInFeature.State(
+              tag: tag,
+              questions: CycleIterator(base: base)
+            )
+          )
+        )
+
+      case let .themeBoxCardTapped(box):
+        firebaseTracker.logEvent(
+          .clickModeListPgThemeBoxCard(
+            parameters: [
+              "theme": box.code,
+              "order": box.order,
+            ]
+          )
+        )
+        let base = itemRandomizer
+          .shuffling(
+            box.items.items.map { CheckInItem.from($0) }
+          )
+        
+        return .send(
+          .navigateToCheckInPage(
+            ClassicCheckInFeature.State(
+              alert: AlertState(
+                title: TextState(verbatim: box.alertTitle),
+                message: TextState(verbatim: box.alertMessage.replacingOccurrences(of: "\\n", with: "\n")),
+                buttons: [
+                  ButtonState(
+                    action: .welcomeMessageDoneButtonTapped,
+                    label: {
+                      TextState("好")
+                    }
+                  ),
+                ]
+              ),
+              tag: .from(box),
+              questions: CycleIterator(base: base),
+              imageUrl: URL(string: box.imageUrl)
+            )
+          )
+        )
+
+      case .navigateToCheckInPage:
+        return .none
+
       case .settingsButtonTapped:
         state.presentSettingsPage = SettingsFeature.State()
         return .none
@@ -107,31 +175,9 @@ struct ModeListView: View {
         ScrollView(.horizontal) {
           HStack {
             ForEach(store.state.themeBoxes) { box in
-              NavigationLink(
-                state: AppFeature.Path.State.classic(
-                  ClassicCheckInFeature.State(
-                    alert: AlertState(
-                      title: TextState(verbatim: box.alertTitle),
-                      message: TextState(verbatim: box.alertMessage.replacingOccurrences(of: "\\n", with: "\n")),
-                      buttons: [
-                        ButtonState(
-                          action: .welcomeMessageDoneButtonTapped,
-                          label: {
-                            TextState("好")
-                          }
-                        ),
-                      ]
-                    ),
-                    tag: .from(box),
-                    questions: CycleIterator(
-                      base: box.items.items
-                        .map { CheckInItem.from($0) }
-                        .shuffled()
-                    ),
-                    imageUrl: URL(string: box.imageUrl)
-                  )
-                )
-              ) {
+              Button {
+                store.send(.themeBoxCardTapped(box))
+              } label: {
                 ThemeBoxCardView(
                   title: box.title,
                   subtitle: box.subtitle,
@@ -164,19 +210,9 @@ struct ModeListView: View {
 
           LazyVGrid(columns: gridItemLayout, spacing: 8) {
             ForEach(store.state.tags) { tag in
-              NavigationLink(
-                state: AppFeature.Path.State.classic(
-                  ClassicCheckInFeature.State(
-                    tag: tag,
-                    questions: CycleIterator(
-                      base: store.state.questions
-                        .filter(by: tag.code)
-                        .map { CheckInItem.from($0) }
-                        .shuffled()
-                    )
-                  )
-                )
-              ) {
+              Button {
+                store.send(.checkInCardTapped(tag))
+              } label: {
                 FeatureCardView(title: tag.title.capitalized, subtitle: tag.subtitle)
                   .cornerRadius(16)
               }

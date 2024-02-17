@@ -75,7 +75,7 @@ final class ClassicFeatureTests: XCTestCase {
   func test_classicCheckIn_urlButtonTappedForValidUrl() async {
     let testUrl = "https://test.com"
     let questions = [
-      CheckInItem(id: "1", content: "content", url: testUrl),
+      CheckInItem(content: "content", url: testUrl),
     ]
     let store = makeSUT(base: questions)
     store.arrangeTracker(
@@ -95,7 +95,7 @@ final class ClassicFeatureTests: XCTestCase {
   func test_classicCheckIn_urlButtonTappedForInvalidUrl() async {
     let invalidUrl = ""
     let questions = [
-      CheckInItem(id: "1", content: "content", url: invalidUrl),
+      CheckInItem(content: "content", url: invalidUrl),
     ]
     let store = makeSUT(base: questions)
 
