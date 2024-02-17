@@ -8,7 +8,9 @@
 import ComposableArchitecture
 import SwiftUI
 
-public struct InputBoxFeature: Reducer {
+@Reducer
+public struct InputBoxFeature {
+  @ObservableState
   public struct State: Equatable {
     var placeholderText: String = "請輸入驗證碼"
     var activationKey: String = ""
@@ -40,17 +42,17 @@ public struct InputBoxFeature: Reducer {
 }
 
 struct InputBoxView: View {
-  let store: StoreOf<InputBoxFeature>
+  @Bindable var store: StoreOf<InputBoxFeature>
+
+  init(store: StoreOf<InputBoxFeature>) {
+    self.store = store
+  }
 
   var body: some View {
-    WithViewStore(self.store, observe: { $0 }) { store in
       VStack(spacing: 12) {
         SecureField(
           store.placeholderText,
-          text: store.binding(
-            get: \.activationKey,
-            send: InputBoxFeature.Action.keyChanged
-          )
+          text: $store.activationKey.sending(\.keyChanged)
         )
         .textInputAutocapitalization(.never)
         .autocorrectionDisabled(true)
@@ -63,17 +65,16 @@ struct InputBoxView: View {
         } label: {
           Text("確認")
             .font(.headline)
-            .foregroundColor(store.state.activationKey.isEmpty ? .secondary : .black)
+            .foregroundColor(store.activationKey.isEmpty ? .secondary : .black)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
-            .background(store.state.activationKey.isEmpty ? .white.opacity(0.15) : .white)
+            .background(store.activationKey.isEmpty ? .white.opacity(0.15) : .white)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
-        .disabled(store.state.activationKey.isEmpty)
+        .disabled(store.activationKey.isEmpty)
       }
       .padding(.horizontal)
       .padding(.top)
-    }
   }
 }
 
