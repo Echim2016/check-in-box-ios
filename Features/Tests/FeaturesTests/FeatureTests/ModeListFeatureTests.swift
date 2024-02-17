@@ -27,7 +27,7 @@ final class ModeListFeatureTests: XCTestCase {
       $0.presentSettingsPage = nil
     }
   }
-  
+
   func test_settingsSheet_dismissed() async {
     let store = makeSUT(of: ModeListFeature.State(presentSettingsPage: SettingsFeature.State()))
     store.arrangeTracker(for: .viewModeListPg(parameters: [:]))
@@ -113,7 +113,7 @@ final class ModeListFeatureTests: XCTestCase {
       $0.modeList.questions = updatedQuestions
     }
   }
-  
+
   func test_modeList_trackViewEvent() async {
     let store = TestStore(
       initialState: ModeListFeature.State(),
@@ -128,7 +128,92 @@ final class ModeListFeatureTests: XCTestCase {
 
     await store.send(.trackViewModeListEvent)
   }
-  
+
+  func test_modeList_trackClickThemeBoxEvent() async {
+    let box = getMockThemeBox()
+    let store = TestStore(
+      initialState: ModeListFeature.State(),
+      reducer: { ModeListFeature() }
+    ) {
+      $0.firebaseTracker = FirebaseTracker(
+        logEvent: { event in
+          XCTAssertEqual(event, .clickModeListPgThemeBoxCard(
+            parameters: [
+              "theme": box.code,
+              "order": box.order,
+            ]
+          ))
+        }
+      )
+      $0.itemRandomizer = ItemRandomizer(
+        shuffleHandler: { items in
+          items
+        }
+      )
+    }
+
+    await store.send(.themeBoxCardTapped(box))
+    await store.receive(
+      .navigateToCheckInPage(
+        ClassicCheckInFeature.State(
+          alert: AlertState(
+            title: TextState(verbatim: box.alertTitle),
+            message: TextState(verbatim: box.alertMessage.replacingOccurrences(of: "\\n", with: "\n")),
+            buttons: [
+              ButtonState(
+                action: .welcomeMessageDoneButtonTapped,
+                label: {
+                  TextState("好")
+                }
+              ),
+            ]
+          ),
+          tag: .from(box),
+          questions: CycleIterator(
+            base: box.items.items.map { CheckInItem.from($0) }
+          ),
+          imageUrl: URL(string: box.imageUrl)
+        )
+      )
+    )
+  }
+
+  func test_modeList_trackClickCheckInCardEvent() async {
+    let tag = Tag(order: 1, code: "Test")
+    let store = TestStore(
+      initialState: ModeListFeature.State(),
+      reducer: { ModeListFeature() }
+    ) {
+      $0.firebaseTracker = FirebaseTracker(
+        logEvent: { event in
+          XCTAssertEqual(event, .clickModeListPgCheckInCard(
+            parameters: [
+              "theme": tag.code,
+              "order": tag.order,
+            ]
+          ))
+        }
+      )
+      $0.itemRandomizer = ItemRandomizer(
+        shuffleHandler: { items in
+          items
+        }
+      )
+    }
+
+    await store.send(.checkInCardTapped(tag))
+    await store.receive(
+      .navigateToCheckInPage(
+        ClassicCheckInFeature.State(
+          tag: tag,
+          questions: CycleIterator(
+            base: []
+          )
+        )
+      )
+    )
+  }
+
   func makeSUT(of state: ModeListFeature.State = ModeListFeature.State()) -> TestStoreOf<ModeListFeature> {
     TestStore(
       initialState: state,

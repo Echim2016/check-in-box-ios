@@ -43,6 +43,8 @@ enum FirebaseEvent: Equatable {
   case clickClassicCheckInPgUrlBtn(parameters: [String: Any])
   case clickClassicCheckInPgWelcomeMessageDoneBtn(parameters: [String: Any])
   case clickInfoIntroPgDoneBtn(parameters: [String: Any])
+  case clickModeListPgThemeBoxCard(parameters: [String: Any])
+  case clickModeListPgCheckInCard(parameters: [String: Any])
   case clickSettingsPgShareBtn(parameters: [String: Any])
   case clickSettingsPgFeedbackFormBtn(parameters: [String: Any])
   case clickSettingsPgAuthorProfileBtn(parameters: [String: Any])
@@ -69,6 +71,10 @@ enum FirebaseEvent: Equatable {
       "Click_ClassicCheckInPg_WelcomeMessageDoneBtn"
     case .clickInfoIntroPgDoneBtn:
       "Click_InfoIntroPg_DoneBtn"
+    case .clickModeListPgThemeBoxCard:
+      "Click_ModeListPg_ThemeBoxCard"
+    case .clickModeListPgCheckInCard:
+      "Click_ModeListPg_CheckInCard"
     case .clickSettingsPgShareBtn:
       "Click_SettingsPg_ShareBtn"
     case .clickSettingsPgFeedbackFormBtn:
@@ -93,6 +99,8 @@ enum FirebaseEvent: Equatable {
          let .clickClassicCheckInPgUrlBtn(parameters: parameters),
          let .clickClassicCheckInPgWelcomeMessageDoneBtn(parameters: parameters),
          let .clickInfoIntroPgDoneBtn(parameters: parameters),
+         let .clickModeListPgThemeBoxCard(parameters: parameters),
+         let .clickModeListPgCheckInCard(parameters: parameters),
          let .clickSettingsPgShareBtn(parameters: parameters),
          let .clickSettingsPgFeedbackFormBtn(parameters: parameters),
          let .clickSettingsPgAuthorProfileBtn(parameters: parameters),

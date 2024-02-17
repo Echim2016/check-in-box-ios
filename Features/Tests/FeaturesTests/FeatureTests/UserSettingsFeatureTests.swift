@@ -40,6 +40,12 @@ final class UserSettingsFeatureTests: XCTestCase {
     XCTAssertEqual(store.state.shareLinkUrl, .shareLinkUrl)
     await store.send(.shareButtonTapped)
   }
+  
+  func test_appReviewButton_trackEventWhenTapped() async {
+    let store = makeSUT()
+    store.arrangeTracker(for: .clickSettingsPgSubmitAppReviewBtn(parameters: [:]))
+    await store.send(.submitAppReviewButtonTapped)
+  }
 
   func test_debugModeButton_presentDebugModeInoutBoxPage() async {
     let store = makeSUT()
