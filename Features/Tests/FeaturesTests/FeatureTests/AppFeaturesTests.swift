@@ -67,8 +67,9 @@ final class AppFeaturesTests: XCTestCase {
         setAccess: { _ in }
       )
     }
-
-    await store.send(.loadFromRemote)
+    
+    await store.send(.modeList(.pullToRefreshTriggered))
+    await store.receive(.loadFromRemote)
     await store.receive(.receivedQuestions(mockThemeBoxes, mockTags, mockQuestions)) {
       $0.modeList.themeBoxes = mockThemeBoxes
       $0.modeList.tags = mockTags
