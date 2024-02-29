@@ -9,7 +9,9 @@ import AppTrackingTransparency
 import ComposableArchitecture
 import SwiftUI
 
-public struct AppFeature: Reducer {
+@Reducer
+public struct AppFeature {
+  @ObservableState
   public struct State: Equatable {
     var path = StackState<Path.State>()
     var modeList = ModeListFeature.State()
@@ -29,21 +31,10 @@ public struct AppFeature: Reducer {
     case loadFromRemote
     case receivedQuestions(IdentifiedArrayOf<ThemeBox>, IdentifiedArrayOf<Tag>, IdentifiedArrayOf<Question>)
   }
-
-  public struct Path: Reducer {
-    public enum State: Equatable {
-      case classic(ClassicCheckInFeature.State)
-    }
-
-    public enum Action: Equatable {
-      case classic(ClassicCheckInFeature.Action)
-    }
-
-    public var body: some ReducerOf<Self> {
-      Scope(state: /State.classic, action: /Action.classic) {
-        ClassicCheckInFeature()
-      }
-    }
+  
+  @Reducer(state: .equatable, action: .equatable)
+  public enum Path {
+    case classic(ClassicCheckInFeature)
   }
 
   public init() {}
@@ -52,7 +43,7 @@ public struct AppFeature: Reducer {
   @Dependency(\.firebaseCheckInLoader) var firebaseCheckInLoader
 
   public var body: some ReducerOf<Self> {
-    Scope(state: \.modeList, action: /Action.modeList) {
+    Scope(state: \.modeList, action: \.modeList) {
       ModeListFeature()
     }
 
@@ -89,38 +80,27 @@ public struct AppFeature: Reducer {
         return .none
       }
     }
-    .forEach(\.path, action: /Action.path) {
-      Path()
-    }
+    .forEach(\.path, action: \.path)
   }
 }
 
 public struct AppView: View {
-  let store: StoreOf<AppFeature>
+  @Bindable var store: StoreOf<AppFeature>
 
   public init(store: StoreOf<AppFeature>) {
     self.store = store
   }
 
   public var body: some View {
-    NavigationStackStore(
-      self.store.scope(state: \.path, action: { .path($0) })
+    NavigationStack(
+      path: $store.scope(state: \.path, action: \.path)
     ) {
-      ModeListView(
-        store: self.store.scope(
-          state: \.modeList,
-          action: { .modeList($0) }
-        )
-      )
-      .preferredColorScheme(.dark)
-    } destination: { state in
-      switch state {
-      case .classic:
-        CaseLet(
-          /AppFeature.Path.State.classic,
-          action: AppFeature.Path.Action.classic,
-          then: ClassicCheckInView.init(store:)
-        )
+      ModeListView(store: store.scope(state: \.modeList, action: \.modeList))
+        .preferredColorScheme(.dark)
+    } destination: { store in
+      switch store.case {
+      case let .classic(store):
+        ClassicCheckInView(store: store)
       }
     }
     .task {

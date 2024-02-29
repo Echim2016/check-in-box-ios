@@ -17,9 +17,23 @@ final class AppFeaturesTests: XCTestCase {
     ) {
       AppFeature()
     }
+    let checkInState = ClassicCheckInFeature.State(tag: Tag(code: "Test"))
+    
+    await store.send(.modeList(.navigateToCheckInPage(checkInState))) {
+      $0.path[id: 0] = .classic(checkInState)
+    }
+  }
+  
+  func test_path_pushToClassicPage() async {
+    let store = TestStore(
+      initialState: AppFeature.State(modeList: ModeListFeature.State())
+    ) {
+      AppFeature()
+    }
+    let checkInState = ClassicCheckInFeature.State(tag: Tag(code: "Test"))
 
-    await store.send(.path(.push(id: 0, state: .classic(ClassicCheckInFeature.State(tag: Tag(code: "Test")))))) {
-      $0.path[id: 0] = .classic(ClassicCheckInFeature.State(tag: Tag(code: "Test")))
+    await store.send(.path(.push(id: 0, state: .classic(checkInState)))) {
+      $0.path[id: 0] = .classic(checkInState)
     }
   }
 
@@ -53,8 +67,9 @@ final class AppFeaturesTests: XCTestCase {
         setAccess: { _ in }
       )
     }
-
-    await store.send(.loadFromRemote)
+    
+    await store.send(.modeList(.pullToRefreshTriggered))
+    await store.receive(.loadFromRemote)
     await store.receive(.receivedQuestions(mockThemeBoxes, mockTags, mockQuestions)) {
       $0.modeList.themeBoxes = mockThemeBoxes
       $0.modeList.tags = mockTags

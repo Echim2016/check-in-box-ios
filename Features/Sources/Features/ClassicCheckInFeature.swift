@@ -8,9 +8,11 @@
 import ComposableArchitecture
 import SwiftUI
 
-public struct ClassicCheckInFeature: Reducer {
+@Reducer
+public struct ClassicCheckInFeature {
+  @ObservableState
   public struct State: Equatable {
-    @PresentationState var alert: AlertState<Action.Alert>?
+    @Presents var alert: AlertState<Action.Alert>?
     var tag: Tag? = nil
     var questions: CycleIterator<CheckInItem> = CycleIterator(base: [])
     var imageUrl: URL? = nil
@@ -130,7 +132,7 @@ public struct ClassicCheckInFeature: Reducer {
         return .none
       }
     }
-    .ifLet(\.$alert, action: /Action.alert)
+    .ifLet(\.$alert, action: \.alert)
   }
 }
 
@@ -138,7 +140,6 @@ struct ClassicCheckInView: View {
   let store: StoreOf<ClassicCheckInFeature>
 
   var body: some View {
-    WithViewStore(self.store, observe: { $0 }) { store in
       VStack {
         Spacer()
         
@@ -202,9 +203,7 @@ struct ClassicCheckInView: View {
           }
         }
       }
-      .alert(
-        store: self.store.scope(state: \.$alert, action: { .alert($0) })
-      )
+      .alert(store: self.store.scope(state: \.$alert, action: \.alert))
       .background {
         NetworkImage(url: store.state.imageUrl)
           .blur(radius: 2)
@@ -213,7 +212,6 @@ struct ClassicCheckInView: View {
           }
           .ignoresSafeArea()
       }
-    }
   }
 }
 
