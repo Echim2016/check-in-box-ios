@@ -129,7 +129,7 @@ final class ModeListFeatureTests: XCTestCase {
     await store.send(.trackViewModeListEvent)
   }
 
-  func test_modeList_trackClickThemeBoxEvent() async {
+  func test_modeList_trackClickThemeBoxEventWithItemOrders() async {
     let box = getMockThemeBox()
     let store = TestStore(
       initialState: ModeListFeature.State(),
@@ -147,7 +147,8 @@ final class ModeListFeatureTests: XCTestCase {
       )
       $0.itemRandomizer = ItemRandomizer(
         shuffleHandler: { items in
-          items
+          XCTFail("Items should not be shuffled")
+          return []
         }
       )
     }
