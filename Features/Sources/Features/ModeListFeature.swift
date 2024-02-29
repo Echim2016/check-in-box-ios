@@ -87,10 +87,22 @@ public struct ModeListFeature: Reducer {
             ]
           )
         )
-        let base = itemRandomizer
-          .shuffling(
-            box.items.items.map { CheckInItem.from($0) }
-          )
+        
+        let base: [CheckInItem] = {
+          let items = box.items.items
+          let isShufflingNeeded = items.allSatisfy { $0.order == 1 }
+          
+          if isShufflingNeeded {
+            return itemRandomizer
+              .shuffling(
+                items.map { CheckInItem.from($0) }
+              )
+          } else {
+            return items
+              .sorted { $0.order < $1.order }
+              .map { CheckInItem.from($0) }
+          }
+        }()
         
         return .send(
           .navigateToCheckInPage(
