@@ -178,6 +178,55 @@ final class ModeListFeatureTests: XCTestCase {
       )
     )
   }
+  
+  func test_modeList_trackClickThemeBoxEventWithSameOrders() async {
+    let box = getMockThemeBox(withSameItemOrder: 1)
+    let store = TestStore(
+      initialState: ModeListFeature.State(),
+      reducer: { ModeListFeature() }
+    ) {
+      $0.firebaseTracker = FirebaseTracker(
+        logEvent: { event in
+          XCTAssertEqual(event, .clickModeListPgThemeBoxCard(
+            parameters: [
+              "theme": box.code,
+              "order": box.order,
+            ]
+          ))
+        }
+      )
+      $0.itemRandomizer = ItemRandomizer(
+        shuffleHandler: { items in
+          items
+        }
+      )
+    }
+
+    await store.send(.themeBoxCardTapped(box))
+    await store.receive(
+      .navigateToCheckInPage(
+        ClassicCheckInFeature.State(
+          alert: AlertState(
+            title: TextState(verbatim: box.alertTitle),
+            message: TextState(verbatim: box.alertMessage.replacingOccurrences(of: "\\n", with: "\n")),
+            buttons: [
+              ButtonState(
+                action: .welcomeMessageDoneButtonTapped,
+                label: {
+                  TextState("好")
+                }
+              ),
+            ]
+          ),
+          tag: .from(box),
+          questions: CycleIterator(
+            base: box.items.items.map { CheckInItem.from($0) }
+          ),
+          imageUrl: URL(string: box.imageUrl)
+        )
+      )
+    )
+  }
 
   func test_modeList_trackClickCheckInCardEvent() async {
     let tag = Tag(order: 1, code: "Test")

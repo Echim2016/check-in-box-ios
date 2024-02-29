@@ -74,6 +74,40 @@ extension XCTestCase {
       )
     )
   }
+  
+  func getMockThemeBox(withSameItemOrder order: Int) -> ThemeBox {
+    ThemeBox(
+      id: "1",
+      title: "主題盒子標題",
+      subtitle: "主題盒子副標題",
+      code: "test",
+      alertTitle: "",
+      alertMessage: "",
+      authorName: "echim",
+      url: "",
+      imageUrl: "",
+      order: 1,
+      isHidden: true,
+      items: ThemeBoxContentItems(
+        items: [
+          ThemeBoxContentItems.ThemeBoxContentItem(
+            content: "內容1",
+            subtitle: "副標題1",
+            url: "",
+            order: order,
+            iconName: "globe"
+          ),
+          ThemeBoxContentItems.ThemeBoxContentItem(
+            content: "內容2",
+            subtitle: "副標題2",
+            url: "",
+            order: order,
+            iconName: "globe"
+          ),
+        ]
+      )
+    )
+  }
 
   func getMockThemeBoxes() -> [ThemeBox] {
     [getMockThemeBox()]
