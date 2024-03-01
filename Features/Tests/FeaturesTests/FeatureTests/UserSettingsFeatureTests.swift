@@ -11,11 +11,14 @@ import XCTest
 
 @MainActor
 final class UserSettingsFeatureTests: XCTestCase {
-  func test_openURL_presentFeedbackForm() async {
+  func test_openURL_presentAndCloseFeedbackForm() async {
     let store = makeSUT()
     store.arrangeTracker(for: .clickSettingsPgFeedbackFormBtn(parameters: [:]))
     await store.send(.sendFeedbackButtonTapped) {
       $0.presentInAppWebViewPage = InAppWebFeature.State(url: .feedbackFormUrl)
+    }
+    await store.send(.presentInAppWebViewPage(.presented(.closeButtonTapped))) {
+      $0.presentInAppWebViewPage = nil
     }
   }
 
@@ -26,11 +29,14 @@ final class UserSettingsFeatureTests: XCTestCase {
     await store.send(.authorProfileButtonTapped)
   }
 
-  func test_openURL_presentSubmitQuestionsForm() async {
+  func test_openURL_presentAndCloseSubmitQuestionsForm() async {
     let store = makeSUT()
     store.arrangeTracker(for: .clickSettingsPgSubmitQuestionsBtn(parameters: [:]))
     await store.send(.submitQuestionsButtonTapped) {
       $0.presentInAppWebViewPage = InAppWebFeature.State(url: .submitQuestionsUrl)
+    }
+    await store.send(.presentInAppWebViewPage(.presented(.closeButtonTapped))) {
+      $0.presentInAppWebViewPage = nil
     }
   }
 
