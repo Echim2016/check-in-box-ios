@@ -9,7 +9,9 @@ import ComposableArchitecture
 import SwiftUI
 import WebKit
 
-public struct InAppWebFeature: Reducer {
+@Reducer
+public struct InAppWebFeature {
+  @ObservableState
   public struct State: Equatable {
     var url: URL
   }
@@ -32,20 +34,18 @@ struct InAppWebView: View {
   let store: StoreOf<InAppWebFeature>
 
   var body: some View {
-    WithViewStore(store, observe: { $0 }) { viewStore in
-      NavigationStack {
-        WebView(url: viewStore.url)
-          .ignoresSafeArea()
-          .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-              Button {
-                store.send(.closeButtonTapped)
-              } label: {
-                Image(systemName: "xmark")
-              }
+    NavigationStack {
+      WebView(url: store.url)
+        .ignoresSafeArea()
+        .toolbar {
+          ToolbarItem(placement: .topBarLeading) {
+            Button {
+              store.send(.closeButtonTapped)
+            } label: {
+              Image(systemName: "xmark")
             }
           }
-      }
+        }
     }
   }
 

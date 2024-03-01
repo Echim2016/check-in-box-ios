@@ -8,7 +8,8 @@
 import ComposableArchitecture
 import SwiftUI
 
-public struct InfoSheetFeature: Reducer {
+@Reducer
+public struct InfoSheetFeature {
   public struct State: Equatable {
     public init() {}
   }
