@@ -114,16 +114,17 @@ public struct ModeListFeature {
           .navigateToCheckInPage(
             ClassicCheckInFeature.State(
               alert: AlertState(
-                title: TextState(verbatim: box.alertTitle),
-                message: TextState(verbatim: box.alertMessage.replacingOccurrences(of: "\\n", with: "\n")),
-                buttons: [
-                  ButtonState(
-                    action: .welcomeMessageDoneButtonTapped,
-                    label: {
-                      TextState("好")
-                    }
-                  ),
-                ]
+                title: {
+                  TextState(box.alertTitle)
+                },
+                actions: {
+                  ButtonState(action: .welcomeMessageDoneButtonTapped) {
+                    TextState("好")
+                  }
+                },
+                message: {
+                  TextState(box.alertMessage.replacingOccurrences(of: "\\n", with: "\n"))
+                }
               ),
               tag: .from(box),
               questions: CycleIterator(base: base),
