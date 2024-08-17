@@ -8,10 +8,12 @@
 import ComposableArchitecture
 import SwiftUI
 
-public struct ModeListFeature: Reducer {
+@Reducer
+public struct ModeListFeature {
+  @ObservableState
   public struct State: Equatable {
-    @PresentationState var presentSettingsPage: SettingsFeature.State?
-    @PresentationState var presentInfoPage: InfoSheetFeature.State?
+    @Presents var presentSettingsPage: SettingsFeature.State?
+    @Presents var presentInfoPage: InfoSheetFeature.State?
     var themeBoxes: IdentifiedArrayOf<ThemeBox> = []
     var questions: IdentifiedArrayOf<Question>
     var tags: IdentifiedArrayOf<Tag>
@@ -34,7 +36,8 @@ public struct ModeListFeature: Reducer {
     }
   }
 
-  public enum Action: Equatable {
+  public enum Action: BindableAction, Equatable {
+    case binding(BindingAction<State>)
     case checkInCardTapped(Tag)
     case themeBoxCardTapped(ThemeBox)
     case navigateToCheckInPage(ClassicCheckInFeature.State)
@@ -51,8 +54,11 @@ public struct ModeListFeature: Reducer {
   @Dependency(\.itemRandomizer) var itemRandomizer
 
   public var body: some ReducerOf<Self> {
+    BindingReducer()
     Reduce { state, action in
       switch action {
+      case .binding:
+        return .none
       case let .checkInCardTapped(tag):
         firebaseTracker.logEvent(
           .clickModeListPgCheckInCard(
@@ -68,7 +74,7 @@ public struct ModeListFeature: Reducer {
               .filter(by: tag.code)
               .map { CheckInItem.from($0) }
           )
-        
+
         return .send(
           .navigateToCheckInPage(
             ClassicCheckInFeature.State(
@@ -87,11 +93,11 @@ public struct ModeListFeature: Reducer {
             ]
           )
         )
-        
+
         let base: [CheckInItem] = {
           let items = box.items.items
           let isShufflingNeeded = items.allSatisfy { $0.order == 1 }
-          
+
           if isShufflingNeeded {
             return itemRandomizer
               .shuffling(
@@ -103,7 +109,7 @@ public struct ModeListFeature: Reducer {
               .map { CheckInItem.from($0) }
           }
         }()
-        
+
         return .send(
           .navigateToCheckInPage(
             ClassicCheckInFeature.State(
@@ -165,137 +171,129 @@ public struct ModeListFeature: Reducer {
         return .none
       }
     }
-    .ifLet(\.$presentSettingsPage, action: /Action.presentSettingsPage) {
+    .ifLet(\.$presentSettingsPage, action: \.presentSettingsPage) {
       SettingsFeature()
     }
-    .ifLet(\.$presentInfoPage, action: /Action.presentInfoPage) {
+    .ifLet(\.$presentInfoPage, action: \.presentInfoPage) {
       InfoSheetFeature()
     }
   }
 }
 
 struct ModeListView: View {
-  let store: StoreOf<ModeListFeature>
+  @Bindable var store: StoreOf<ModeListFeature>
   let gridItemLayout = [GridItem(.flexible()), GridItem(.flexible())]
 
   var body: some View {
-    WithViewStore(self.store, observe: { $0 }) { store in
-      ScrollView {
-        Spacer()
-        Spacer()
+    ScrollView {
+      Spacer()
+      Spacer()
 
-        ScrollView(.horizontal) {
-          HStack {
-            ForEach(store.state.themeBoxes) { box in
-              Button {
-                store.send(.themeBoxCardTapped(box))
-              } label: {
-                ThemeBoxCardView(
-                  title: box.title,
-                  subtitle: box.subtitle,
-                  url: URL(string: box.imageUrl)
-                )
-                .frame(width: 340, height: 200)
-                .cornerRadius(16)
-              }
-              .buttonStyle(PlainButtonStyle())
+      ScrollView(.horizontal) {
+        HStack {
+          ForEach(store.state.themeBoxes) { box in
+            Button {
+              store.send(.themeBoxCardTapped(box))
+            } label: {
+              ThemeBoxCardView(
+                title: box.title,
+                subtitle: box.subtitle,
+                url: URL(string: box.imageUrl)
+              )
+              .frame(width: 340, height: 200)
+              .cornerRadius(16)
             }
+            .buttonStyle(PlainButtonStyle())
           }
-          .padding(.horizontal)
         }
-        .scrollIndicators(.hidden)
+        .padding(.horizontal)
+      }
+      .scrollIndicators(.hidden)
 
-        if store.state.tags.isEmpty {
-          ProgressView()
-            .padding(.top, 100)
+      if store.state.tags.isEmpty {
+        ProgressView()
+          .padding(.top, 100)
 
-        } else {
+      } else {
+        Spacer()
+        HStack {
+          Text("精選類別")
+            .font(.title3)
+            .fontWeight(.heavy)
           Spacer()
-          HStack {
-            Text("精選類別")
-              .font(.title3)
-              .fontWeight(.heavy)
-            Spacer()
-          }
-          .padding(.top, 20)
-          .padding(.horizontal)
+        }
+        .padding(.top, 20)
+        .padding(.horizontal)
 
-          LazyVGrid(columns: gridItemLayout, spacing: 8) {
-            ForEach(store.state.tags) { tag in
-              Button {
-                store.send(.checkInCardTapped(tag))
-              } label: {
-                FeatureCardView(title: tag.title.capitalized, subtitle: tag.subtitle)
-                  .cornerRadius(16)
+        LazyVGrid(columns: gridItemLayout, spacing: 8) {
+          ForEach(store.state.tags) { tag in
+            Button {
+              store.send(.checkInCardTapped(tag))
+            } label: {
+              FeatureCardView(title: tag.title.capitalized, subtitle: tag.subtitle)
+                .cornerRadius(16)
+            }
+            .buttonStyle(PlainButtonStyle())
+          }
+        }
+        .padding(.horizontal)
+      }
+    }
+    .navigationTitle("Check! 🥂")
+    .refreshable {
+      // TODO: async refreshable
+      do {
+        try await Task.sleep(until: .now + .seconds(0.6), clock: .continuous)
+        store.send(.pullToRefreshTriggered)
+      } catch {}
+    }
+    .onAppear {
+      store.send(.trackViewModeListEvent)
+    }
+    .sensoryFeedback(.success, trigger: store.state.hapticFeedbackTrigger)
+    .toolbar {
+      ToolbarItem {
+        Button {
+          store.send(.infoButtonTapped)
+
+        } label: {
+          Image(systemName: "info.circle")
+            .foregroundStyle(.white)
+        }
+      }
+
+      ToolbarItem {
+        Button {
+          store.send(.settingsButtonTapped)
+        } label: {
+          Image(systemName: "gearshape")
+            .foregroundStyle(.white)
+        }
+      }
+    }
+    .sheet(
+      store: store.scope(state: \.$presentSettingsPage, action: \.presentSettingsPage)
+    ) { settingsViewStore in
+      NavigationStack {
+        SettingsView(store: settingsViewStore)
+          .navigationTitle("設定")
+          .navigationBarTitleDisplayMode(.inline)
+          .toolbar {
+            ToolbarItem {
+              Button("完成") {
+                store.send(.settingsSheetDoneButtonTapped)
               }
-              .buttonStyle(PlainButtonStyle())
+              .foregroundStyle(.white)
             }
           }
-          .padding(.horizontal)
-        }
       }
-      .navigationTitle("Check! 🥂")
-      .refreshable {
-        // TODO: async refreshable
-        do {
-          try await Task.sleep(until: .now + .seconds(0.6), clock: .continuous)
-          store.send(.pullToRefreshTriggered)
-        } catch {}
-      }
-      .onAppear {
-        store.send(.trackViewModeListEvent)
-      }
-      .sensoryFeedback(.success, trigger: store.state.hapticFeedbackTrigger)
-      .toolbar {
-        ToolbarItem {
-          Button {
-            store.send(.infoButtonTapped)
-
-          } label: {
-            Image(systemName: "info.circle")
-              .foregroundStyle(.white)
-          }
-        }
-
-        ToolbarItem {
-          Button {
-            store.send(.settingsButtonTapped)
-          } label: {
-            Image(systemName: "gearshape")
-              .foregroundStyle(.white)
-          }
-        }
-      }
-      .sheet(
-        store: self.store.scope(
-          state: \.$presentSettingsPage,
-          action: { .presentSettingsPage($0) }
-        )
-      ) { settingsViewStore in
-        NavigationStack {
-          SettingsView(store: settingsViewStore)
-            .navigationTitle("設定")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-              ToolbarItem {
-                Button("完成") {
-                  store.send(.settingsSheetDoneButtonTapped)
-                }
-                .foregroundStyle(.white)
-              }
-            }
-        }
-      }
-      .sheet(
-        store: self.store.scope(
-          state: \.$presentInfoPage,
-          action: { .presentInfoPage($0) }
-        )
-      ) { infoViewStore in
-        InfoSheetView(store: infoViewStore)
-          .presentationDetents([.height(600)])
-          .interactiveDismissDisabled()
-      }
+    }
+    .sheet(
+      store: store.scope(state: \.$presentInfoPage, action: \.presentInfoPage)
+    ) { infoViewStore in
+      InfoSheetView(store: infoViewStore)
+        .presentationDetents([.height(600)])
+        .interactiveDismissDisabled()
     }
   }
 }
