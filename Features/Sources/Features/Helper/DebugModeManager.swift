@@ -33,7 +33,7 @@ extension DebugModeManager: DependencyKey {
 
 extension DebugModeManager: TestDependencyKey {
   static var testValue: DebugModeManager = DebugModeManager { _ in
-    unimplemented("DebugModeManager_isFullAccess")
+    unimplemented("DebugModeManager_isFullAccess", placeholder: false)
   } setAccess: { _ in
     unimplemented("DebugModeManager_setAccess")
   }
