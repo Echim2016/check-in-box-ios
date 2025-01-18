@@ -14,7 +14,7 @@ let package = Package(
     ),
   ],
   dependencies: [
-    .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.13.0"),
+    .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.17.1"),
     .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "10.29.0"),
     .package(url: "https://github.com/onevcat/Kingfisher.git", from: "7.10.0"),
   ],
