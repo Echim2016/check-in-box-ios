@@ -103,17 +103,18 @@ final class ClassicFeatureTests: XCTestCase {
   }
 
   func test_classicCheckIn_welcomeMessageAlertDoneButtonTapped() async {
-    let alert = AlertState<ClassicCheckInFeature.Action.Alert>(
-      title: TextState(verbatim: "Alert title"),
-      message: TextState(verbatim: "welcome message"),
-      buttons: [
-        ButtonState(
-          action: .welcomeMessageDoneButtonTapped,
-          label: {
-            TextState("好")
-          }
-        ),
-      ]
+    let alert = AlertState(
+      title: {
+        TextState("Alert title")
+      },
+      actions: {
+        ButtonState(action: ClassicCheckInFeature.Action.Alert.welcomeMessageDoneButtonTapped) {
+          TextState("好")
+        }
+      },
+      message: {
+        TextState("welcome message")
+      }
     )
     let store = TestStore(
       initialState: ClassicCheckInFeature.State(
