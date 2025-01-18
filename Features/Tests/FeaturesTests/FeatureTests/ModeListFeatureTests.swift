@@ -146,7 +146,7 @@ final class ModeListFeatureTests: XCTestCase {
         }
       )
       $0.itemRandomizer = ItemRandomizer(
-        shuffleHandler: { items in
+        shuffleHandler: { _ in
           XCTFail("Items should not be shuffled")
           return []
         }
@@ -158,16 +158,17 @@ final class ModeListFeatureTests: XCTestCase {
       .navigateToCheckInPage(
         ClassicCheckInFeature.State(
           alert: AlertState(
-            title: TextState(verbatim: box.alertTitle),
-            message: TextState(verbatim: box.alertMessage.replacingOccurrences(of: "\\n", with: "\n")),
-            buttons: [
-              ButtonState(
-                action: .welcomeMessageDoneButtonTapped,
-                label: {
-                  TextState("好")
-                }
-              ),
-            ]
+            title: {
+              TextState(box.alertTitle)
+            },
+            actions: {
+              ButtonState(action: .welcomeMessageDoneButtonTapped) {
+                TextState("好")
+              }
+            },
+            message: {
+              TextState(verbatim: box.alertMessage.replacingOccurrences(of: "\\n", with: "\n"))
+            }
           ),
           tag: .from(box),
           questions: CycleIterator(
@@ -178,7 +179,7 @@ final class ModeListFeatureTests: XCTestCase {
       )
     )
   }
-  
+
   func test_modeList_trackClickThemeBoxEventWithSameOrders() async {
     let box = getMockThemeBox(withSameItemOrder: 1)
     let store = TestStore(
@@ -207,16 +208,17 @@ final class ModeListFeatureTests: XCTestCase {
       .navigateToCheckInPage(
         ClassicCheckInFeature.State(
           alert: AlertState(
-            title: TextState(verbatim: box.alertTitle),
-            message: TextState(verbatim: box.alertMessage.replacingOccurrences(of: "\\n", with: "\n")),
-            buttons: [
-              ButtonState(
-                action: .welcomeMessageDoneButtonTapped,
-                label: {
-                  TextState("好")
-                }
-              ),
-            ]
+            title: {
+              TextState(box.alertTitle)
+            },
+            actions: {
+              ButtonState(action: .welcomeMessageDoneButtonTapped) {
+                TextState("好")
+              }
+            },
+            message: {
+              TextState(box.alertMessage.replacingOccurrences(of: "\\n", with: "\n"))
+            }
           ),
           tag: .from(box),
           questions: CycleIterator(
