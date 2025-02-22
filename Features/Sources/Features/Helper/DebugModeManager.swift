@@ -22,7 +22,7 @@ extension DebugModeManager: DependencyKey {
     remoteConfig.fetch { status, _ in
       if status == .success {
         remoteConfig.activate { _, _ in
-          if let value = remoteConfig.configValue(forKey: "admin_full_access").stringValue, value == activationKey {
+          if remoteConfig.configValue(forKey: "admin_full_access").stringValue == activationKey {
             UserDefaults.standard.setValue(true, forKey: "admin_full_access")
           }
         }

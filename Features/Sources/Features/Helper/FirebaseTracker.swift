@@ -5,7 +5,6 @@
 //  Created by Yi-Chin Hsu on 2023/12/29.
 //
 
-import AppTrackingTransparency
 import Dependencies
 import FirebaseAnalytics
 
@@ -15,7 +14,6 @@ struct FirebaseTracker {
 
 extension FirebaseTracker: DependencyKey {
   static var liveValue: FirebaseTracker = FirebaseTracker { event in
-    guard ATTrackingManager.trackingAuthorizationStatus == .authorized else { return }
     Analytics.logEvent(event.name, parameters: event.parameters)
   }
 }
