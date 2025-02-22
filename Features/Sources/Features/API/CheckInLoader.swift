@@ -63,13 +63,13 @@ extension FirebaseCheckInLoader: DependencyKey {
 extension FirebaseCheckInLoader: TestDependencyKey {
   static var testValue = FirebaseCheckInLoader(
     loadQuestions: { _ in
-      unimplemented("FirebaseCheckInLoader_loadQuestions")
+      unimplemented("FirebaseCheckInLoader_loadQuestions", placeholder: [])
     },
     loadTags: { _ in
-      unimplemented("FirebaseCheckInLoader_loadTags")
+      unimplemented("FirebaseCheckInLoader_loadTags", placeholder: [])
     },
     loadThemeBoxes: { _, _ in
-      unimplemented("FirebaseCheckInLoader_loadThemeBoxes")
+      unimplemented("FirebaseCheckInLoader_loadThemeBoxes", placeholder: [])
     }
   )
 }
