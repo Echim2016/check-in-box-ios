@@ -15,7 +15,7 @@ let package = Package(
   ],
   dependencies: [
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.17.1"),
-    .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "10.29.0"),
+    .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "11.8.1"),
     .package(url: "https://github.com/onevcat/Kingfisher.git", from: "8.2.0"),
   ],
   targets: [
@@ -23,7 +23,7 @@ let package = Package(
     // Targets can depend on other targets in this package and products from dependencies.
     .target(
       name: "Features",
-      dependencies: [.tca, .firebaseFirestore, .firebaseFirestoreSwift, .firebaseRemoteConfig, .firebaseAnalytics, .firebaseCrashlytics, .kingfisher]
+      dependencies: [.tca, .firebaseFirestore, .firebaseRemoteConfig, .firebaseAnalytics, .firebaseCrashlytics, .kingfisher]
     ),
     .testTarget(
       name: "FeaturesTests",
@@ -35,7 +35,6 @@ let package = Package(
 extension Target.Dependency {
   static let tca = Self.product(name: "ComposableArchitecture", package: "swift-composable-architecture")
   static let firebaseFirestore = Self.product(name: "FirebaseFirestore", package: "firebase-ios-sdk")
-  static let firebaseFirestoreSwift = Self.product(name: "FirebaseFirestoreSwift", package: "firebase-ios-sdk")
   static let firebaseRemoteConfig = Self.product(name: "FirebaseRemoteConfig", package: "firebase-ios-sdk")
   static let firebaseAnalytics = Self.product(name: "FirebaseAnalytics", package: "firebase-ios-sdk")
   static let firebaseCrashlytics = Self.product(name: "FirebaseCrashlytics", package: "firebase-ios-sdk")
