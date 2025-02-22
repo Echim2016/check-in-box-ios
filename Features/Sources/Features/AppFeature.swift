@@ -105,11 +105,6 @@ public struct AppView: View {
     }
     .task {
       store.send(.loadFromRemote)
-      
-      /// Problem: Failed to present tracking authorization alert in SwiftUI
-      /// Solution: Add time delay to fix the display issue
-      try? await Task.sleep(for: .seconds(0.1))
-      await ATTrackingManager.requestTrackingAuthorization()
     }
     .tint(.white)
   }
