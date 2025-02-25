@@ -20,6 +20,7 @@ public struct SettingsFeature {
     var authorProfileImageUrl: URL? = .authorProfileImageUrl
     var shareLinkUrl: URL = .shareLinkUrl
     var submitQuestionsUrl: URL = .submitQuestionsUrl
+    var requestReviewUrl: URL = .requestReviewUrl
     var debugModeButtonEnabled: Bool = false
   }
 
@@ -74,7 +75,10 @@ public struct SettingsFeature {
 
       case .submitAppReviewButtonTapped:
         firebaseTracker.logEvent(.clickSettingsPgSubmitAppReviewBtn(parameters: [:]))
-        return .none
+        return .run { [state] _ in
+          let url = state.requestReviewUrl
+          await openURL(url)
+        }
 
       case let .presentDebugModeInputBoxPage(.presented(.activationKeySubmitted(key))):
         state.presentDebugModeInputBoxPage = nil
@@ -104,7 +108,6 @@ public struct SettingsFeature {
 
 struct SettingsView: View {
   let store: StoreOf<SettingsFeature>
-  @Environment(\.requestReview) var requestReview
 
   var body: some View {
     List {
@@ -143,7 +146,6 @@ struct SettingsView: View {
 
         Button {
           store.send(.submitAppReviewButtonTapped)
-          requestReview()
         } label: {
           Label("評價五顆星", systemImage: "star")
             .foregroundStyle(.white)

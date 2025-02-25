@@ -49,6 +49,7 @@ final class UserSettingsFeatureTests: XCTestCase {
   
   func test_appReviewButton_trackEventWhenTapped() async {
     let store = makeSUT()
+    store.arrangeOpenUrl(of: .requestReviewUrl)
     store.arrangeTracker(for: .clickSettingsPgSubmitAppReviewBtn(parameters: [:]))
     await store.send(.submitAppReviewButtonTapped)
   }

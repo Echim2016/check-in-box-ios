@@ -30,7 +30,7 @@ extension DependencyValues {
 
     static let testValue: ItemRandomizer = .init(
       shuffleHandler: { _ in
-        unimplemented("ItemRandomizer_shuffled")
+        unimplemented("ItemRandomizer_shuffled", placeholder: [])
       }
     )
   }
