@@ -27,6 +27,6 @@ public extension Project {
   static let bundleId = "com.echim.check-in-box-ios"
   static let appName = "check-in-box"
   static let minimumDeploymentVersion = "17.0"
-  static let bundleVersion = "1.2.0"
+  static let bundleVersion = "1.3.0"
   static let buildNumber = "1"
 }
