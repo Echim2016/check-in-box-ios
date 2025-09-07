@@ -25,7 +25,9 @@ let project = Project(
       infoPlist: .extendingDefault(
         with: [
           "ITSAppUsesNonExemptEncryption" : false,
-          "UILaunchStoryboardName": "LaunchScreen",
+          "UILaunchScreen": [
+            "UIColorName": "black"
+          ],
           "CFBundleDisplayName": "Check-in Box",
           "CFBundleShortVersionString": .string(Project.bundleVersion),
         ]
