@@ -18,7 +18,10 @@ let project = Project(
       destinations: [.iPhone, .iPad, .mac],
       product: .app,
       bundleId: Project.bundleId,
-      deploymentTargets: .iOS(Project.minimumDeploymentVersion),
+      deploymentTargets: .multiplatform(
+        iOS: Project.minimumDeploymentVersion,
+        macOS: Project.minimumDeploymentMacVersion
+      ),
       infoPlist: .extendingDefault(
         with: [
           "ITSAppUsesNonExemptEncryption" : false,
