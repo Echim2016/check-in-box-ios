@@ -1,7 +1,7 @@
 <div align="center">
-  <img src="https://hackmd.io/_uploads/ryR0aicqge.jpg" width="300"/>
+  <img src="https://github.com/user-attachments/assets/a9f53c7d-82ad-4831-ac86-7cbf1302a334" width="300"/>
 </div>
-
+<br>
 
 <p align="center">
     <img src="https://img.shields.io/badge/platform-iOS-lightgray">
