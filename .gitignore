@@ -109,14 +109,22 @@ xcuserdata
 
 ### Xcode Patch ###
 *.xcodeproj/*
+*.xcworkspace
 !*.xcodeproj/project.pbxproj
 !*.xcodeproj/xcshareddata/
-!*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
+App/Sources/Configurations/*.xcconfig
 
 
 ### Google API plist file ###
 **/GoogleService-Info.plist
 # **/*.entitlements
+
+### Tuist derived files ###
+graph.dot
+Derived/
+
+### Tuist managed dependencies ###
+Tuist/.build
 
 # End of https://www.toptal.com/developers/gitignore/api/swiftpackagemanager,swift,xcode,macos
