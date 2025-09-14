@@ -27,7 +27,7 @@ final class ClassicFeatureTests: XCTestCase {
       )
     )
 
-    await store.send(.pickButtonTapped) {
+    await store.send(.view(.tapPickButton)) {
       $0.displayQuestion = questions[1].content
       $0.displaySubtitle = questions[1].subtitle
     }
@@ -48,7 +48,7 @@ final class ClassicFeatureTests: XCTestCase {
       )
     )
 
-    await store.send(.pickButtonTapped) {
+    await store.send(.view(.tapPickButton)) {
       $0.displayQuestion = questions.first?.content
       $0.displaySubtitle = questions.first?.subtitle
     }
@@ -68,7 +68,7 @@ final class ClassicFeatureTests: XCTestCase {
       )
     )
 
-    await store.send(.previousButtonTapped) {
+    await store.send(.view(.tapPreviousButton)) {
       $0.displayQuestion = questions.last?.content
       $0.displaySubtitle = questions.last?.subtitle
     }
@@ -91,7 +91,7 @@ final class ClassicFeatureTests: XCTestCase {
     )
     store.arrangeOpenUrl(of: URL(string: testUrl)!)
 
-    await store.send(.urlButtonTapped)
+    await store.send(.view(.tapURLButton))
   }
 
   func test_classicCheckIn_urlButtonTappedForInvalidUrl() async {
@@ -101,7 +101,7 @@ final class ClassicFeatureTests: XCTestCase {
     ]
     let store = makeSUT(base: questions)
 
-    await store.send(.urlButtonTapped)
+    await store.send(.view(.tapURLButton))
   }
 
   func test_classicCheckIn_welcomeMessageAlertDoneButtonTapped() async {
@@ -135,7 +135,7 @@ final class ClassicFeatureTests: XCTestCase {
       )
     )
 
-    await store.send(.onTask) {
+    await store.send(.view(.onTask)) {
       $0.alert = alert
     }
     await store.send(.alert(.presented(.welcomeMessageDoneButtonTapped))) {

@@ -35,21 +35,26 @@ public struct ClassicCheckInFeature {
       displayQuestion = questions.current()?.content
       displaySubtitle = questions.current()?.subtitle
     }
-    
+
     public struct InitialAlertContent: Equatable {
       public var title: String
       public var message: String
     }
   }
 
-  public enum Action: Equatable, BindableAction {
+  public enum Action: Equatable, BindableAction, ViewAction {
     case alert(PresentationAction<Alert>)
     case binding(BindingAction<State>)
-    case onTask
-    case urlButtonTapped
-    case pickButtonTapped
-    case previousButtonTapped
+    case view(View)
     case trackViewClassicCheckInPageEvent
+
+    public enum View {
+      case onTask
+      case onAppear
+      case tapURLButton
+      case tapPickButton
+      case tapPreviousButton
+    }
 
     public enum Alert {
       case welcomeMessageDoneButtonTapped
@@ -62,24 +67,31 @@ public struct ClassicCheckInFeature {
   public init() {}
 
   public var body: some ReducerOf<Self> {
-    Reduce { state, action in
-      switch action {
-      case .alert(.presented(.welcomeMessageDoneButtonTapped)):
-        firebaseTracker.logEvent(
-          .clickClassicCheckInPgWelcomeMessageDoneBtn(
-            parameters: [
-              "theme": state.tag?.code ?? "",
-            ]
-          )
-        )
-        return .none
+    BindingReducer()
+    Reduce(core)
+      .ifLet(\.$alert, action: \.alert)
+  }
 
-      case .alert:
-        return .none
-        
-      case .binding:
-        return .none
-        
+  private func core(state: inout State, action: Action) -> Effect<Action> {
+    switch action {
+    case .alert(.presented(.welcomeMessageDoneButtonTapped)):
+      firebaseTracker.logEvent(
+        .clickClassicCheckInPgWelcomeMessageDoneBtn(
+          parameters: [
+            "theme": state.tag?.code ?? "",
+          ]
+        )
+      )
+      return .none
+
+    case .alert:
+      return .none
+
+    case .binding:
+      return .none
+
+    case let .view(viewAction):
+      switch viewAction {
       case .onTask:
         if let initialAlertContent = state.initialAlertContent {
           state.alert = AlertState(
@@ -96,10 +108,10 @@ public struct ClassicCheckInFeature {
             }
           )
         }
-        
         return .none
-
-      case .urlButtonTapped:
+      case .onAppear:
+        return .send(.trackViewClassicCheckInPageEvent)
+      case .tapURLButton:
         guard
           let urlString = state.questions.current()?.url,
           let url = URL(string: urlString)
@@ -120,8 +132,7 @@ public struct ClassicCheckInFeature {
         return .run { _ in
           await openURL(url)
         }
-
-      case .pickButtonTapped:
+      case .tapPickButton:
         firebaseTracker.logEvent(
           .clickClassicCheckInPgPickBtn(
             parameters: [
@@ -136,8 +147,7 @@ public struct ClassicCheckInFeature {
         state.displayQuestion = state.questions.current()?.content
         state.displaySubtitle = state.questions.current()?.subtitle
         return .none
-
-      case .previousButtonTapped:
+      case .tapPreviousButton:
         firebaseTracker.logEvent(
           .clickClassicCheckInPgPreviousBtn(
             parameters: [
@@ -152,25 +162,25 @@ public struct ClassicCheckInFeature {
         state.displayQuestion = state.questions.current()?.content
         state.displaySubtitle = state.questions.current()?.subtitle
         return .none
-
-      case .trackViewClassicCheckInPageEvent:
-        firebaseTracker.logEvent(
-          .viewClassicCheckInPg(
-            parameters: [
-              "theme": state.tag?.code ?? "",
-              "order": state.tag?.order ?? -1,
-            ]
-          )
-        )
-        return .none
       }
+
+    case .trackViewClassicCheckInPageEvent:
+      firebaseTracker.logEvent(
+        .viewClassicCheckInPg(
+          parameters: [
+            "theme": state.tag?.code ?? "",
+            "order": state.tag?.order ?? -1,
+          ]
+        )
+      )
+      return .none
     }
-    .ifLet(\.$alert, action: \.alert)
   }
 }
 
+@ViewAction(for: ClassicCheckInFeature.self)
 public struct ClassicCheckInView: View {
-  @Bindable var store: StoreOf<ClassicCheckInFeature>
+  @Bindable public var store: StoreOf<ClassicCheckInFeature>
 
   public init(store: StoreOf<ClassicCheckInFeature>) {
     self.store = store
@@ -205,7 +215,7 @@ public struct ClassicCheckInView: View {
 
       HStack {
         Button {
-          store.send(.pickButtonTapped)
+          send(.tapPickButton)
         } label: {
           Text("🔮 抽一題")
             .font(.headline)
@@ -218,10 +228,10 @@ public struct ClassicCheckInView: View {
       }
     }
     .task {
-      store.send(.onTask)
+      send(.onTask)
     }
     .onAppear {
-      store.send(.trackViewClassicCheckInPageEvent)
+      send(.onAppear)
     }
     .padding()
     .toolbar {
@@ -230,7 +240,7 @@ public struct ClassicCheckInView: View {
       {
         ToolbarItem {
           Button {
-            store.send(.urlButtonTapped)
+            send(.tapURLButton)
           } label: {
             iconImage
               .foregroundStyle(.white)
