@@ -44,6 +44,7 @@ struct InAppWebView: View {
             } label: {
               Image(systemName: "xmark")
             }
+            .buttonStyle(.plain)
           }
         }
     }

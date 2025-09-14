@@ -213,7 +213,17 @@ public struct ClassicCheckInView: View {
       Spacer()
       Spacer()
 
-      HStack {
+      if #available(iOS 26.0, *) {
+        Button {
+          send(.tapPickButton)
+        } label: {
+          Text("🔮 抽一題")
+            .font(.headline)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+        }
+        .buttonStyle(.glass)
+      } else {
         Button {
           send(.tapPickButton)
         } label: {
@@ -250,12 +260,22 @@ public struct ClassicCheckInView: View {
     }
     .alert($store.scope(state: \.alert, action: \.alert))
     .background {
-      NetworkImage(url: store.state.imageUrl)
-        .blur(radius: 2)
-        .overlay {
-          Color.black.opacity(0.6)
+      if let imageURL = store.state.imageUrl {
+        NetworkImage(url: imageURL)
+          .blur(radius: 2)
+          .overlay {
+            Color.black.opacity(0.6)
+          }
+          .ignoresSafeArea()
+      } else {
+        ZStack {
+          Color.black
+            .ignoresSafeArea()
+          Rectangle()
+            .fill(.ultraThinMaterial)
+            .ignoresSafeArea()
         }
-        .ignoresSafeArea()
+      }
     }
   }
 }
