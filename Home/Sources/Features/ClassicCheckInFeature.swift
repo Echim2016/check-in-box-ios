@@ -50,7 +50,7 @@ public struct ClassicCheckInFeature {
 
   @Dependency(\.openURL) var openURL
   @Dependency(\.firebaseTracker) var firebaseTracker
-  
+
   public init() {}
 
   public var body: some ReducerOf<Self> {
@@ -145,7 +145,7 @@ public struct ClassicCheckInView: View {
   public init(store: StoreOf<ClassicCheckInFeature>) {
     self.store = store
   }
-  
+
   public var body: some View {
     VStack {
       Spacer()
@@ -192,20 +192,15 @@ public struct ClassicCheckInView: View {
     }
     .padding()
     .toolbar {
-      ToolbarItem {
-        Button {
-          store.send(.urlButtonTapped)
-        } label: {
-          if let item = store.state.questions.current(),
-             let iconName = item.urlIconName
-          {
-            if iconName == iconName.uppercased() {
-              Image(iconName)
-                .foregroundStyle(.white)
-            } else {
-              Image(systemName: iconName)
-                .foregroundStyle(.white)
-            }
+      if let item = store.state.questions.current(),
+         let iconImage = item.iconImage
+      {
+        ToolbarItem {
+          Button {
+            store.send(.urlButtonTapped)
+          } label: {
+            iconImage
+              .foregroundStyle(.white)
           }
         }
       }
@@ -219,6 +214,17 @@ public struct ClassicCheckInView: View {
         }
         .ignoresSafeArea()
     }
+  }
+}
+
+extension CheckInItem {
+  var iconImage: Image? {
+    guard let iconName = urlIconName, !iconName.isEmpty else {
+      return nil
+    }
+    return iconName == iconName.uppercased()
+      ? Image(iconName)
+      : Image(systemName: iconName)
   }
 }
 
