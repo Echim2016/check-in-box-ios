@@ -117,19 +117,7 @@ public struct ModeListFeature {
         return .send(
           .navigateToCheckInPage(
             ClassicCheckInFeature.State(
-              alert: AlertState(
-                title: {
-                  TextState(box.alertTitle)
-                },
-                actions: {
-                  ButtonState(action: .welcomeMessageDoneButtonTapped) {
-                    TextState("好")
-                  }
-                },
-                message: {
-                  TextState(box.alertMessage.replacingOccurrences(of: "\\n", with: "\n"))
-                }
-              ),
+              initialAlertContent: .init(title: box.alertTitle, message: box.alertMessage),
               tag: .from(box),
               questions: CycleIterator(base: base),
               imageUrl: URL(string: box.imageUrl)
@@ -188,7 +176,7 @@ public struct ModeListFeature {
 public struct ModeListView: View {
   @Bindable var store: StoreOf<ModeListFeature>
   let gridItemLayout = [GridItem(.flexible()), GridItem(.flexible())]
-  
+
   public init(store: StoreOf<ModeListFeature>) {
     self.store = store
   }
@@ -198,30 +186,36 @@ public struct ModeListView: View {
       Spacer()
       Spacer()
 
-      ScrollView(.horizontal) {
-        HStack {
-          ForEach(store.state.themeBoxes) { box in
-            Button {
-              store.send(.themeBoxCardTapped(box))
-            } label: {
-              ThemeBoxCardView(
-                title: box.title,
-                subtitle: box.subtitle,
-                url: URL(string: box.imageUrl)
-              )
-              .frame(width: 340, height: 200)
-              .cornerRadius(16)
+      if store.state.themeBoxes.count > 1 {
+        ScrollView(.horizontal) {
+          HStack {
+            ForEach(store.state.themeBoxes) { box in
+              Button {
+                store.send(.themeBoxCardTapped(box))
+              } label: {
+                makeThemeBoxView(box)
+                  .frame(width: 340, height: 200)
+              }
+              .buttonStyle(.plain)
             }
-            .buttonStyle(PlainButtonStyle())
           }
+          .padding(.horizontal)
         }
-        .padding(.horizontal)
+        .scrollIndicators(.hidden)
+      } else if let box = store.state.themeBoxes.first {
+        Button {
+          store.send(.themeBoxCardTapped(box))
+        } label: {
+          makeThemeBoxView(box)
+            .frame(height: 200)
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.plain)
       }
-      .scrollIndicators(.hidden)
 
       if store.state.tags.isEmpty {
         ProgressView()
-          .padding(.top, 100)
+          .padding(.top, 150)
 
       } else {
         Spacer()
@@ -231,24 +225,23 @@ public struct ModeListView: View {
             .fontWeight(.heavy)
           Spacer()
         }
-        .padding(.top, 20)
-        .padding(.horizontal)
+        .padding(.top, 24)
 
         LazyVGrid(columns: gridItemLayout, spacing: 8) {
           ForEach(store.state.tags) { tag in
             Button {
               store.send(.checkInCardTapped(tag))
             } label: {
-              FeatureCardView(title: tag.title.capitalized, subtitle: tag.subtitle)
-                .cornerRadius(16)
+              makeFeatureCardView(tag)
             }
-            .buttonStyle(PlainButtonStyle())
+            .buttonStyle(.plain)
           }
         }
-        .padding(.horizontal)
       }
     }
     .navigationTitle("Check! 🥂")
+    .contentMargins(.horizontal, 16)
+    .scrollIndicators(.hidden)
     .refreshable {
       // TODO: async refreshable
       do {
@@ -303,6 +296,38 @@ public struct ModeListView: View {
       InfoSheetView(store: infoViewStore)
         .presentationDetents([.height(600)])
         .interactiveDismissDisabled()
+    }
+  }
+
+  @ViewBuilder
+  private func makeThemeBoxView(_ box: ThemeBox) -> some View {
+    if #available(iOS 26.0, *) {
+      ThemeBoxCardView(
+        title: box.title,
+        subtitle: box.subtitle,
+        url: URL(string: box.imageUrl)
+      )
+      .cornerRadius(16)
+      .glassEffect(.regular, in: .rect(cornerRadius: 16))
+    } else {
+      ThemeBoxCardView(
+        title: box.title,
+        subtitle: box.subtitle,
+        url: URL(string: box.imageUrl)
+      )
+      .cornerRadius(16)
+    }
+  }
+
+  @ViewBuilder
+  private func makeFeatureCardView(_ tag: Tag) -> some View {
+    if #available(iOS 26.0, *) {
+      FeatureCardView(title: tag.title.capitalized, subtitle: tag.subtitle)
+        .cornerRadius(16)
+        .glassEffect(.regular, in: .rect(cornerRadius: 16))
+    } else {
+      FeatureCardView(title: tag.title.capitalized, subtitle: tag.subtitle)
+        .cornerRadius(16)
     }
   }
 }

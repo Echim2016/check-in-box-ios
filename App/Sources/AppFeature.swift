@@ -120,7 +120,6 @@ public struct AppView: View {
       )
     ) {
       AppFeature()
-        ._printChanges()
     }
   )
 }
