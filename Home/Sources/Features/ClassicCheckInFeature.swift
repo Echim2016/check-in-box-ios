@@ -14,30 +14,38 @@ import SwiftUI
 public struct ClassicCheckInFeature {
   @ObservableState
   public struct State: Equatable {
-    @Presents var alert: AlertState<Action.Alert>?
-    var tag: Tag? = nil
-    var questions: CycleIterator<CheckInItem> = CycleIterator(base: [])
-    var imageUrl: URL? = nil
-    var displayQuestion: String? = nil
-    var displaySubtitle: String? = nil
+    @Presents var alert: AlertState<Action.Alert>? = nil
+    var initialAlertContent: InitialAlertContent?
+    var tag: Tag?
+    var questions: CycleIterator<CheckInItem>
+    var imageUrl: URL?
+    var displayQuestion: String?
+    var displaySubtitle: String?
 
     public init(
-      alert: AlertState<Action.Alert>? = nil,
+      initialAlertContent: InitialAlertContent? = nil,
       tag: Tag? = nil,
       questions: CycleIterator<CheckInItem> = CycleIterator(base: []),
       imageUrl: URL? = nil
     ) {
-      self.alert = alert
+      self.initialAlertContent = initialAlertContent
       self.tag = tag
       self.questions = questions
       self.imageUrl = imageUrl
       displayQuestion = questions.current()?.content
       displaySubtitle = questions.current()?.subtitle
     }
+    
+    public struct InitialAlertContent: Equatable {
+      public var title: String
+      public var message: String
+    }
   }
 
-  public enum Action: Equatable {
+  public enum Action: Equatable, BindableAction {
     case alert(PresentationAction<Alert>)
+    case binding(BindingAction<State>)
+    case onTask
     case urlButtonTapped
     case pickButtonTapped
     case previousButtonTapped
@@ -67,6 +75,28 @@ public struct ClassicCheckInFeature {
         return .none
 
       case .alert:
+        return .none
+        
+      case .binding:
+        return .none
+        
+      case .onTask:
+        if let initialAlertContent = state.initialAlertContent {
+          state.alert = AlertState(
+            title: {
+              TextState(initialAlertContent.title)
+            },
+            actions: {
+              ButtonState(action: .welcomeMessageDoneButtonTapped) {
+                TextState("好")
+              }
+            },
+            message: {
+              TextState(initialAlertContent.message.replacingOccurrences(of: "\\n", with: "\n"))
+            }
+          )
+        }
+        
         return .none
 
       case .urlButtonTapped:
@@ -140,7 +170,7 @@ public struct ClassicCheckInFeature {
 }
 
 public struct ClassicCheckInView: View {
-  let store: StoreOf<ClassicCheckInFeature>
+  @Bindable var store: StoreOf<ClassicCheckInFeature>
 
   public init(store: StoreOf<ClassicCheckInFeature>) {
     self.store = store
@@ -187,6 +217,9 @@ public struct ClassicCheckInView: View {
         }
       }
     }
+    .task {
+      store.send(.onTask)
+    }
     .onAppear {
       store.send(.trackViewClassicCheckInPageEvent)
     }
@@ -205,7 +238,7 @@ public struct ClassicCheckInView: View {
         }
       }
     }
-    .alert(store: self.store.scope(state: \.$alert, action: \.alert))
+    .alert($store.scope(state: \.alert, action: \.alert))
     .background {
       NetworkImage(url: store.state.imageUrl)
         .blur(radius: 2)

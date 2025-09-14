@@ -120,7 +120,7 @@ final class ClassicFeatureTests: XCTestCase {
     )
     let store = TestStore(
       initialState: ClassicCheckInFeature.State(
-        alert: alert,
+        initialAlertContent: .init(title: "Alert title", message: "welcome message"),
         tag: Tag(code: "Test"),
         questions: CycleIterator(base: [])
       )
@@ -135,6 +135,9 @@ final class ClassicFeatureTests: XCTestCase {
       )
     )
 
+    await store.send(.onTask) {
+      $0.alert = alert
+    }
     await store.send(.alert(.presented(.welcomeMessageDoneButtonTapped))) {
       $0.alert = nil
     }

@@ -117,19 +117,7 @@ public struct ModeListFeature {
         return .send(
           .navigateToCheckInPage(
             ClassicCheckInFeature.State(
-              alert: AlertState(
-                title: {
-                  TextState(box.alertTitle)
-                },
-                actions: {
-                  ButtonState(action: .welcomeMessageDoneButtonTapped) {
-                    TextState("好")
-                  }
-                },
-                message: {
-                  TextState(box.alertMessage.replacingOccurrences(of: "\\n", with: "\n"))
-                }
-              ),
+              initialAlertContent: .init(title: box.alertTitle, message: box.alertMessage),
               tag: .from(box),
               questions: CycleIterator(base: base),
               imageUrl: URL(string: box.imageUrl)
