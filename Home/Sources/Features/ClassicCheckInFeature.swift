@@ -14,34 +14,47 @@ import SwiftUI
 public struct ClassicCheckInFeature {
   @ObservableState
   public struct State: Equatable {
-    @Presents var alert: AlertState<Action.Alert>?
-    var tag: Tag? = nil
-    var questions: CycleIterator<CheckInItem> = CycleIterator(base: [])
-    var imageUrl: URL? = nil
-    var displayQuestion: String? = nil
-    var displaySubtitle: String? = nil
+    @Presents var alert: AlertState<Action.Alert>? = nil
+    var initialAlertContent: InitialAlertContent?
+    var tag: Tag?
+    var questions: CycleIterator<CheckInItem>
+    var imageUrl: URL?
+    var displayQuestion: String?
+    var displaySubtitle: String?
 
     public init(
-      alert: AlertState<Action.Alert>? = nil,
+      initialAlertContent: InitialAlertContent? = nil,
       tag: Tag? = nil,
       questions: CycleIterator<CheckInItem> = CycleIterator(base: []),
       imageUrl: URL? = nil
     ) {
-      self.alert = alert
+      self.initialAlertContent = initialAlertContent
       self.tag = tag
       self.questions = questions
       self.imageUrl = imageUrl
       displayQuestion = questions.current()?.content
       displaySubtitle = questions.current()?.subtitle
     }
+
+    public struct InitialAlertContent: Equatable {
+      public var title: String
+      public var message: String
+    }
   }
 
-  public enum Action: Equatable {
+  public enum Action: Equatable, BindableAction, ViewAction {
     case alert(PresentationAction<Alert>)
-    case urlButtonTapped
-    case pickButtonTapped
-    case previousButtonTapped
+    case binding(BindingAction<State>)
+    case view(View)
     case trackViewClassicCheckInPageEvent
+
+    public enum View {
+      case onTask
+      case onAppear
+      case tapURLButton
+      case tapPickButton
+      case tapPreviousButton
+    }
 
     public enum Alert {
       case welcomeMessageDoneButtonTapped
@@ -50,26 +63,55 @@ public struct ClassicCheckInFeature {
 
   @Dependency(\.openURL) var openURL
   @Dependency(\.firebaseTracker) var firebaseTracker
-  
+
   public init() {}
 
   public var body: some ReducerOf<Self> {
-    Reduce { state, action in
-      switch action {
-      case .alert(.presented(.welcomeMessageDoneButtonTapped)):
-        firebaseTracker.logEvent(
-          .clickClassicCheckInPgWelcomeMessageDoneBtn(
-            parameters: [
-              "theme": state.tag?.code ?? "",
-            ]
-          )
+    BindingReducer()
+    Reduce(core)
+      .ifLet(\.$alert, action: \.alert)
+  }
+
+  private func core(state: inout State, action: Action) -> Effect<Action> {
+    switch action {
+    case .alert(.presented(.welcomeMessageDoneButtonTapped)):
+      firebaseTracker.logEvent(
+        .clickClassicCheckInPgWelcomeMessageDoneBtn(
+          parameters: [
+            "theme": state.tag?.code ?? "",
+          ]
         )
-        return .none
+      )
+      return .none
 
-      case .alert:
-        return .none
+    case .alert:
+      return .none
 
-      case .urlButtonTapped:
+    case .binding:
+      return .none
+
+    case let .view(viewAction):
+      switch viewAction {
+      case .onTask:
+        if let initialAlertContent = state.initialAlertContent {
+          state.alert = AlertState(
+            title: {
+              TextState(initialAlertContent.title)
+            },
+            actions: {
+              ButtonState(action: .welcomeMessageDoneButtonTapped) {
+                TextState("好")
+              }
+            },
+            message: {
+              TextState(initialAlertContent.message.replacingOccurrences(of: "\\n", with: "\n"))
+            }
+          )
+        }
+        return .none
+      case .onAppear:
+        return .send(.trackViewClassicCheckInPageEvent)
+      case .tapURLButton:
         guard
           let urlString = state.questions.current()?.url,
           let url = URL(string: urlString)
@@ -90,8 +132,7 @@ public struct ClassicCheckInFeature {
         return .run { _ in
           await openURL(url)
         }
-
-      case .pickButtonTapped:
+      case .tapPickButton:
         firebaseTracker.logEvent(
           .clickClassicCheckInPgPickBtn(
             parameters: [
@@ -106,8 +147,7 @@ public struct ClassicCheckInFeature {
         state.displayQuestion = state.questions.current()?.content
         state.displaySubtitle = state.questions.current()?.subtitle
         return .none
-
-      case .previousButtonTapped:
+      case .tapPreviousButton:
         firebaseTracker.logEvent(
           .clickClassicCheckInPgPreviousBtn(
             parameters: [
@@ -122,30 +162,30 @@ public struct ClassicCheckInFeature {
         state.displayQuestion = state.questions.current()?.content
         state.displaySubtitle = state.questions.current()?.subtitle
         return .none
-
-      case .trackViewClassicCheckInPageEvent:
-        firebaseTracker.logEvent(
-          .viewClassicCheckInPg(
-            parameters: [
-              "theme": state.tag?.code ?? "",
-              "order": state.tag?.order ?? -1,
-            ]
-          )
-        )
-        return .none
       }
+
+    case .trackViewClassicCheckInPageEvent:
+      firebaseTracker.logEvent(
+        .viewClassicCheckInPg(
+          parameters: [
+            "theme": state.tag?.code ?? "",
+            "order": state.tag?.order ?? -1,
+          ]
+        )
+      )
+      return .none
     }
-    .ifLet(\.$alert, action: \.alert)
   }
 }
 
+@ViewAction(for: ClassicCheckInFeature.self)
 public struct ClassicCheckInView: View {
-  let store: StoreOf<ClassicCheckInFeature>
+  @Bindable public var store: StoreOf<ClassicCheckInFeature>
 
   public init(store: StoreOf<ClassicCheckInFeature>) {
     self.store = store
   }
-  
+
   public var body: some View {
     VStack {
       Spacer()
@@ -173,9 +213,19 @@ public struct ClassicCheckInView: View {
       Spacer()
       Spacer()
 
-      HStack {
+      if #available(iOS 26.0, *) {
         Button {
-          store.send(.pickButtonTapped)
+          send(.tapPickButton)
+        } label: {
+          Text("🔮 抽一題")
+            .font(.headline)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+        }
+        .buttonStyle(.glass)
+      } else {
+        Button {
+          send(.tapPickButton)
         } label: {
           Text("🔮 抽一題")
             .font(.headline)
@@ -187,38 +237,57 @@ public struct ClassicCheckInView: View {
         }
       }
     }
+    .task {
+      send(.onTask)
+    }
     .onAppear {
-      store.send(.trackViewClassicCheckInPageEvent)
+      send(.onAppear)
     }
     .padding()
     .toolbar {
-      ToolbarItem {
-        Button {
-          store.send(.urlButtonTapped)
-        } label: {
-          if let item = store.state.questions.current(),
-             let iconName = item.urlIconName
-          {
-            if iconName == iconName.uppercased() {
-              Image(iconName)
-                .foregroundStyle(.white)
-            } else {
-              Image(systemName: iconName)
-                .foregroundStyle(.white)
-            }
+      if let item = store.state.questions.current(),
+         let iconImage = item.iconImage
+      {
+        ToolbarItem {
+          Button {
+            send(.tapURLButton)
+          } label: {
+            iconImage
+              .foregroundStyle(.white)
           }
         }
       }
     }
-    .alert(store: self.store.scope(state: \.$alert, action: \.alert))
+    .alert($store.scope(state: \.alert, action: \.alert))
     .background {
-      NetworkImage(url: store.state.imageUrl)
-        .blur(radius: 2)
-        .overlay {
-          Color.black.opacity(0.6)
+      if let imageURL = store.state.imageUrl {
+        NetworkImage(url: imageURL)
+          .blur(radius: 2)
+          .overlay {
+            Color.black.opacity(0.6)
+          }
+          .ignoresSafeArea()
+      } else {
+        ZStack {
+          Color.black
+            .ignoresSafeArea()
+          Rectangle()
+            .fill(.ultraThinMaterial)
+            .ignoresSafeArea()
         }
-        .ignoresSafeArea()
+      }
     }
+  }
+}
+
+extension CheckInItem {
+  var iconImage: Image? {
+    guard let iconName = urlIconName, !iconName.isEmpty else {
+      return nil
+    }
+    return iconName == iconName.uppercased()
+      ? Image(iconName)
+      : Image(systemName: iconName)
   }
 }
 

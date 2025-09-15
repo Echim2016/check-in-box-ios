@@ -19,7 +19,7 @@ public struct InfoSheetFeature {
     case doneButtonTapped
     case trackViewInfoIntroEvent
   }
-  
+
   @Dependency(\.firebaseTracker) var firebaseTracker
 
   public var body: some ReducerOf<Self> {
@@ -60,8 +60,8 @@ public struct InfoSheetView: View {
 }
 
 struct InfoIntroView: View {
-  @State var selectedPage: Int = 0
-  @State var displayQuestion: String = "＊＊＊＊＊＊＊＊＊"
+  @State var selectedPage = 0
+  @State var displayQuestion = "＊＊＊＊＊＊＊＊＊"
   let questions = CycleIterator(
     base: [
       "近期最期待的事", "最近買過最貴的東西", "我最常光顧的一間餐廳", "最近買的一個小東西",
@@ -164,17 +164,30 @@ struct InfoIntroView: View {
             value: questions.current()
           )
 
-        Button {
-          questions.next()
-          displayQuestion = questions.current() ?? ""
-        } label: {
-          Text("🔮 抽一題")
-            .font(.headline)
-            .foregroundColor(.black)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
-            .background(.white)
-            .clipShape(RoundedRectangle(cornerRadius: 12.0))
+        if #available(iOS 26.0, *) {
+          Button {
+            questions.next()
+            displayQuestion = questions.current() ?? ""
+          } label: {
+            Text("🔮 抽一題")
+              .font(.headline)
+              .frame(maxWidth: .infinity)
+              .padding(.vertical, 16)
+          }
+          .buttonStyle(.glass)
+        } else {
+          Button {
+            questions.next()
+            displayQuestion = questions.current() ?? ""
+          } label: {
+            Text("🔮 抽一題")
+              .font(.headline)
+              .foregroundColor(.black)
+              .frame(maxWidth: .infinity)
+              .padding(.vertical, 16)
+              .background(.white)
+              .clipShape(RoundedRectangle(cornerRadius: 12.0))
+          }
         }
       }
       .frame(width: 250, height: 250)

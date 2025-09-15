@@ -161,19 +161,7 @@ final class ModeListFeatureTests: XCTestCase {
     await store.receive(
       .navigateToCheckInPage(
         ClassicCheckInFeature.State(
-          alert: AlertState(
-            title: {
-              TextState(box.alertTitle)
-            },
-            actions: {
-              ButtonState(action: .welcomeMessageDoneButtonTapped) {
-                TextState("好")
-              }
-            },
-            message: {
-              TextState(verbatim: box.alertMessage.replacingOccurrences(of: "\\n", with: "\n"))
-            }
-          ),
+          initialAlertContent: .init(title: box.alertTitle, message: box.alertMessage),
           tag: .from(box),
           questions: CycleIterator(
             base: box.items.items.map { CheckInItem.from($0) }
@@ -212,19 +200,7 @@ final class ModeListFeatureTests: XCTestCase {
     await store.receive(
       .navigateToCheckInPage(
         ClassicCheckInFeature.State(
-          alert: AlertState(
-            title: {
-              TextState(box.alertTitle)
-            },
-            actions: {
-              ButtonState(action: .welcomeMessageDoneButtonTapped) {
-                TextState("好")
-              }
-            },
-            message: {
-              TextState(box.alertMessage.replacingOccurrences(of: "\\n", with: "\n"))
-            }
-          ),
+          initialAlertContent: .init(title: box.alertTitle, message: box.alertMessage),
           tag: .from(box),
           questions: CycleIterator(
             base: box.items.items.map { CheckInItem.from($0) }
