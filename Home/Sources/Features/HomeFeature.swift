@@ -1,5 +1,5 @@
 //
-//  AppFeature.swift
+//  HomeFeature.swift
 //
 //
 //  Created by Yi-Chin Hsu on 2023/12/15.
@@ -8,11 +8,10 @@
 @preconcurrency import CBFoundation
 import ComposableArchitecture
 import FirebaseService
-@preconcurrency import Home
 import SwiftUI
 
 @Reducer
-public struct AppFeature {
+public struct HomeFeature {
   @ObservableState
   public struct State: Equatable {
     var path = StackState<Path.State>()
@@ -33,7 +32,7 @@ public struct AppFeature {
     case loadFromRemote
     case receivedQuestions(IdentifiedArrayOf<ThemeBox>, IdentifiedArrayOf<Tag>, IdentifiedArrayOf<Question>)
   }
-
+  
   @Reducer(state: .equatable, action: .equatable)
   public enum Path {
     case classic(ClassicCheckInFeature)
@@ -53,7 +52,7 @@ public struct AppFeature {
       switch action {
       case .modeList(.pullToRefreshTriggered):
         return .send(.loadFromRemote)
-
+        
       case let .modeList(.navigateToCheckInPage(checkInState)):
         state.path.append(.classic(checkInState))
         return .none
@@ -86,10 +85,10 @@ public struct AppFeature {
   }
 }
 
-public struct AppView: View {
-  @Bindable var store: StoreOf<AppFeature>
+public struct HomeView: View {
+  @Bindable var store: StoreOf<HomeFeature>
 
-  public init(store: StoreOf<AppFeature>) {
+  public init(store: StoreOf<HomeFeature>) {
     self.store = store
   }
 
@@ -113,13 +112,14 @@ public struct AppView: View {
 }
 
 #Preview {
-  AppView(
+  HomeView(
     store: Store(
-      initialState: AppFeature.State(
+      initialState: HomeFeature.State(
         modeList: ModeListFeature.State()
       )
     ) {
-      AppFeature()
+      HomeFeature()
+        ._printChanges()
     }
   )
 }

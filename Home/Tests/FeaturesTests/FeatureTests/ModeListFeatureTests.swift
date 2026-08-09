@@ -70,8 +70,8 @@ struct ModeListFeatureTests {
     let themeBoxes = IdentifiedArray(uniqueElements: getMockThemeBoxes())
 
     let store = TestStore(
-      initialState: AppFeature.State(modeList: ModeListFeature.State()),
-      reducer: { AppFeature() }
+      initialState: HomeFeature.State(modeList: ModeListFeature.State()),
+      reducer: { HomeFeature() }
     ) {
       $0.firebaseCheckInLoader = FirebaseCheckInLoader(
         loadQuestions: { _ in

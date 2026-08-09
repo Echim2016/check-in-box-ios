@@ -1,5 +1,5 @@
 //
-//  AppFeaturesTests.swift
+//  HomeFeatureTests.swift
 //
 //
 //  Created by Yi-Chin Hsu on 2023/12/13.
@@ -12,13 +12,13 @@ import ComposableArchitecture
 import Testing
 
 @MainActor
-struct AppFeaturesTests {
+struct HomeFeatureTests {
   @Test
   func test_path_navigateToClassicPage() async {
     let store = TestStore(
-      initialState: AppFeature.State(modeList: ModeListFeature.State())
+      initialState: HomeFeature.State(modeList: ModeListFeature.State())
     ) {
-      AppFeature()
+      HomeFeature()
     }
     let checkInState = ClassicCheckInFeature.State(tag: Tag(code: "Test"))
 
@@ -30,9 +30,9 @@ struct AppFeaturesTests {
   @Test
   func test_path_pushToClassicPage() async {
     let store = TestStore(
-      initialState: AppFeature.State(modeList: ModeListFeature.State())
+      initialState: HomeFeature.State(modeList: ModeListFeature.State())
     ) {
-      AppFeature()
+      HomeFeature()
     }
     let checkInState = ClassicCheckInFeature.State(tag: Tag(code: "Test"))
 
@@ -48,8 +48,8 @@ struct AppFeaturesTests {
     let mockThemeBoxes = IdentifiedArray(uniqueElements: getMockThemeBoxes())
 
     let store = TestStore(
-      initialState: AppFeature.State(modeList: ModeListFeature.State()),
-      reducer: { AppFeature() }
+      initialState: HomeFeature.State(modeList: ModeListFeature.State()),
+      reducer: { HomeFeature() }
     ) {
       $0.firebaseCheckInLoader = FirebaseCheckInLoader(
         loadQuestions: { collectionPath in
