@@ -101,7 +101,7 @@ extension UserSettingsFeatureTests {
     store.arrangeTracker(for: nil)
 
     await store.send(.presentDebugModeInputBoxPage(.presented(.activateButtonTapped)))
-    await store.receive(.presentDebugModeInputBoxPage(.presented(.activationKeySubmitted(activationKey)))) { state in
+    await store.receive(\.presentDebugModeInputBoxPage, .presented(.activationKeySubmitted(activationKey))) { state in
       state.presentDebugModeInputBoxPage = nil
     }
   }

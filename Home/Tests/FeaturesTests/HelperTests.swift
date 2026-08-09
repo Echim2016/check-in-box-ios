@@ -13,8 +13,8 @@ import Testing
 struct CycleCollectionTests {
   @Test
   func test_cycleCollection_equatable() {
-    let sut1 = CycleCollection(base: ["sut"], index: 0)
-    let sut2 = CycleCollection(base: ["sut"], index: 1)
+    let sut1 = CycleCollection(base: ["sut1", "sut2"], index: 0)
+    let sut2 = CycleCollection(base: ["sut1", "sut2"], index: 1)
 
     #expect(sut1 != sut2)
   }

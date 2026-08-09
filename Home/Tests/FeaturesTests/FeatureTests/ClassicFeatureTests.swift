@@ -30,6 +30,7 @@ struct ClassicFeatureTests {
     )
 
     await store.send(.view(.tapPickButton)) {
+      $0.questions.index = 1
       $0.displayQuestion = questions[1].content
       $0.displaySubtitle = questions[1].subtitle
     }
@@ -52,6 +53,7 @@ struct ClassicFeatureTests {
     )
 
     await store.send(.view(.tapPickButton)) {
+      $0.questions.index = 0
       $0.displayQuestion = questions.first?.content
       $0.displaySubtitle = questions.first?.subtitle
     }
@@ -73,6 +75,7 @@ struct ClassicFeatureTests {
     )
 
     await store.send(.view(.tapPreviousButton)) {
+      $0.questions.index = questions.count - 1
       $0.displayQuestion = questions.last?.content
       $0.displaySubtitle = questions.last?.subtitle
     }

@@ -69,9 +69,9 @@ public struct HomeFeature {
 
           try await send(
             .receivedQuestions(
-              themeBoxes,
-              tags,
-              questions
+              try await themeBoxes,
+              try await tags,
+              try await questions
             )
           )
         }

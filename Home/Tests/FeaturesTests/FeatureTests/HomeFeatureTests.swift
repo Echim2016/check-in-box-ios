@@ -73,9 +73,9 @@ struct HomeFeatureTests {
       )
     }
 
-    await store.send(.modeList(.pullToRefreshTriggered))
-    await store.receive(.loadFromRemote)
-    await store.receive(.receivedQuestions(mockThemeBoxes, mockTags, mockQuestions)) {
+    await store.send(\.modeList.pullToRefreshTriggered)
+    await store.receive(\.loadFromRemote)
+    await store.receive(\.receivedQuestions) {
       $0.modeList.themeBoxes = mockThemeBoxes
       $0.modeList.tags = mockTags
       $0.modeList.questions = mockQuestions

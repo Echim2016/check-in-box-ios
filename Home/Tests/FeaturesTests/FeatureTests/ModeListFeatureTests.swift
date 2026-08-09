@@ -93,7 +93,7 @@ struct ModeListFeatureTests {
     }
 
     await store.send(.loadFromRemote)
-    await store.receive(.receivedQuestions(themeBoxes, tags, questions)) {
+    await store.receive(\.receivedQuestions) {
       $0.modeList.themeBoxes = themeBoxes
       $0.modeList.tags = tags
       $0.modeList.questions = questions
@@ -115,8 +115,8 @@ struct ModeListFeatureTests {
     )
 
     await store.send(.modeList(.pullToRefreshTriggered))
-    await store.receive(.loadFromRemote)
-    await store.receive(.receivedQuestions(updatedThemeBoxes, updatedTags, updatedQuestions)) {
+    await store.receive(\.loadFromRemote)
+    await store.receive(\.receivedQuestions) {
       $0.modeList.themeBoxes = updatedThemeBoxes
       $0.modeList.tags = updatedTags
       $0.modeList.questions = updatedQuestions
