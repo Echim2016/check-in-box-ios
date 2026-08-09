@@ -23,6 +23,14 @@
         "identifier" : "AF31213DA71B06E9B09EA3F0",
         "name" : "HomeTests"
       }
+    },
+    {
+      "enabled" : false,
+      "target" : {
+        "containerPath" : "container:App.xcodeproj",
+        "identifier" : "99DCC7BD0ABB09C467644299",
+        "name" : "AppTests"
+      }
     }
   ],
   "version" : 1

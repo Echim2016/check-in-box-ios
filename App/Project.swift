@@ -70,5 +70,8 @@ let project = Project(
   schemes: [
     .debug,
     .release
+  ],
+  additionalFiles: [
+    .glob(pattern: "Tests/AppTests.xctestplan"),
   ]
 )
