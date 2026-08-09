@@ -129,7 +129,7 @@ struct ClassicFeatureTests {
       initialState: ClassicCheckInFeature.State(
         initialAlertContent: .init(title: "Alert title", message: "welcome message"),
         tag: Tag(code: "Test"),
-        questions: CycleIterator(base: [])
+        questions: CycleCollection(base: [])
       )
     ) {
       ClassicCheckInFeature()
@@ -169,7 +169,7 @@ struct ClassicFeatureTests {
     let store = TestStore(
       initialState: ClassicCheckInFeature.State(
         tag: Tag(code: "Test"),
-        questions: CycleIterator(base: base, index: index)
+        questions: CycleCollection(base: base, index: index)
       ),
       reducer: { ClassicCheckInFeature() }
     ) {

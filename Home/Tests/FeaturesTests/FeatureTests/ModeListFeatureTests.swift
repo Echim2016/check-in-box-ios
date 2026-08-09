@@ -172,7 +172,7 @@ struct ModeListFeatureTests {
         ClassicCheckInFeature.State(
           initialAlertContent: .init(title: box.alertTitle, message: box.alertMessage),
           tag: .from(box),
-          questions: CycleIterator(
+          questions: CycleCollection(
             base: box.items.items.map { CheckInItem.from($0) }
           ),
           imageUrl: URL(string: box.imageUrl)
@@ -212,7 +212,7 @@ struct ModeListFeatureTests {
         ClassicCheckInFeature.State(
           initialAlertContent: .init(title: box.alertTitle, message: box.alertMessage),
           tag: .from(box),
-          questions: CycleIterator(
+          questions: CycleCollection(
             base: box.items.items.map { CheckInItem.from($0) }
           ),
           imageUrl: URL(string: box.imageUrl)
@@ -251,7 +251,7 @@ struct ModeListFeatureTests {
       .navigateToCheckInPage(
         ClassicCheckInFeature.State(
           tag: tag,
-          questions: CycleIterator(
+          questions: CycleCollection(
             base: []
           )
         )

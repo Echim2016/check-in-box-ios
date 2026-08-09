@@ -83,7 +83,7 @@ public struct ModeListFeature {
           .navigateToCheckInPage(
             ClassicCheckInFeature.State(
               tag: tag,
-              questions: CycleIterator(base: base)
+              questions: CycleCollection(base: base)
             )
           )
         )
@@ -119,7 +119,7 @@ public struct ModeListFeature {
             ClassicCheckInFeature.State(
               initialAlertContent: .init(title: box.alertTitle, message: box.alertMessage),
               tag: .from(box),
-              questions: CycleIterator(base: base),
+              questions: CycleCollection(base: base),
               imageUrl: URL(string: box.imageUrl)
             )
           )

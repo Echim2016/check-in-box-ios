@@ -10,35 +10,35 @@ import Foundation
 @testable import Home
 import Testing
 
-struct CycleIteratorTests {
+struct CycleCollectionTests {
   @Test
-  func test_cycleIterator_equatable() {
-    let sut1 = CycleIterator(base: ["sut"], index: 0)
-    let sut2 = CycleIterator(base: ["sut"], index: 1)
+  func test_cycleCollection_equatable() {
+    let sut1 = CycleCollection(base: ["sut"], index: 0)
+    let sut2 = CycleCollection(base: ["sut"], index: 1)
 
     #expect(sut1 != sut2)
   }
 
   @Test
-  func test_cycleIterator_currentItem() {
+  func test_cycleCollection_currentItem() {
     let item1 = "item1"
     let item2 = "item2"
-    let sut = CycleIterator(base: [item1, item2], index: 1)
+    let sut = CycleCollection(base: [item1, item2], index: 1)
 
     #expect(sut.current() == item2)
   }
 
   @Test
-  func test_cycleIterator_currentItemIsNilWhenBaseIsEmpty() {
+  func test_cycleCollection_currentItemIsNilWhenBaseIsEmpty() {
     let base: [String] = []
-    let sut = CycleIterator(base: base)
+    let sut = CycleCollection(base: base)
 
     #expect(sut.current() == nil)
   }
 
   @Test
-  func test_cycleIterator_nextIndexEqualToZeroWhenBaseContainsOneItem() {
-    let sut = CycleIterator(base: ["item1"], index: 0)
+  func test_cycleCollection_nextIndexEqualToZeroWhenBaseContainsOneItem() {
+    var sut = CycleCollection(base: ["item1"], index: 0)
     sut.next()
 
     #expect(sut.index == 0)
@@ -46,8 +46,8 @@ struct CycleIteratorTests {
   }
 
   @Test
-  func test_cycleIterator_backIndexEqualToZeroWhenBaseContainsOneItem() {
-    let sut = CycleIterator(base: ["item1"], index: 0)
+  func test_cycleCollection_backIndexEqualToZeroWhenBaseContainsOneItem() {
+    var sut = CycleCollection(base: ["item1"], index: 0)
     sut.back()
 
     #expect(sut.index == 0)
@@ -55,8 +55,8 @@ struct CycleIteratorTests {
   }
 
   @Test
-  func test_cycleIterator_nextIndexIncreasedByOneWhenBaseContainsMultipleItems() {
-    let sut = CycleIterator(base: ["item1", "item2"], index: 0)
+  func test_cycleCollection_nextIndexIncreasedByOneWhenBaseContainsMultipleItems() {
+    var sut = CycleCollection(base: ["item1", "item2"], index: 0)
     sut.next()
 
     #expect(sut.index == 1)
@@ -64,8 +64,8 @@ struct CycleIteratorTests {
   }
 
   @Test
-  func test_cycleIterator_backIndexDecreasedByOneWhenBaseContainsMultipleItems() {
-    let sut = CycleIterator(base: ["item1", "item2"], index: 1)
+  func test_cycleCollection_backIndexDecreasedByOneWhenBaseContainsMultipleItems() {
+    var sut = CycleCollection(base: ["item1", "item2"], index: 1)
     sut.back()
 
     #expect(sut.index == 0)
@@ -73,8 +73,8 @@ struct CycleIteratorTests {
   }
 
   @Test
-  func test_cycleIterator_nextIndexWhenIndexOutOfRange() {
-    let sut = CycleIterator(base: ["item1", "item2"], index: 1)
+  func test_cycleCollection_nextIndexWhenIndexWrapsAround() {
+    var sut = CycleCollection(base: ["item1", "item2"], index: 1)
     sut.next()
 
     #expect(sut.index == 0)
@@ -82,8 +82,8 @@ struct CycleIteratorTests {
   }
 
   @Test
-  func test_cycleIterator_backIndexWhenIndexOutOfRange() {
-    let sut = CycleIterator(base: ["item1", "item2"], index: 0)
+  func test_cycleCollection_backIndexWhenIndexWrapsAround() {
+    var sut = CycleCollection(base: ["item1", "item2"], index: 0)
     sut.back()
 
     #expect(sut.index == 1)
@@ -91,15 +91,10 @@ struct CycleIteratorTests {
   }
 
   @Test
-  func test_raceCondition_performNextFromMultipleThreadsConcurrently() {
-    let mockItems = ["item1", "item2", "item3", "item4", "item5", "item6", "item7", "item8", "item9", "item10"]
-    let sut = CycleIterator(base: mockItems, index: 0)
+  func test_cycleCollection_initResetsIndexWhenIndexIsOutOfRange() {
+    let sut = CycleCollection(base: ["item1", "item2"], index: 10)
 
-    DispatchQueue.concurrentPerform(iterations: mockItems.count - 1) { _ in
-      sut.next()
-    }
-
-    Thread.sleep(forTimeInterval: 0.05)
-    #expect(sut.index == mockItems.count - 1)
+    #expect(sut.index == 0)
+    #expect(sut.current() == "item1")
   }
 }
