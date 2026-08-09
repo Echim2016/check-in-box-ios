@@ -8,6 +8,7 @@
 import CBFoundation
 import ComposableArchitecture
 import FirebaseService
+import Sharing
 import SwiftUI
 
 @Reducer
@@ -20,6 +21,7 @@ public struct ModeListFeature {
     public var questions: IdentifiedArrayOf<Question>
     public var tags: IdentifiedArrayOf<Tag>
     public var hapticFeedbackTrigger = false
+    @Shared(.infoIntroChecked) public var infoIntroChecked
 
     public init(
       presentSettingsPage: SettingsFeature.State? = nil,
@@ -49,7 +51,7 @@ public struct ModeListFeature {
     case infoButtonTapped
     case presentInfoPage(PresentationAction<InfoSheetFeature.Action>)
     case pullToRefreshTriggered
-    case trackViewModeListEvent
+    case onAppear
   }
 
   @Dependency(\.firebaseTracker) var firebaseTracker
@@ -150,8 +152,10 @@ public struct ModeListFeature {
       case .presentInfoPage(.presented(.doneButtonTapped)):
         state.presentInfoPage = nil
         state.hapticFeedbackTrigger.toggle()
+        state.$infoIntroChecked.withLock {
+          $0 = true
+        }
         firebaseTracker.logEvent(.viewModeListPg(parameters: [:]))
-        UserDefaults.standard.setValue(true, forKey: "info-intro-checked")
         return .none
 
       case .presentInfoPage:
@@ -159,7 +163,11 @@ public struct ModeListFeature {
 
       case .pullToRefreshTriggered:
         return .none
-      case .trackViewModeListEvent:
+
+      case .onAppear:
+        if !state.infoIntroChecked {
+          state.presentInfoPage = InfoSheetFeature.State()
+        }
         firebaseTracker.logEvent(.viewModeListPg(parameters: [:]))
         return .none
       }
@@ -250,7 +258,7 @@ public struct ModeListView: View {
       } catch {}
     }
     .onAppear {
-      store.send(.trackViewModeListEvent)
+      store.send(.onAppear)
     }
     .sensoryFeedback(.success, trigger: store.state.hapticFeedbackTrigger)
     .toolbar {

@@ -66,7 +66,7 @@ struct HomeFeatureTests {
         }
       )
       $0.debugModeManager = DebugModeManager(
-        isFullAccess: { _ in
+        isFullAccess: {
           true
         },
         setAccess: { _ in }

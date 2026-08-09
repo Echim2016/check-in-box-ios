@@ -11,7 +11,7 @@ import Foundation
 
 @DependencyClient
 public struct DebugModeManager {
-  public var isFullAccess: (String) -> Bool = { _ in false }
+  public var isFullAccess: () -> Bool = { false }
   public var setAccess: (String) -> Void
 }
 

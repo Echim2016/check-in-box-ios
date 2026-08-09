@@ -168,8 +168,7 @@ extension UserSettingsFeatureTests {
     activationKey: String
   ) {
     store.dependencies.debugModeManager = DebugModeManager(
-      isFullAccess: { key in
-        #expect(activationKey == key)
+      isFullAccess: {
         return true
       },
       setAccess: { key in

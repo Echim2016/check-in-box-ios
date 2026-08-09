@@ -60,7 +60,32 @@ struct ModeListFeatureTests {
     await store.send(\.presentInfoPage.presented.doneButtonTapped) {
       $0.presentInfoPage = nil
       $0.hapticFeedbackTrigger = true
+      $0.$infoIntroChecked.withLock {
+        $0 = true
+      }
     }
+  }
+
+  @Test
+  func test_infoIntroSheet_presentedOnFirstAppear() async {
+    let store = makeSUT()
+    store.arrangeTracker(for: .viewModeListPg(parameters: [:]))
+
+    await store.send(\.onAppear) {
+      $0.presentInfoPage = InfoSheetFeature.State()
+    }
+  }
+
+  @Test
+  func test_infoIntroSheet_notPresentedOnAppearWhenAlreadyChecked() async {
+    let state = ModeListFeature.State()
+    let store = makeSUT(of: state)
+    store.arrangeTracker(for: .viewModeListPg(parameters: [:]))
+    store.state.$infoIntroChecked.withLock {
+      $0 = true
+    }
+
+    await store.send(\.onAppear)
   }
 
   @Test
@@ -85,7 +110,7 @@ struct ModeListFeatureTests {
         }
       )
       $0.debugModeManager = DebugModeManager(
-        isFullAccess: { _ in
+        isFullAccess: {
           true
         },
         setAccess: { _ in }
@@ -121,23 +146,6 @@ struct ModeListFeatureTests {
       $0.modeList.tags = updatedTags
       $0.modeList.questions = updatedQuestions
     }
-  }
-
-  @Test
-  func test_modeList_trackViewEvent() async {
-    let store = TestStore(
-      initialState: ModeListFeature.State(),
-      reducer: { ModeListFeature() }
-    ) {
-      $0.firebaseTracker = FirebaseTracker(
-        configure: {},
-        logEvent: { event in
-          #expect(event == .viewModeListPg(parameters: [:]))
-        }
-      )
-    }
-
-    await store.send(\.trackViewModeListEvent)
   }
 
   @Test
