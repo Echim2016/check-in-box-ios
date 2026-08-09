@@ -13,15 +13,15 @@ import SwiftUI
 @main
 struct CheckInBoxApp: App {
   @Dependency(\.firebaseTracker) var firebaseTracker
+  private let store = Store(
+    initialState: HomeFeature.State()
+  ) {
+    HomeFeature()
+  }
+
   var body: some Scene {
     WindowGroup {
-      HomeView(
-        store: Store(
-          initialState: HomeFeature.State()
-        ) {
-          HomeFeature()
-        }
-      )
+      HomeView(store: store)
     }
   }
 

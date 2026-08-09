@@ -221,7 +221,7 @@ public struct ModeListView: View {
         .buttonStyle(.plain)
       }
 
-      if store.state.tags.isEmpty {
+      if store.tags.isEmpty {
         ProgressView()
           .padding(.top, 150)
 
