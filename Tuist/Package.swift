@@ -7,6 +7,7 @@ import PackageDescription
   let packageSettings = PackageSettings(
     productTypes: [
       "ComposableArchitecture": .framework,
+      "Sharing": .framework,
     ]
   )
 #endif
@@ -17,6 +18,10 @@ let package = Package(
     .package(
       url: "https://github.com/pointfreeco/swift-composable-architecture.git",
       exact: "1.26.1"
+    ),
+    .package(
+      url: "https://github.com/pointfreeco/swift-sharing.git",
+      exact: "2.9.1"
     ),
     .package(
       url: "https://github.com/firebase/firebase-ios-sdk",

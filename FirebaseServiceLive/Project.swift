@@ -14,6 +14,7 @@ let project = Project(
       resources: nil,
       dependencies: [
         .composableArchitecture,
+        .sharing,
         .cbFoundation,
         .firebaseService,
         .firebaseAnalytics,
