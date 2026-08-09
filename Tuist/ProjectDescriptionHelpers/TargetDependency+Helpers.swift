@@ -10,7 +10,6 @@ import ProjectDescription
 public extension TargetDependency {
   // external
   static let composableArchitecture: TargetDependency = .external(name: "ComposableArchitecture")
-  static let sharing: TargetDependency = .external(name: "Sharing")
   static let firebaseFirestore: TargetDependency = .external(name: "FirebaseFirestore")
   static let firebaseAnalytics: TargetDependency = .external(name: "FirebaseAnalytics")
   static let firebaseRemoteConfig: TargetDependency = .external(name: "FirebaseRemoteConfig")

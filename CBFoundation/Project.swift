@@ -13,7 +13,7 @@ let project = Project(
       sources: ["Sources/**"],
       resources: nil,
       dependencies: [
-        .sharing,
+        .composableArchitecture,
       ],
     ),
     .target(
