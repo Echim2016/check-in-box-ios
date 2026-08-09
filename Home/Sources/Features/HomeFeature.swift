@@ -62,11 +62,16 @@ public struct HomeFeature {
 
       case .loadFromRemote:
         return .run { send in
+          let isFullAccess = debugModeManager.isFullAccess("admin_full_access")
+          async let themeBoxes = firebaseCheckInLoader.loadThemeBoxes("Theme_Boxes", isFullAccess)
+          async let tags = firebaseCheckInLoader.loadTags("Question_Tags")
+          async let questions = firebaseCheckInLoader.loadQuestions("Questions")
+
           try await send(
             .receivedQuestions(
-              await firebaseCheckInLoader.loadThemeBoxes("Theme_Boxes", debugModeManager.isFullAccess("admin_full_access")),
-              await firebaseCheckInLoader.loadTags("Question_Tags"),
-              await firebaseCheckInLoader.loadQuestions("Questions")
+              themeBoxes,
+              tags,
+              questions
             )
           )
         }
