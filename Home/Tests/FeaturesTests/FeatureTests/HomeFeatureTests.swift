@@ -22,7 +22,7 @@ struct HomeFeatureTests {
     }
     let checkInState = ClassicCheckInFeature.State(tag: Tag(code: "Test"))
 
-    await store.send(.modeList(.navigateToCheckInPage(checkInState))) {
+    await store.send(\.modeList.navigateToCheckInPage, checkInState) {
       $0.path[id: 0] = .classic(checkInState)
     }
   }
@@ -36,7 +36,7 @@ struct HomeFeatureTests {
     }
     let checkInState = ClassicCheckInFeature.State(tag: Tag(code: "Test"))
 
-    await store.send(.path(.push(id: 0, state: .classic(checkInState)))) {
+    await store.send(\.path.push, (id: 0, .classic(checkInState))) {
       $0.path[id: 0] = .classic(checkInState)
     }
   }

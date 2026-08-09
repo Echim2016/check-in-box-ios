@@ -18,7 +18,7 @@ struct ModeListFeatureTests {
   func test_settingsSheet_presentedWhenSettingButtonTapped() async {
     let store = makeSUT()
 
-    await store.send(.settingsButtonTapped) {
+    await store.send(\.settingsButtonTapped) {
       $0.presentSettingsPage = SettingsFeature.State()
     }
   }
@@ -28,7 +28,7 @@ struct ModeListFeatureTests {
     let store = makeSUT(of: ModeListFeature.State(presentSettingsPage: SettingsFeature.State()))
     store.arrangeTracker(for: .viewModeListPg(parameters: [:]))
 
-    await store.send(.settingsSheetDoneButtonTapped) {
+    await store.send(\.settingsSheetDoneButtonTapped) {
       $0.presentSettingsPage = nil
     }
   }
@@ -38,7 +38,7 @@ struct ModeListFeatureTests {
     let store = makeSUT(of: ModeListFeature.State(presentSettingsPage: SettingsFeature.State()))
     store.arrangeTracker(for: .viewModeListPg(parameters: [:]))
 
-    await store.send(.presentSettingsPage(.dismiss)) {
+    await store.send(\.presentSettingsPage.dismiss) {
       $0.presentSettingsPage = nil
     }
   }
@@ -47,7 +47,7 @@ struct ModeListFeatureTests {
   func test_infoIntroSheet_presentedWhenInfoButtonTapped() async {
     let store = makeSUT()
 
-    await store.send(.infoButtonTapped) {
+    await store.send(\.infoButtonTapped) {
       $0.presentInfoPage = InfoSheetFeature.State()
     }
   }
@@ -57,7 +57,7 @@ struct ModeListFeatureTests {
     let store = makeSUT(of: ModeListFeature.State(presentInfoPage: InfoSheetFeature.State()))
     store.arrangeTracker(for: .clickInfoIntroPgDoneBtn(parameters: [:]), .viewModeListPg(parameters: [:]))
 
-    await store.send(.presentInfoPage(.presented(.doneButtonTapped))) {
+    await store.send(\.presentInfoPage.presented.doneButtonTapped) {
       $0.presentInfoPage = nil
       $0.hapticFeedbackTrigger = true
     }
@@ -92,7 +92,7 @@ struct ModeListFeatureTests {
       )
     }
 
-    await store.send(.loadFromRemote)
+    await store.send(\.loadFromRemote)
     await store.receive(\.receivedQuestions) {
       $0.modeList.themeBoxes = themeBoxes
       $0.modeList.tags = tags
@@ -114,7 +114,7 @@ struct ModeListFeatureTests {
       }
     )
 
-    await store.send(.modeList(.pullToRefreshTriggered))
+    await store.send(\.modeList.pullToRefreshTriggered)
     await store.receive(\.loadFromRemote)
     await store.receive(\.receivedQuestions) {
       $0.modeList.themeBoxes = updatedThemeBoxes
@@ -137,7 +137,7 @@ struct ModeListFeatureTests {
       )
     }
 
-    await store.send(.trackViewModeListEvent)
+    await store.send(\.trackViewModeListEvent)
   }
 
   @Test
@@ -166,17 +166,16 @@ struct ModeListFeatureTests {
       )
     }
 
-    await store.send(.themeBoxCardTapped(box))
+    await store.send(\.themeBoxCardTapped, box)
     await store.receive(
-      .navigateToCheckInPage(
-        ClassicCheckInFeature.State(
-          initialAlertContent: .init(title: box.alertTitle, message: box.alertMessage),
-          tag: .from(box),
-          questions: CycleCollection(
-            base: box.items.items.map { CheckInItem.from($0) }
-          ),
-          imageUrl: URL(string: box.imageUrl)
-        )
+      \.navigateToCheckInPage,
+      ClassicCheckInFeature.State(
+        initialAlertContent: .init(title: box.alertTitle, message: box.alertMessage),
+        tag: .from(box),
+        questions: CycleCollection(
+          base: box.items.items.map { CheckInItem.from($0) }
+        ),
+        imageUrl: URL(string: box.imageUrl)
       )
     )
   }
@@ -206,17 +205,16 @@ struct ModeListFeatureTests {
       )
     }
 
-    await store.send(.themeBoxCardTapped(box))
+    await store.send(\.themeBoxCardTapped, box)
     await store.receive(
-      .navigateToCheckInPage(
-        ClassicCheckInFeature.State(
-          initialAlertContent: .init(title: box.alertTitle, message: box.alertMessage),
-          tag: .from(box),
-          questions: CycleCollection(
-            base: box.items.items.map { CheckInItem.from($0) }
-          ),
-          imageUrl: URL(string: box.imageUrl)
-        )
+      \.navigateToCheckInPage,
+      ClassicCheckInFeature.State(
+        initialAlertContent: .init(title: box.alertTitle, message: box.alertMessage),
+        tag: .from(box),
+        questions: CycleCollection(
+          base: box.items.items.map { CheckInItem.from($0) }
+        ),
+        imageUrl: URL(string: box.imageUrl)
       )
     )
   }
@@ -246,14 +244,13 @@ struct ModeListFeatureTests {
       )
     }
 
-    await store.send(.checkInCardTapped(tag))
+    await store.send(\.checkInCardTapped, tag)
     await store.receive(
-      .navigateToCheckInPage(
-        ClassicCheckInFeature.State(
-          tag: tag,
-          questions: CycleCollection(
-            base: []
-          )
+      \.navigateToCheckInPage,
+      ClassicCheckInFeature.State(
+        tag: tag,
+        questions: CycleCollection(
+          base: []
         )
       )
     )

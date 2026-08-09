@@ -16,10 +16,10 @@ struct UserSettingsFeatureTests {
   func test_openURL_presentAndCloseFeedbackForm() async {
     let store = makeSUT()
     store.arrangeTracker(for: .clickSettingsPgFeedbackFormBtn(parameters: [:]))
-    await store.send(.sendFeedbackButtonTapped) {
+    await store.send(\.sendFeedbackButtonTapped) {
       $0.presentInAppWebViewPage = InAppWebFeature.State(url: .feedbackFormUrl)
     }
-    await store.send(.presentInAppWebViewPage(.presented(.closeButtonTapped))) {
+    await store.send(\.presentInAppWebViewPage.presented.closeButtonTapped) {
       $0.presentInAppWebViewPage = nil
     }
   }
@@ -29,17 +29,17 @@ struct UserSettingsFeatureTests {
     let store = makeSUT()
     store.arrangeOpenUrl(of: .authorProfileUrl)
     store.arrangeTracker(for: .clickSettingsPgAuthorProfileBtn(parameters: [:]))
-    await store.send(.authorProfileButtonTapped)
+    await store.send(\.authorProfileButtonTapped)
   }
 
   @Test
   func test_openURL_presentAndCloseSubmitQuestionsForm() async {
     let store = makeSUT()
     store.arrangeTracker(for: .clickSettingsPgSubmitQuestionsBtn(parameters: [:]))
-    await store.send(.submitQuestionsButtonTapped) {
+    await store.send(\.submitQuestionsButtonTapped) {
       $0.presentInAppWebViewPage = InAppWebFeature.State(url: .submitQuestionsUrl)
     }
-    await store.send(.presentInAppWebViewPage(.presented(.closeButtonTapped))) {
+    await store.send(\.presentInAppWebViewPage.presented.closeButtonTapped) {
       $0.presentInAppWebViewPage = nil
     }
   }
@@ -49,7 +49,7 @@ struct UserSettingsFeatureTests {
     let store = makeSUT()
     store.arrangeTracker(for: .clickSettingsPgShareBtn(parameters: [:]))
     #expect(store.state.shareLinkUrl == .shareLinkUrl)
-    await store.send(.shareButtonTapped)
+    await store.send(\.shareButtonTapped)
   }
 
   @Test
@@ -57,13 +57,13 @@ struct UserSettingsFeatureTests {
     let store = makeSUT()
     store.arrangeOpenUrl(of: .requestReviewUrl)
     store.arrangeTracker(for: .clickSettingsPgSubmitAppReviewBtn(parameters: [:]))
-    await store.send(.submitAppReviewButtonTapped)
+    await store.send(\.submitAppReviewButtonTapped)
   }
 
   @Test
   func test_debugModeButton_presentDebugModeInoutBoxPage() async {
     let store = makeSUT()
-    await store.send(.debugModeButtonTapped) {
+    await store.send(\.debugModeButtonTapped) {
       $0.presentDebugModeInputBoxPage = InputBoxFeature.State()
     }
   }
@@ -71,7 +71,7 @@ struct UserSettingsFeatureTests {
   @Test
   func test_debugModeButton_enabled() async {
     let store = makeSUT()
-    await store.send(.debugModeButtonEnabled) {
+    await store.send(\.debugModeButtonEnabled) {
       $0.debugModeButtonEnabled = true
     }
   }
@@ -80,7 +80,7 @@ struct UserSettingsFeatureTests {
   func test_settingPage_trackViewEvent() async {
     let store = makeSUT()
     store.arrangeTracker(for: .viewSettingsPg(parameters: [:]))
-    await store.send(.trackViewSettingsPageEvent)
+    await store.send(\.trackViewSettingsPageEvent)
   }
 }
 
@@ -100,8 +100,8 @@ extension UserSettingsFeatureTests {
     arrangeDebugModeManagerOf(store, activationKey: activationKey)
     store.arrangeTracker(for: nil)
 
-    await store.send(.presentDebugModeInputBoxPage(.presented(.activateButtonTapped)))
-    await store.receive(\.presentDebugModeInputBoxPage, .presented(.activationKeySubmitted(activationKey))) { state in
+    await store.send(\.presentDebugModeInputBoxPage.presented.activateButtonTapped)
+    await store.receive(\.presentDebugModeInputBoxPage.presented.activationKeySubmitted, activationKey) { state in
       state.presentDebugModeInputBoxPage = nil
     }
   }
@@ -119,7 +119,7 @@ extension UserSettingsFeatureTests {
     arrangeDebugModeManagerOf(store, activationKey: activationKey)
     store.arrangeTracker(for: nil)
 
-    await store.send(.presentDebugModeInputBoxPage(.presented(.activateButtonTapped)))
+    await store.send(\.presentDebugModeInputBoxPage.presented.activateButtonTapped)
   }
 
   @Test
@@ -136,7 +136,7 @@ extension UserSettingsFeatureTests {
     store.arrangeTracker(for: nil)
 
     let modifiedKey = "k"
-    await store.send(.presentDebugModeInputBoxPage(.presented(.keyChanged(modifiedKey)))) {
+    await store.send(\.presentDebugModeInputBoxPage.presented.keyChanged, modifiedKey) {
       $0.presentDebugModeInputBoxPage = InputBoxFeature.State(activationKey: modifiedKey)
     }
   }

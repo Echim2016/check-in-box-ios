@@ -17,7 +17,7 @@ struct InfoSheetFeatureTests {
     let store = makeSUT()
     store.arrangeTracker(for: .clickInfoIntroPgDoneBtn(parameters: [:]))
 
-    await store.send(.doneButtonTapped)
+    await store.send(\.doneButtonTapped)
   }
 
   @Test
@@ -25,7 +25,7 @@ struct InfoSheetFeatureTests {
     let store = makeSUT()
     store.arrangeTracker(for: .viewInfoIntroPg(parameters: [:]))
 
-    await store.send(.trackViewInfoIntroEvent)
+    await store.send(\.trackViewInfoIntroEvent)
   }
 
   func makeSUT() -> TestStoreOf<InfoSheetFeature> {

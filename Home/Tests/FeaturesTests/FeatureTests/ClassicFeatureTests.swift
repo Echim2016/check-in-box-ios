@@ -29,7 +29,7 @@ struct ClassicFeatureTests {
       )
     )
 
-    await store.send(.view(.tapPickButton)) {
+    await store.send(\.view.tapPickButton) {
       $0.questions.index = 1
       $0.displayQuestion = questions[1].content
       $0.displaySubtitle = questions[1].subtitle
@@ -52,7 +52,7 @@ struct ClassicFeatureTests {
       )
     )
 
-    await store.send(.view(.tapPickButton)) {
+    await store.send(\.view.tapPickButton) {
       $0.questions.index = 0
       $0.displayQuestion = questions.first?.content
       $0.displaySubtitle = questions.first?.subtitle
@@ -74,7 +74,7 @@ struct ClassicFeatureTests {
       )
     )
 
-    await store.send(.view(.tapPreviousButton)) {
+    await store.send(\.view.tapPreviousButton) {
       $0.questions.index = questions.count - 1
       $0.displayQuestion = questions.last?.content
       $0.displaySubtitle = questions.last?.subtitle
@@ -99,7 +99,7 @@ struct ClassicFeatureTests {
     )
     store.arrangeOpenUrl(of: URL(string: testUrl)!)
 
-    await store.send(.view(.tapURLButton))
+    await store.send(\.view.tapURLButton)
   }
 
   @Test
@@ -110,7 +110,7 @@ struct ClassicFeatureTests {
     ]
     let store = makeSUT(base: questions)
 
-    await store.send(.view(.tapURLButton))
+    await store.send(\.view.tapURLButton)
   }
 
   @Test
@@ -145,10 +145,10 @@ struct ClassicFeatureTests {
       )
     )
 
-    await store.send(.view(.onTask)) {
+    await store.send(\.view.onTask) {
       $0.alert = alert
     }
-    await store.send(.alert(.presented(.welcomeMessageDoneButtonTapped))) {
+    await store.send(\.alert.presented.welcomeMessageDoneButtonTapped) {
       $0.alert = nil
     }
   }
@@ -165,7 +165,7 @@ struct ClassicFeatureTests {
       )
     )
 
-    await store.send(.trackViewClassicCheckInPageEvent)
+    await store.send(\.trackViewClassicCheckInPageEvent)
   }
 
   func makeSUT(base: [CheckInItem], index: Int = 0) -> TestStore<ClassicCheckInFeature.State, ClassicCheckInFeature.Action> {

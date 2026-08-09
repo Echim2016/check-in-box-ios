@@ -48,6 +48,7 @@ public struct ClassicCheckInFeature {
     case view(View)
     case trackViewClassicCheckInPageEvent
 
+    @CasePathable
     public enum View {
       case onTask
       case onAppear
@@ -56,6 +57,7 @@ public struct ClassicCheckInFeature {
       case tapPreviousButton
     }
 
+    @CasePathable
     public enum Alert {
       case welcomeMessageDoneButtonTapped
     }
