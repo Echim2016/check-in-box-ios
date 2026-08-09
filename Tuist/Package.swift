@@ -24,7 +24,7 @@ let package = Package(
     ),
     .package(
       url: "https://github.com/onevcat/Kingfisher.git",
-      exact: "8.2.0"
+      exact: "8.11.0"
     ),
   ]
 )
