@@ -20,7 +20,7 @@ let package = Package(
     ),
     .package(
       url: "https://github.com/firebase/firebase-ios-sdk",
-      exact: "12.2.0"
+      exact: "12.17.0"
     ),
     .package(
       url: "https://github.com/onevcat/Kingfisher.git",
