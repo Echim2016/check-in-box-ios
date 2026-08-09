@@ -5,14 +5,16 @@
 //  Created by Yi-Chin Hsu on 2023/12/21.
 //
 
-import ComposableArchitecture
 @testable import CBFoundation
+import ComposableArchitecture
 @testable import FirebaseService
+import Foundation
 @testable import Home
-import XCTest
+import Testing
 
 @MainActor
-final class ModeListFeatureTests: XCTestCase {
+struct ModeListFeatureTests {
+  @Test
   func test_settingsSheet_presentedWhenSettingButtonTapped() async {
     let store = makeSUT()
 
@@ -21,6 +23,7 @@ final class ModeListFeatureTests: XCTestCase {
     }
   }
 
+  @Test
   func test_settingsSheet_dismissedWhenDoneButtonTapped() async {
     let store = makeSUT(of: ModeListFeature.State(presentSettingsPage: SettingsFeature.State()))
     store.arrangeTracker(for: .viewModeListPg(parameters: [:]))
@@ -30,6 +33,7 @@ final class ModeListFeatureTests: XCTestCase {
     }
   }
 
+  @Test
   func test_settingsSheet_dismissed() async {
     let store = makeSUT(of: ModeListFeature.State(presentSettingsPage: SettingsFeature.State()))
     store.arrangeTracker(for: .viewModeListPg(parameters: [:]))
@@ -39,6 +43,7 @@ final class ModeListFeatureTests: XCTestCase {
     }
   }
 
+  @Test
   func test_infoIntroSheet_presentedWhenInfoButtonTapped() async {
     let store = makeSUT()
 
@@ -47,6 +52,7 @@ final class ModeListFeatureTests: XCTestCase {
     }
   }
 
+  @Test
   func test_infoIntroSheet_dismissedWhenDoneButtonTapped() async {
     let store = makeSUT(of: ModeListFeature.State(presentInfoPage: InfoSheetFeature.State()))
     store.arrangeTracker(for: .clickInfoIntroPgDoneBtn(parameters: [:]), .viewModeListPg(parameters: [:]))
@@ -57,6 +63,7 @@ final class ModeListFeatureTests: XCTestCase {
     }
   }
 
+  @Test
   func test_questions_reloadWhenPullToRefresh() async {
     let questions = IdentifiedArray(uniqueElements: getMockMultipleQuestions())
     let tags = IdentifiedArray(uniqueElements: getMockTags())
@@ -93,7 +100,7 @@ final class ModeListFeatureTests: XCTestCase {
     }
 
     let updatedQuestions: IdentifiedArrayOf<Question> = []
-    let updatedTags: IdentifiedArrayOf<Tag> = []
+    let updatedTags: IdentifiedArrayOf<CBFoundation.Tag> = []
     let updatedThemeBoxes: IdentifiedArrayOf<ThemeBox> = []
     store.dependencies.firebaseCheckInLoader = FirebaseCheckInLoader(
       loadQuestions: { _ in
@@ -116,6 +123,7 @@ final class ModeListFeatureTests: XCTestCase {
     }
   }
 
+  @Test
   func test_modeList_trackViewEvent() async {
     let store = TestStore(
       initialState: ModeListFeature.State(),
@@ -124,7 +132,7 @@ final class ModeListFeatureTests: XCTestCase {
       $0.firebaseTracker = FirebaseTracker(
         configure: {},
         logEvent: { event in
-          XCTAssertEqual(event, .viewModeListPg(parameters: [:]))
+          #expect(event == .viewModeListPg(parameters: [:]))
         }
       )
     }
@@ -132,6 +140,7 @@ final class ModeListFeatureTests: XCTestCase {
     await store.send(.trackViewModeListEvent)
   }
 
+  @Test
   func test_modeList_trackClickThemeBoxEventWithItemOrders() async {
     let box = getMockThemeBox()
     let store = TestStore(
@@ -141,7 +150,7 @@ final class ModeListFeatureTests: XCTestCase {
       $0.firebaseTracker = FirebaseTracker(
         configure: {},
         logEvent: { event in
-          XCTAssertEqual(event, .clickModeListPgThemeBoxCard(
+          #expect(event == .clickModeListPgThemeBoxCard(
             parameters: [
               "theme": box.code,
               "order": box.order,
@@ -151,7 +160,7 @@ final class ModeListFeatureTests: XCTestCase {
       )
       $0.itemRandomizer = ItemRandomizer(
         shuffleHandler: { _ in
-          XCTFail("Items should not be shuffled")
+          Issue.record("Items should not be shuffled")
           return []
         }
       )
@@ -172,6 +181,7 @@ final class ModeListFeatureTests: XCTestCase {
     )
   }
 
+  @Test
   func test_modeList_trackClickThemeBoxEventWithSameOrders() async {
     let box = getMockThemeBox(withSameItemOrder: 1)
     let store = TestStore(
@@ -181,7 +191,7 @@ final class ModeListFeatureTests: XCTestCase {
       $0.firebaseTracker = FirebaseTracker(
         configure: {},
         logEvent: { event in
-          XCTAssertEqual(event, .clickModeListPgThemeBoxCard(
+          #expect(event == .clickModeListPgThemeBoxCard(
             parameters: [
               "theme": box.code,
               "order": box.order,
@@ -211,6 +221,7 @@ final class ModeListFeatureTests: XCTestCase {
     )
   }
 
+  @Test
   func test_modeList_trackClickCheckInCardEvent() async {
     let tag = Tag(order: 1, code: "Test")
     let store = TestStore(
@@ -220,7 +231,7 @@ final class ModeListFeatureTests: XCTestCase {
       $0.firebaseTracker = FirebaseTracker(
         configure: {},
         logEvent: { event in
-          XCTAssertEqual(event, .clickModeListPgCheckInCard(
+          #expect(event == .clickModeListPgCheckInCard(
             parameters: [
               "theme": tag.code,
               "order": tag.order,
@@ -256,7 +267,7 @@ final class ModeListFeatureTests: XCTestCase {
       $0.firebaseTracker = FirebaseTracker(
         configure: {},
         logEvent: { event in
-          XCTFail("\(event) is not handled")
+          Issue.record("\(event) is not handled")
         }
       )
     }

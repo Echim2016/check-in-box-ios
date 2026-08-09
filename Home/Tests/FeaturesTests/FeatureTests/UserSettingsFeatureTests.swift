@@ -8,10 +8,11 @@
 import ComposableArchitecture
 @testable import FirebaseService
 @testable import Home
-import XCTest
+import Testing
 
 @MainActor
-final class UserSettingsFeatureTests: XCTestCase {
+struct UserSettingsFeatureTests {
+  @Test
   func test_openURL_presentAndCloseFeedbackForm() async {
     let store = makeSUT()
     store.arrangeTracker(for: .clickSettingsPgFeedbackFormBtn(parameters: [:]))
@@ -23,6 +24,7 @@ final class UserSettingsFeatureTests: XCTestCase {
     }
   }
 
+  @Test
   func test_openURL_navigateToAuthorProfile() async {
     let store = makeSUT()
     store.arrangeOpenUrl(of: .authorProfileUrl)
@@ -30,6 +32,7 @@ final class UserSettingsFeatureTests: XCTestCase {
     await store.send(.authorProfileButtonTapped)
   }
 
+  @Test
   func test_openURL_presentAndCloseSubmitQuestionsForm() async {
     let store = makeSUT()
     store.arrangeTracker(for: .clickSettingsPgSubmitQuestionsBtn(parameters: [:]))
@@ -41,13 +44,15 @@ final class UserSettingsFeatureTests: XCTestCase {
     }
   }
 
+  @Test
   func test_shareButton_trackEventWhenTapped() async {
     let store = makeSUT()
     store.arrangeTracker(for: .clickSettingsPgShareBtn(parameters: [:]))
-    XCTAssertEqual(store.state.shareLinkUrl, .shareLinkUrl)
+    #expect(store.state.shareLinkUrl == .shareLinkUrl)
     await store.send(.shareButtonTapped)
   }
-  
+
+  @Test
   func test_appReviewButton_trackEventWhenTapped() async {
     let store = makeSUT()
     store.arrangeOpenUrl(of: .requestReviewUrl)
@@ -55,13 +60,15 @@ final class UserSettingsFeatureTests: XCTestCase {
     await store.send(.submitAppReviewButtonTapped)
   }
 
+  @Test
   func test_debugModeButton_presentDebugModeInoutBoxPage() async {
     let store = makeSUT()
     await store.send(.debugModeButtonTapped) {
       $0.presentDebugModeInputBoxPage = InputBoxFeature.State()
     }
   }
-  
+
+  @Test
   func test_debugModeButton_enabled() async {
     let store = makeSUT()
     await store.send(.debugModeButtonEnabled) {
@@ -69,6 +76,7 @@ final class UserSettingsFeatureTests: XCTestCase {
     }
   }
 
+  @Test
   func test_settingPage_trackViewEvent() async {
     let store = makeSUT()
     store.arrangeTracker(for: .viewSettingsPg(parameters: [:]))
@@ -79,6 +87,7 @@ final class UserSettingsFeatureTests: XCTestCase {
 // MARK: - Tests for debug mode input box page
 
 extension UserSettingsFeatureTests {
+  @Test
   func test_debugModeInputBoxPage_validActivationKeySubmitted() async {
     let activationKey = "valid_key"
     let store = makeSUT(
@@ -97,6 +106,7 @@ extension UserSettingsFeatureTests {
     }
   }
 
+  @Test
   func test_debugModeInputBoxPage_emptyActivationKeySubmitted() async {
     let activationKey = ""
     let store = makeSUT(
@@ -112,6 +122,7 @@ extension UserSettingsFeatureTests {
     await store.send(.presentDebugModeInputBoxPage(.presented(.activateButtonTapped)))
   }
 
+  @Test
   func test_debugModeInputBoxPage_keyChanged() async {
     let activationKey = ""
     let store = makeSUT(
@@ -140,12 +151,12 @@ extension UserSettingsFeatureTests {
       $0.firebaseTracker = FirebaseTracker(
         configure: {},
         logEvent: { event in
-          XCTFail("\(event) is not handled")
+          Issue.record("\(event) is not handled")
         }
       )
       $0.openURL = OpenURLEffect(
         handler: { url in
-          XCTFail("\(url) is not handled")
+          Issue.record("\(url) is not handled")
           return false
         }
       )
@@ -158,11 +169,11 @@ extension UserSettingsFeatureTests {
   ) {
     store.dependencies.debugModeManager = DebugModeManager(
       isFullAccess: { key in
-        XCTAssertEqual(activationKey, key)
+        #expect(activationKey == key)
         return true
       },
       setAccess: { key in
-        XCTAssertEqual(activationKey, key)
+        #expect(activationKey == key)
       }
     )
   }

@@ -5,14 +5,15 @@
 //  Created by Yi-Chin Hsu on 2023/12/13.
 //
 
-import ComposableArchitecture
 @testable import CBFoundation
+import ComposableArchitecture
 @testable import FirebaseService
 @testable import Home
-import XCTest
+import Testing
 
 @MainActor
-final class AppFeaturesTests: XCTestCase {
+struct AppFeaturesTests {
+  @Test
   func test_path_navigateToClassicPage() async {
     let store = TestStore(
       initialState: AppFeature.State(modeList: ModeListFeature.State())
@@ -20,12 +21,13 @@ final class AppFeaturesTests: XCTestCase {
       AppFeature()
     }
     let checkInState = ClassicCheckInFeature.State(tag: Tag(code: "Test"))
-    
+
     await store.send(.modeList(.navigateToCheckInPage(checkInState))) {
       $0.path[id: 0] = .classic(checkInState)
     }
   }
-  
+
+  @Test
   func test_path_pushToClassicPage() async {
     let store = TestStore(
       initialState: AppFeature.State(modeList: ModeListFeature.State())
@@ -39,6 +41,7 @@ final class AppFeaturesTests: XCTestCase {
     }
   }
 
+  @Test
   func test_loadQuestions_fromRemoteLoader() async {
     let mockQuestions = IdentifiedArray(uniqueElements: getMockMultipleQuestions())
     let mockTags = IdentifiedArray(uniqueElements: getMockTags())
@@ -50,15 +53,15 @@ final class AppFeaturesTests: XCTestCase {
     ) {
       $0.firebaseCheckInLoader = FirebaseCheckInLoader(
         loadQuestions: { collectionPath in
-          XCTAssertEqual(collectionPath, "Questions")
+          #expect(collectionPath == "Questions")
           return IdentifiedArray(uniqueElements: mockQuestions)
         },
         loadTags: { collectionPath in
-          XCTAssertEqual(collectionPath, "Question_Tags")
+          #expect(collectionPath == "Question_Tags")
           return IdentifiedArray(uniqueElements: mockTags)
         },
-        loadThemeBoxes: { collectionPath, isFullAccess in
-          XCTAssertEqual(collectionPath, "Theme_Boxes")
+        loadThemeBoxes: { collectionPath, _ in
+          #expect(collectionPath == "Theme_Boxes")
           return IdentifiedArray(uniqueElements: mockThemeBoxes)
         }
       )
@@ -69,7 +72,7 @@ final class AppFeaturesTests: XCTestCase {
         setAccess: { _ in }
       )
     }
-    
+
     await store.send(.modeList(.pullToRefreshTriggered))
     await store.receive(.loadFromRemote)
     await store.receive(.receivedQuestions(mockThemeBoxes, mockTags, mockQuestions)) {

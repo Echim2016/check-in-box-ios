@@ -5,14 +5,16 @@
 //  Created by Yi-Chin Hsu on 2023/12/21.
 //
 
-import ComposableArchitecture
 @testable import CBFoundation
+import ComposableArchitecture
 @testable import FirebaseService
+import Foundation
 @testable import Home
-import XCTest
+import Testing
 
 @MainActor
-final class ClassicFeatureTests: XCTestCase {
+struct ClassicFeatureTests {
+  @Test
   func test_classicCheckIn_pickedQuestionFromDefaultState() async {
     let questions = getMockMultipleCheckInItems()
     let store = makeSUT(base: questions)
@@ -20,7 +22,7 @@ final class ClassicFeatureTests: XCTestCase {
       for: .clickClassicCheckInPgPickBtn(
         parameters: [
           "theme": "Test",
-          "current_content": questions.first?.content,
+          "current_content": questions.first?.content ?? "",
           "current_index": 0,
           "items_total_count": questions.count,
         ]
@@ -33,6 +35,7 @@ final class ClassicFeatureTests: XCTestCase {
     }
   }
 
+  @Test
   func test_classicCheckIn_pickedQuestionFromLastIndex() async {
     let questions = getMockMultipleCheckInItems()
     let lastIndex = questions.count - 1
@@ -54,6 +57,7 @@ final class ClassicFeatureTests: XCTestCase {
     }
   }
 
+  @Test
   func test_classicCheckIn_pickedPreviousQuestionFromDefaultState() async {
     let questions = getMockMultipleCheckInItems()
     let store = makeSUT(base: questions)
@@ -61,7 +65,7 @@ final class ClassicFeatureTests: XCTestCase {
       for: .clickClassicCheckInPgPreviousBtn(
         parameters: [
           "theme": "Test",
-          "current_content": questions.first?.content,
+          "current_content": questions.first?.content ?? "",
           "current_index": 0,
           "items_total_count": questions.count,
         ]
@@ -74,6 +78,7 @@ final class ClassicFeatureTests: XCTestCase {
     }
   }
 
+  @Test
   func test_classicCheckIn_urlButtonTappedForValidUrl() async {
     let testUrl = "https://test.com"
     let questions = [
@@ -84,7 +89,7 @@ final class ClassicFeatureTests: XCTestCase {
       for: .clickClassicCheckInPgUrlBtn(
         parameters: [
           "theme": "Test",
-          "current_content": questions.first?.content,
+          "current_content": questions.first?.content ?? "",
           "url": testUrl,
         ]
       )
@@ -94,6 +99,7 @@ final class ClassicFeatureTests: XCTestCase {
     await store.send(.view(.tapURLButton))
   }
 
+  @Test
   func test_classicCheckIn_urlButtonTappedForInvalidUrl() async {
     let invalidUrl = ""
     let questions = [
@@ -104,6 +110,7 @@ final class ClassicFeatureTests: XCTestCase {
     await store.send(.view(.tapURLButton))
   }
 
+  @Test
   func test_classicCheckIn_welcomeMessageAlertDoneButtonTapped() async {
     let alert = AlertState(
       title: {
@@ -143,6 +150,7 @@ final class ClassicFeatureTests: XCTestCase {
     }
   }
 
+  @Test
   func test_classicCheckIn_trackViewEvent() async {
     let store = makeSUT(base: [])
     store.arrangeTracker(
@@ -168,7 +176,7 @@ final class ClassicFeatureTests: XCTestCase {
       $0.firebaseTracker = FirebaseTracker(
         configure: {},
         logEvent: { event in
-          XCTFail("\(event) is not handled")
+          Issue.record("\(event) is not handled")
         }
       )
     }
