@@ -26,14 +26,14 @@ public struct HomeFeature {
     }
   }
 
-  public enum Action: Sendable, Equatable {
+  public enum Action {
     case path(StackAction<Path.State, Path.Action>)
     case modeList(ModeListFeature.Action)
     case loadFromRemote
     case receivedQuestions(IdentifiedArrayOf<ThemeBox>, IdentifiedArrayOf<Tag>, IdentifiedArrayOf<Question>)
   }
   
-  @Reducer(state: .equatable, action: .equatable)
+  @Reducer
   public enum Path {
     case classic(ClassicCheckInFeature)
   }
@@ -110,6 +110,8 @@ public struct HomeView: View {
     .tint(.white)
   }
 }
+
+extension HomeFeature.Path.State: Equatable {}
 
 #Preview {
   HomeView(
