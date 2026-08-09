@@ -104,6 +104,9 @@ public struct SettingsFeature {
     .ifLet(\.$presentDebugModeInputBoxPage, action: \.presentDebugModeInputBoxPage) {
       InputBoxFeature()
     }
+    .ifLet(\.$presentInAppWebViewPage, action: \.presentInAppWebViewPage) {
+      InAppWebFeature()
+    }
   }
 }
 
