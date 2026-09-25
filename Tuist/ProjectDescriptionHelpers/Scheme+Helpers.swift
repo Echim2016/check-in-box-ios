@@ -9,6 +9,23 @@ import Foundation
 import ProjectDescription
 
 public extension Scheme {
+  static let appTests: Scheme = .scheme(
+    name: "AppTests",
+    shared: true,
+    buildAction: .buildAction(
+      targets: [
+        "\(Project.appName)",
+        "AppTests",
+      ]
+    ),
+    testAction: .testPlans(
+      [
+        .relativeToRoot("App/Tests/AppTests.xctestplan"),
+      ],
+      configuration: .debug
+    )
+  )
+
   static let debug: Scheme = .scheme(
     name: "check-in-box-debug",
     shared: true,
@@ -60,4 +77,3 @@ public extension Scheme {
     analyzeAction: .analyzeAction(configuration: .release)
   )
 }
-

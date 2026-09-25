@@ -16,15 +16,15 @@ let package = Package(
   dependencies: [
     .package(
       url: "https://github.com/pointfreeco/swift-composable-architecture.git",
-      exact: "1.22.2"
+      exact: "1.26.1"
     ),
     .package(
       url: "https://github.com/firebase/firebase-ios-sdk",
-      exact: "12.2.0"
+      exact: "12.17.0"
     ),
     .package(
       url: "https://github.com/onevcat/Kingfisher.git",
-      exact: "8.2.0"
+      exact: "8.11.0"
     ),
   ]
 )

@@ -4,7 +4,7 @@ import ProjectDescriptionHelpers
 let project = Project(
   name: "App",
   options: .options(
-    automaticSchemesOptions: .enabled(codeCoverageEnabled: true),
+    automaticSchemesOptions: .disabled,
     textSettings: .textSettings(
       usesTabs: false,
       indentWidth: 2,
@@ -69,6 +69,10 @@ let project = Project(
   ],
   schemes: [
     .debug,
-    .release
+    .release,
+    .appTests
+  ],
+  additionalFiles: [
+    .glob(pattern: "Tests/AppTests.xctestplan"),
   ]
 )

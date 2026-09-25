@@ -17,7 +17,7 @@ public struct ClassicCheckInFeature {
     @Presents var alert: AlertState<Action.Alert>? = nil
     var initialAlertContent: InitialAlertContent?
     var tag: Tag?
-    var questions: CycleIterator<CheckInItem>
+    var questions: CycleCollection<CheckInItem>
     var imageUrl: URL?
     var displayQuestion: String?
     var displaySubtitle: String?
@@ -25,7 +25,7 @@ public struct ClassicCheckInFeature {
     public init(
       initialAlertContent: InitialAlertContent? = nil,
       tag: Tag? = nil,
-      questions: CycleIterator<CheckInItem> = CycleIterator(base: []),
+      questions: CycleCollection<CheckInItem> = CycleCollection(base: []),
       imageUrl: URL? = nil
     ) {
       self.initialAlertContent = initialAlertContent
@@ -48,6 +48,7 @@ public struct ClassicCheckInFeature {
     case view(View)
     case trackViewClassicCheckInPageEvent
 
+    @CasePathable
     public enum View {
       case onTask
       case onAppear
@@ -56,6 +57,7 @@ public struct ClassicCheckInFeature {
       case tapPreviousButton
     }
 
+    @CasePathable
     public enum Alert {
       case welcomeMessageDoneButtonTapped
     }
@@ -139,7 +141,7 @@ public struct ClassicCheckInFeature {
               "theme": state.tag?.code ?? "",
               "current_content": state.displayQuestion ?? "",
               "current_index": state.questions.index,
-              "items_total_count": state.questions.base.count,
+              "items_total_count": state.questions.count,
             ]
           )
         )
@@ -154,7 +156,7 @@ public struct ClassicCheckInFeature {
               "theme": state.tag?.code ?? "",
               "current_content": state.displayQuestion ?? "",
               "current_index": state.questions.index,
-              "items_total_count": state.questions.base.count,
+              "items_total_count": state.questions.count,
             ]
           )
         )
@@ -296,7 +298,7 @@ extension CheckInItem {
     ClassicCheckInView(
       store: Store(
         initialState: ClassicCheckInFeature.State(
-          questions: CycleIterator(
+          questions: CycleCollection(
             base: [
               CheckInItem.from(Question(question: "身上使用最久的東西是什麼？")),
               CheckInItem.from(Question(question: "最喜歡的一部電影？")),

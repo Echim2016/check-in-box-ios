@@ -1,6 +1,6 @@
 //
 //  InfoSheetFeatureTests.swift
-//  
+//
 //
 //  Created by Yi-Chin Hsu on 2024/1/9.
 //
@@ -8,26 +8,26 @@
 import ComposableArchitecture
 @testable import FirebaseService
 @testable import Home
-import XCTest
-
+import Testing
 
 @MainActor
-final class InfoSheetFeatureTests: XCTestCase {
-  
+struct InfoSheetFeatureTests {
+  @Test
   func test_doneButton_trackClickingEventWhenTapped() async {
     let store = makeSUT()
     store.arrangeTracker(for: .clickInfoIntroPgDoneBtn(parameters: [:]))
-    
-    await store.send(.doneButtonTapped)
+
+    await store.send(\.doneButtonTapped)
   }
-  
+
+  @Test
   func test_introPage_trackViewEvent() async {
     let store = makeSUT()
     store.arrangeTracker(for: .viewInfoIntroPg(parameters: [:]))
-    
-    await store.send(.trackViewInfoIntroEvent)
+
+    await store.send(\.trackViewInfoIntroEvent)
   }
-  
+
   func makeSUT() -> TestStoreOf<InfoSheetFeature> {
     TestStore(
       initialState: InfoSheetFeature.State(),
@@ -36,7 +36,7 @@ final class InfoSheetFeatureTests: XCTestCase {
       $0.firebaseTracker = FirebaseTracker(
         configure: {},
         logEvent: { event in
-          XCTFail("\(event) is not handled")
+          Issue.record("\(event) is not handled")
         }
       )
     }

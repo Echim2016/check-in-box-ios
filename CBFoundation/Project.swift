@@ -12,7 +12,9 @@ let project = Project(
       deploymentTargets: .iOS(Project.minimumDeploymentVersion),
       sources: ["Sources/**"],
       resources: nil,
-      dependencies: [],
+      dependencies: [
+        .composableArchitecture,
+      ],
     ),
     .target(
       name: "CBFoundationTests",

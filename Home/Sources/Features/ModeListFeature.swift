@@ -8,6 +8,7 @@
 import CBFoundation
 import ComposableArchitecture
 import FirebaseService
+import Sharing
 import SwiftUI
 
 @Reducer
@@ -20,6 +21,7 @@ public struct ModeListFeature {
     public var questions: IdentifiedArrayOf<Question>
     public var tags: IdentifiedArrayOf<Tag>
     public var hapticFeedbackTrigger = false
+    @Shared(.infoIntroChecked) public var infoIntroChecked
 
     public init(
       presentSettingsPage: SettingsFeature.State? = nil,
@@ -49,7 +51,7 @@ public struct ModeListFeature {
     case infoButtonTapped
     case presentInfoPage(PresentationAction<InfoSheetFeature.Action>)
     case pullToRefreshTriggered
-    case trackViewModeListEvent
+    case onAppear
   }
 
   @Dependency(\.firebaseTracker) var firebaseTracker
@@ -83,7 +85,7 @@ public struct ModeListFeature {
           .navigateToCheckInPage(
             ClassicCheckInFeature.State(
               tag: tag,
-              questions: CycleIterator(base: base)
+              questions: CycleCollection(base: base)
             )
           )
         )
@@ -119,7 +121,7 @@ public struct ModeListFeature {
             ClassicCheckInFeature.State(
               initialAlertContent: .init(title: box.alertTitle, message: box.alertMessage),
               tag: .from(box),
-              questions: CycleIterator(base: base),
+              questions: CycleCollection(base: base),
               imageUrl: URL(string: box.imageUrl)
             )
           )
@@ -150,8 +152,10 @@ public struct ModeListFeature {
       case .presentInfoPage(.presented(.doneButtonTapped)):
         state.presentInfoPage = nil
         state.hapticFeedbackTrigger.toggle()
+        state.$infoIntroChecked.withLock {
+          $0 = true
+        }
         firebaseTracker.logEvent(.viewModeListPg(parameters: [:]))
-        UserDefaults.standard.setValue(true, forKey: "info-intro-checked")
         return .none
 
       case .presentInfoPage:
@@ -159,7 +163,11 @@ public struct ModeListFeature {
 
       case .pullToRefreshTriggered:
         return .none
-      case .trackViewModeListEvent:
+
+      case .onAppear:
+        if !state.infoIntroChecked {
+          state.presentInfoPage = InfoSheetFeature.State()
+        }
         firebaseTracker.logEvent(.viewModeListPg(parameters: [:]))
         return .none
       }
@@ -213,7 +221,7 @@ public struct ModeListView: View {
         .buttonStyle(.plain)
       }
 
-      if store.state.tags.isEmpty {
+      if store.tags.isEmpty {
         ProgressView()
           .padding(.top, 150)
 
@@ -250,7 +258,7 @@ public struct ModeListView: View {
       } catch {}
     }
     .onAppear {
-      store.send(.trackViewModeListEvent)
+      store.send(.onAppear)
     }
     .sensoryFeedback(.success, trigger: store.state.hapticFeedbackTrigger)
     .toolbar {

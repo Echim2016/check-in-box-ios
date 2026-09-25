@@ -6,93 +6,95 @@
 //
 
 import ComposableArchitecture
+import Foundation
 @testable import Home
-import XCTest
+import Testing
 
-@MainActor
-final class CycleIteratorTests: XCTestCase {
-  func test_cycleIterator_equatable() {
-    let sut1 = CycleIterator(base: ["sut"], index: 0)
-    let sut2 = CycleIterator(base: ["sut"], index: 1)
+struct CycleCollectionTests {
+  @Test
+  func test_cycleCollection_equatable() {
+    let sut1 = CycleCollection(base: ["sut1", "sut2"], index: 0)
+    let sut2 = CycleCollection(base: ["sut1", "sut2"], index: 1)
 
-    XCTAssertNotEqual(sut1, sut2)
+    #expect(sut1 != sut2)
   }
 
-  func test_cycleIterator_currentItem() {
+  @Test
+  func test_cycleCollection_currentItem() {
     let item1 = "item1"
     let item2 = "item2"
-    let sut = CycleIterator(base: [item1, item2], index: 1)
+    let sut = CycleCollection(base: [item1, item2], index: 1)
 
-    XCTAssertEqual(sut.current(), item2)
+    #expect(sut.current() == item2)
   }
 
-  func test_cycleIterator_currentItemIsNilWhenBaseIsEmpty() {
+  @Test
+  func test_cycleCollection_currentItemIsNilWhenBaseIsEmpty() {
     let base: [String] = []
-    let sut = CycleIterator(base: base)
+    let sut = CycleCollection(base: base)
 
-    XCTAssertNil(sut.current())
+    #expect(sut.current() == nil)
   }
 
-  func test_cycleIterator_nextIndexEqualToZeroWhenBaseContainsOneItem() {
-    let sut = CycleIterator(base: ["item1"], index: 0)
+  @Test
+  func test_cycleCollection_nextIndexEqualToZeroWhenBaseContainsOneItem() {
+    var sut = CycleCollection(base: ["item1"], index: 0)
     sut.next()
 
-    XCTAssertEqual(sut.index, 0)
-    XCTAssertGreaterThanOrEqual(sut.base.count - 1, sut.index)
+    #expect(sut.index == 0)
+    #expect(sut.base.count - 1 >= sut.index)
   }
 
-  func test_cycleIterator_backIndexEqualToZeroWhenBaseContainsOneItem() {
-    let sut = CycleIterator(base: ["item1"], index: 0)
+  @Test
+  func test_cycleCollection_backIndexEqualToZeroWhenBaseContainsOneItem() {
+    var sut = CycleCollection(base: ["item1"], index: 0)
     sut.back()
 
-    XCTAssertEqual(sut.index, 0)
-    XCTAssertGreaterThanOrEqual(sut.base.count - 1, sut.index)
+    #expect(sut.index == 0)
+    #expect(sut.base.count - 1 >= sut.index)
   }
 
-  func test_cycleIterator_nextIndexIncreasedByOneWhenBaseContainsMultipleItems() {
-    let sut = CycleIterator(base: ["item1", "item2"], index: 0)
+  @Test
+  func test_cycleCollection_nextIndexIncreasedByOneWhenBaseContainsMultipleItems() {
+    var sut = CycleCollection(base: ["item1", "item2"], index: 0)
     sut.next()
 
-    XCTAssertEqual(sut.index, 1)
-    XCTAssertGreaterThanOrEqual(sut.base.count - 1, sut.index)
+    #expect(sut.index == 1)
+    #expect(sut.base.count - 1 >= sut.index)
   }
 
-  func test_cycleIterator_backIndexDecreasedByOneWhenBaseContainsMultipleItems() {
-    let sut = CycleIterator(base: ["item1", "item2"], index: 1)
+  @Test
+  func test_cycleCollection_backIndexDecreasedByOneWhenBaseContainsMultipleItems() {
+    var sut = CycleCollection(base: ["item1", "item2"], index: 1)
     sut.back()
 
-    XCTAssertEqual(sut.index, 0)
-    XCTAssertGreaterThanOrEqual(sut.base.count - 1, sut.index)
+    #expect(sut.index == 0)
+    #expect(sut.base.count - 1 >= sut.index)
   }
 
-  func test_cycleIterator_nextIndexWhenIndexOutOfRange() {
-    let sut = CycleIterator(base: ["item1", "item2"], index: 1)
+  @Test
+  func test_cycleCollection_nextIndexWhenIndexWrapsAround() {
+    var sut = CycleCollection(base: ["item1", "item2"], index: 1)
     sut.next()
 
-    XCTAssertEqual(sut.index, 0)
-    XCTAssertGreaterThanOrEqual(sut.base.count - 1, sut.index)
+    #expect(sut.index == 0)
+    #expect(sut.base.count - 1 >= sut.index)
   }
 
-  func test_cycleIterator_backIndexWhenIndexOutOfRange() {
-    let sut = CycleIterator(base: ["item1", "item2"], index: 0)
+  @Test
+  func test_cycleCollection_backIndexWhenIndexWrapsAround() {
+    var sut = CycleCollection(base: ["item1", "item2"], index: 0)
     sut.back()
 
-    XCTAssertEqual(sut.index, 1)
-    XCTAssertGreaterThanOrEqual(sut.base.count - 1, sut.index)
+    #expect(sut.index == 1)
+    #expect(sut.base.count - 1 >= sut.index)
   }
 
-  func test_raceCondition_performNextFromMultipleThreadsConcurrently() {
-    let mockItems = ["item1", "item2", "item3", "item4", "item5", "item6", "item7", "item8", "item9", "item10"]
-    let sut = CycleIterator(base: mockItems, index: 0)
+  @Test
+  func test_cycleCollection_initResetsIndexWhenIndexIsOutOfRange() {
+    let sut = CycleCollection(base: ["item1", "item2"], index: 10)
 
-    DispatchQueue.concurrentPerform(iterations: mockItems.count - 1) { _ in
-      sut.next()
-    }
-
-    let exp = expectation(description: "Test after concurrent performing done")
-    let result = XCTWaiter.wait(for: [exp], timeout: 0.05)
-    if result == XCTWaiter.Result.timedOut {
-      XCTAssertEqual(sut.index, mockItems.count - 1)
-    }
+    #expect(sut.index == 0)
+    #expect(sut.current() == "item1")
   }
 }

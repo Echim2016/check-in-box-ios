@@ -5,14 +5,16 @@
 //  Created by Yi-Chin Hsu on 2023/12/21.
 //
 
-import ComposableArchitecture
 @testable import CBFoundation
+import ComposableArchitecture
 @testable import FirebaseService
+import Foundation
 @testable import Home
-import XCTest
+import Testing
 
 @MainActor
-final class ClassicFeatureTests: XCTestCase {
+struct ClassicFeatureTests {
+  @Test
   func test_classicCheckIn_pickedQuestionFromDefaultState() async {
     let questions = getMockMultipleCheckInItems()
     let store = makeSUT(base: questions)
@@ -20,19 +22,21 @@ final class ClassicFeatureTests: XCTestCase {
       for: .clickClassicCheckInPgPickBtn(
         parameters: [
           "theme": "Test",
-          "current_content": questions.first?.content,
+          "current_content": questions.first?.content ?? "",
           "current_index": 0,
           "items_total_count": questions.count,
         ]
       )
     )
 
-    await store.send(.view(.tapPickButton)) {
+    await store.send(\.view.tapPickButton) {
+      $0.questions.index = 1
       $0.displayQuestion = questions[1].content
       $0.displaySubtitle = questions[1].subtitle
     }
   }
 
+  @Test
   func test_classicCheckIn_pickedQuestionFromLastIndex() async {
     let questions = getMockMultipleCheckInItems()
     let lastIndex = questions.count - 1
@@ -48,12 +52,14 @@ final class ClassicFeatureTests: XCTestCase {
       )
     )
 
-    await store.send(.view(.tapPickButton)) {
+    await store.send(\.view.tapPickButton) {
+      $0.questions.index = 0
       $0.displayQuestion = questions.first?.content
       $0.displaySubtitle = questions.first?.subtitle
     }
   }
 
+  @Test
   func test_classicCheckIn_pickedPreviousQuestionFromDefaultState() async {
     let questions = getMockMultipleCheckInItems()
     let store = makeSUT(base: questions)
@@ -61,19 +67,21 @@ final class ClassicFeatureTests: XCTestCase {
       for: .clickClassicCheckInPgPreviousBtn(
         parameters: [
           "theme": "Test",
-          "current_content": questions.first?.content,
+          "current_content": questions.first?.content ?? "",
           "current_index": 0,
           "items_total_count": questions.count,
         ]
       )
     )
 
-    await store.send(.view(.tapPreviousButton)) {
+    await store.send(\.view.tapPreviousButton) {
+      $0.questions.index = questions.count - 1
       $0.displayQuestion = questions.last?.content
       $0.displaySubtitle = questions.last?.subtitle
     }
   }
 
+  @Test
   func test_classicCheckIn_urlButtonTappedForValidUrl() async {
     let testUrl = "https://test.com"
     let questions = [
@@ -84,16 +92,17 @@ final class ClassicFeatureTests: XCTestCase {
       for: .clickClassicCheckInPgUrlBtn(
         parameters: [
           "theme": "Test",
-          "current_content": questions.first?.content,
+          "current_content": questions.first?.content ?? "",
           "url": testUrl,
         ]
       )
     )
     store.arrangeOpenUrl(of: URL(string: testUrl)!)
 
-    await store.send(.view(.tapURLButton))
+    await store.send(\.view.tapURLButton)
   }
 
+  @Test
   func test_classicCheckIn_urlButtonTappedForInvalidUrl() async {
     let invalidUrl = ""
     let questions = [
@@ -101,9 +110,10 @@ final class ClassicFeatureTests: XCTestCase {
     ]
     let store = makeSUT(base: questions)
 
-    await store.send(.view(.tapURLButton))
+    await store.send(\.view.tapURLButton)
   }
 
+  @Test
   func test_classicCheckIn_welcomeMessageAlertDoneButtonTapped() async {
     let alert = AlertState(
       title: {
@@ -122,7 +132,7 @@ final class ClassicFeatureTests: XCTestCase {
       initialState: ClassicCheckInFeature.State(
         initialAlertContent: .init(title: "Alert title", message: "welcome message"),
         tag: Tag(code: "Test"),
-        questions: CycleIterator(base: [])
+        questions: CycleCollection(base: [])
       )
     ) {
       ClassicCheckInFeature()
@@ -135,14 +145,15 @@ final class ClassicFeatureTests: XCTestCase {
       )
     )
 
-    await store.send(.view(.onTask)) {
+    await store.send(\.view.onTask) {
       $0.alert = alert
     }
-    await store.send(.alert(.presented(.welcomeMessageDoneButtonTapped))) {
+    await store.send(\.alert.presented.welcomeMessageDoneButtonTapped) {
       $0.alert = nil
     }
   }
 
+  @Test
   func test_classicCheckIn_trackViewEvent() async {
     let store = makeSUT(base: [])
     store.arrangeTracker(
@@ -154,21 +165,21 @@ final class ClassicFeatureTests: XCTestCase {
       )
     )
 
-    await store.send(.trackViewClassicCheckInPageEvent)
+    await store.send(\.trackViewClassicCheckInPageEvent)
   }
 
   func makeSUT(base: [CheckInItem], index: Int = 0) -> TestStore<ClassicCheckInFeature.State, ClassicCheckInFeature.Action> {
     let store = TestStore(
       initialState: ClassicCheckInFeature.State(
         tag: Tag(code: "Test"),
-        questions: CycleIterator(base: base, index: index)
+        questions: CycleCollection(base: base, index: index)
       ),
       reducer: { ClassicCheckInFeature() }
     ) {
       $0.firebaseTracker = FirebaseTracker(
         configure: {},
         logEvent: { event in
-          XCTFail("\(event) is not handled")
+          Issue.record("\(event) is not handled")
         }
       )
     }
