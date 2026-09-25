@@ -1,5 +1,5 @@
 //
-//  AppFeature.swift
+//  HomeFeature.swift
 //
 //
 //  Created by Yi-Chin Hsu on 2023/12/15.
@@ -8,11 +8,10 @@
 @preconcurrency import CBFoundation
 import ComposableArchitecture
 import FirebaseService
-@preconcurrency import Home
 import SwiftUI
 
 @Reducer
-public struct AppFeature {
+public struct HomeFeature {
   @ObservableState
   public struct State: Equatable {
     var path = StackState<Path.State>()
@@ -27,14 +26,14 @@ public struct AppFeature {
     }
   }
 
-  public enum Action: Sendable, Equatable {
+  public enum Action {
     case path(StackAction<Path.State, Path.Action>)
     case modeList(ModeListFeature.Action)
     case loadFromRemote
     case receivedQuestions(IdentifiedArrayOf<ThemeBox>, IdentifiedArrayOf<Tag>, IdentifiedArrayOf<Question>)
   }
-
-  @Reducer(state: .equatable, action: .equatable)
+  
+  @Reducer
   public enum Path {
     case classic(ClassicCheckInFeature)
   }
@@ -53,7 +52,7 @@ public struct AppFeature {
       switch action {
       case .modeList(.pullToRefreshTriggered):
         return .send(.loadFromRemote)
-
+        
       case let .modeList(.navigateToCheckInPage(checkInState)):
         state.path.append(.classic(checkInState))
         return .none
@@ -63,11 +62,16 @@ public struct AppFeature {
 
       case .loadFromRemote:
         return .run { send in
+          let isFullAccess = debugModeManager.isFullAccess()
+          async let themeBoxes = firebaseCheckInLoader.loadThemeBoxes("Theme_Boxes", isFullAccess)
+          async let tags = firebaseCheckInLoader.loadTags("Question_Tags")
+          async let questions = firebaseCheckInLoader.loadQuestions("Questions")
+
           try await send(
             .receivedQuestions(
-              await firebaseCheckInLoader.loadThemeBoxes("Theme_Boxes", debugModeManager.isFullAccess("admin_full_access")),
-              await firebaseCheckInLoader.loadTags("Question_Tags"),
-              await firebaseCheckInLoader.loadQuestions("Questions")
+              try await themeBoxes,
+              try await tags,
+              try await questions
             )
           )
         }
@@ -86,10 +90,10 @@ public struct AppFeature {
   }
 }
 
-public struct AppView: View {
-  @Bindable var store: StoreOf<AppFeature>
+public struct HomeView: View {
+  @Bindable var store: StoreOf<HomeFeature>
 
-  public init(store: StoreOf<AppFeature>) {
+  public init(store: StoreOf<HomeFeature>) {
     self.store = store
   }
 
@@ -112,14 +116,17 @@ public struct AppView: View {
   }
 }
 
+extension HomeFeature.Path.State: Equatable {}
+
 #Preview {
-  AppView(
+  HomeView(
     store: Store(
-      initialState: AppFeature.State(
+      initialState: HomeFeature.State(
         modeList: ModeListFeature.State()
       )
     ) {
-      AppFeature()
+      HomeFeature()
+        ._printChanges()
     }
   )
 }

@@ -13,19 +13,15 @@ import SwiftUI
 @main
 struct CheckInBoxApp: App {
   @Dependency(\.firebaseTracker) var firebaseTracker
+  private let store = Store(
+    initialState: HomeFeature.State()
+  ) {
+    HomeFeature()
+  }
+
   var body: some Scene {
     WindowGroup {
-      AppView(
-        store: Store(
-          initialState: AppFeature.State(
-            modeList: ModeListFeature.State(
-              presentInfoPage: UserDefaults.standard.bool(forKey: "info-intro-checked") ? nil : InfoSheetFeature.State()
-            )
-          )
-        ) {
-          AppFeature()
-        }
-      )
+      HomeView(store: store)
     }
   }
 

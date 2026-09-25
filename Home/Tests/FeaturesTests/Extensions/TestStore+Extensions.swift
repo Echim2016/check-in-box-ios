@@ -6,24 +6,29 @@
 //
 
 import ComposableArchitecture
-@testable import Home
 @testable import FirebaseService
-import XCTest
+import Foundation
+@testable import Home
+import Testing
 
 extension TestStore {
   func arrangeTracker(for events: FirebaseEvent?...) {
     dependencies.firebaseTracker = FirebaseTracker(
       configure: {},
       logEvent: { trackingEvent in
-        XCTAssertTrue(events.contains(trackingEvent))
+        if !events.contains(trackingEvent) {
+          Issue.record("Unhandled tracking event: \(trackingEvent). Expected: \(events)")
+        }
       }
     )
   }
-  
+
   func arrangeOpenUrl(of destinationUrl: URL) {
     dependencies.openURL = OpenURLEffect(
       handler: { url in
-        XCTAssertEqual(url, destinationUrl)
+        if url != destinationUrl {
+          Issue.record("Unhandled URL: \(url). Expected: \(destinationUrl)")
+        }
         return true
       }
     )

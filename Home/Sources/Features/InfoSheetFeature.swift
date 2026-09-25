@@ -62,7 +62,7 @@ public struct InfoSheetView: View {
 struct InfoIntroView: View {
   @State var selectedPage = 0
   @State var displayQuestion = "＊＊＊＊＊＊＊＊＊"
-  let questions = CycleIterator(
+  @State var questions = CycleCollection(
     base: [
       "近期最期待的事", "最近買過最貴的東西", "我最常光顧的一間餐廳", "最近買的一個小東西",
     ]
